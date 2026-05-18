@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<title>IndigoSmart — диаграммы для диплома</title>
+<style>
+  :root {
+    --bg-0: #0b0f1f;
+    --bg-1: #11172e;
+    --indigo: #6366f1;
+    --indigo-2: #818cf8;
+    --cyan: #6ad2ff;
+    --gold: #ffd700;
+    --green: #22c55e;
+    --text: #e7ecff;
+    --text-dim: #a3aed0;
+    --border: rgba(163, 174, 208, 0.22);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', 'Inter', sans-serif;
+    background: var(--bg-0);
+    color: var(--text);
+  }
+  .frame {
+    width: 1200px;
+    min-height: 720px;
+    padding: 56px 64px;
+    background:
+      radial-gradient(ellipse 80% 60% at 18% -5%, rgba(99, 102, 241, 0.22), transparent 65%),
+      radial-gradient(ellipse 90% 50% at 90% 100%, rgba(106, 210, 255, 0.15), transparent 60%),
+      linear-gradient(180deg, var(--bg-0), var(--bg-1));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    page-break-after: always;
+  }
+  .frame-title {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-bottom: 36px;
+    color: #fff;
+  }
+  .frame-title .grad {
+    background: linear-gradient(135deg, #fff 0%, var(--indigo-2) 60%, var(--cyan) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .frame-title .num {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--indigo-2);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  /* ===== F1: layered architecture ===== */
+  .layers { display: flex; flex-direction: column; gap: 14px; }
+  .layer {
+    display: grid;
+    grid-template-columns: 220px 1fr 140px;
+    align-items: center;
+    gap: 22px;
+    padding: 22px 28px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.01));
+  }
+  .layer .badge {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--indigo-2);
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(99,102,241,0.18);
+    border: 1px solid rgba(99,102,241,0.35);
+    display: inline-block;
+    width: fit-content;
+  }
+  .layer h3 { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+  .layer p { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+  .layer .stack { font-family: 'Consolas', monospace; font-size: 12px; color: var(--cyan); text-align: right; }
+  .layer-arrow {
+    text-align: center;
+    color: var(--indigo-2);
+    font-size: 16px;
+    height: 10px;
+    line-height: 0;
+    opacity: 0.6;
+  }
+
+  /* ===== F2: project structure ===== */
+  .arch-flow {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    align-items: stretch;
+    margin-bottom: 28px;
+  }
+  .arch-node {
+    background: linear-gradient(160deg, rgba(99,102,241,0.18), rgba(106,210,255,0.06));
+    border: 1px solid rgba(99,102,241,0.35);
+    border-radius: 18px;
+    padding: 26px 22px;
+    text-align: center;
+    position: relative;
+  }
+  .arch-node .ico {
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--indigo), var(--cyan));
+    display: inline-flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 22px; font-weight: 700;
+    margin-bottom: 14px;
+    box-shadow: 0 8px 24px rgba(99,102,241,0.4);
+  }
+  .arch-node h4 { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+  .arch-node .meta { font-family: 'Consolas', monospace; font-size: 11px; color: var(--cyan); margin-bottom: 8px; }
+  .arch-node p { font-size: 13px; color: var(--text-dim); line-height: 1.45; }
+  .arch-arrow {
+    position: absolute;
+    right: -18px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--bg-0);
+    border: 1px solid rgba(129,140,248,0.45);
+    color: var(--indigo-2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 800;
+    z-index: 5;
+  }
+  .legend {
+    margin-top: auto;
+    padding: 18px 22px;
+    background: rgba(106,210,255,0.06);
+    border-left: 3px solid var(--cyan);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+  .legend b { color: #fff; }
+
+  /* ===== F3: ER diagram ===== */
+  .er-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+    margin-bottom: 22px;
+  }
+  .tbl {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .tbl-h {
+    background: linear-gradient(135deg, rgba(99,102,241,0.35), rgba(106,210,255,0.18));
+    padding: 12px 16px;
+    font-weight: 700;
+    font-size: 14px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .tbl-h .count {
+    font-size: 10px;
+    color: var(--cyan);
+    font-weight: 600;
+    background: rgba(106,210,255,0.18);
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+  .tbl ul { list-style: none; padding: 10px 16px 14px; }
+  .tbl li {
+    font-size: 12px;
+    color: var(--text-dim);
+    padding: 4px 0;
+    font-family: 'Consolas', monospace;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed rgba(163,174,208,0.08);
+  }
+  .tbl li:last-child { border-bottom: none; }
+  .tbl li .t { color: var(--cyan); font-size: 10px; }
+  .pk { color: var(--gold); font-weight: 700; }
+  .fk { color: var(--indigo-2); }
+  .er-rels {
+    padding: 18px 24px;
+    background: rgba(255,255,255,0.03);
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-dim);
+  }
+  .er-rels .rel { display: inline-block; margin-right: 24px; }
+  .er-rels code {
+    font-family: 'Consolas', monospace;
+    color: var(--indigo-2);
+    background: rgba(99,102,241,0.12);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  .er-rels .ar { color: var(--cyan); margin: 0 4px; }
+
+  /* ===== F4: server-side structure tree ===== */
+  .tree-wrap {
+    display: grid;
+    grid-template-columns: 460px 1fr;
+    gap: 32px;
+  }
+  .tree {
+    background: #0a0e1d;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 28px;
+    font-family: 'Consolas', monospace;
+    font-size: 14px;
+    line-height: 1.85;
+    color: var(--text);
+    white-space: pre;
+  }
+  .tree .dir { color: var(--indigo-2); font-weight: 700; }
+  .tree .file { color: var(--text); }
+  .tree .com { color: #6c7793; font-size: 12px; margin-left: 12px; }
+  .tree .root { color: var(--gold); font-weight: 700; }
+  .tree i { font-style: normal; color: var(--cyan); }
+
+  .desc-list { display: flex; flex-direction: column; gap: 14px; }
+  .desc {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+  }
+  .desc h5 {
+    font-size: 13px;
+    color: var(--cyan);
+    font-family: 'Consolas', monospace;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .desc p {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<!-- FIG 1 — Слоистая архитектура -->
+<section class="frame" id="f1">
+  <h2 class="frame-title">
+    <span class="num">Рисунок 1</span>
+    Слоистая архитектура <span class="grad">IndigoSmart</span>
+  </h2>
+  <div class="layers">
+    <div class="layer">
+      <span class="badge">Presentation</span>
+      <div>
+        <h3>Клиентский слой</h3>
+        <p>Одностраничное приложение: рендеринг интерфейса, маршрутизация, периодический опрос API.</p>
+      </div>
+      <div class="stack">React 19<br/>Tailwind · ApexCharts<br/>React Router 6</div>
+    </div>
+    <div class="layer-arrow">▼ HTTP / JSON ▼</div>
+    <div class="layer">
+      <span class="badge">API Layer</span>
+      <div>
+        <h3>Слой представления API</h3>
+        <p>REST-эндпоинты, CORS, валидация Pydantic, авто-документация Swagger UI на /docs.</p>
+      </div>
+      <div class="stack">FastAPI<br/>Pydantic · Uvicorn</div>
+    </div>
+    <div class="layer-arrow">▼</div>
+    <div class="layer">
+      <span class="badge">Business Logic</span>
+      <div>
+        <h3>Слой бизнес-логики</h3>
+        <p>Агрегация, фильтрация, формирование сводок и аналитических запросов по периодам.</p>
+      </div>
+      <div class="stack">Python 3.12<br/>routes/*.py</div>
+    </div>
+    <div class="layer-arrow">▼</div>
+    <div class="layer">
+      <span class="badge">Data Layer</span>
+      <div>
+        <h3>Слой доступа к данным</h3>
+        <p>ORM-модели, сессии БД, инициализация схемы, каскадное удаление.</p>
+      </div>
+      <div class="stack">SQLAlchemy 2.0<br/>PyMySQL · models.py</div>
+    </div>
+    <div class="layer-arrow">▼</div>
+    <div class="layer">
+      <span class="badge">Storage</span>
+      <div>
+        <h3>Хранилище данных</h3>
+        <p>Реляционная база данных: справочники, журналы состояний и показаний.</p>
+      </div>
+      <div class="stack">MySQL 9<br/>InnoDB · UTF-8</div>
+    </div>
+  </div>
+</section>
+
+<!-- FIG 2 — Структура проекта -->
+<section class="frame" id="f2">
+  <h2 class="frame-title">
+    <span class="num">Рисунок 2</span>
+    Структура проекта <span class="grad">IndigoSmart</span>
+  </h2>
+  <div class="arch-flow">
+    <div class="arch-node">
+      <div class="ico">🌐</div>
+      <h4>Браузер</h4>
+      <div class="meta">localhost:3000</div>
+      <p>Любой современный браузер.<br/>SPA, маршрутизация без перезагрузок.</p>
+      <div class="arch-arrow">→</div>
+    </div>
+    <div class="arch-node">
+      <div class="ico">⚛️</div>
+      <h4>smart-board</h4>
+      <div class="meta">React 19 · Tailwind</div>
+      <p>Дашборд, страница устройств, аналитика. Опрос API через fetch.</p>
+      <div class="arch-arrow">→</div>
+    </div>
+    <div class="arch-node">
+      <div class="ico">⚡</div>
+      <h4>smart-app</h4>
+      <div class="meta">FastAPI · localhost:8000</div>
+      <p>REST API, 4 роутера, 10 эндпоинтов. CORS middleware, авто-docs.</p>
+      <div class="arch-arrow">→</div>
+    </div>
+    <div class="arch-node">
+      <div class="ico">🗄️</div>
+      <h4>MySQL</h4>
+      <div class="meta">smart_home_db</div>
+      <p>6 таблиц, индексы, внешние ключи ON DELETE CASCADE.</p>
+    </div>
+  </div>
+  <div class="legend">
+    <b>Поток запроса:</b> пользователь открывает страницу аналитики
+    <span class="ar">→</span> компонент <code style="color:var(--gold)">Analytics.jsx</code> выполняет 4 параллельных fetch на <code style="color:var(--gold)">/analytics/*</code>
+    <span class="ar">→</span> FastAPI агрегирует данные через SQLAlchemy (<code style="color:var(--gold)">GROUP BY DATE(...)</code>)
+    <span class="ar">→</span> JSON возвращается клиенту
+    <span class="ar">→</span> ApexCharts отрисовывает area/bar-графики без перезагрузки страницы.
+  </div>
+</section>
+
+<!-- FIG 3 — ER diagram -->
+<section class="frame" id="f3">
+  <h2 class="frame-title">
+    <span class="num">Рисунок 3</span>
+    ER-диаграмма базы данных <span class="grad">IndigoSmart</span>
+  </h2>
+  <div class="er-grid">
+    <div class="tbl">
+      <div class="tbl-h">rooms <span class="count">3 записи</span></div>
+      <ul>
+        <li><span><span class="pk">PK</span> id</span><span class="t">INT</span></li>
+        <li><span>name</span><span class="t">VARCHAR(100)</span></li>
+        <li><span>description</span><span class="t">VARCHAR(255)</span></li>
+        <li><span>created_at</span><span class="t">TIMESTAMP</span></li>
+      </ul>
+    </div>
+    <div class="tbl">
+      <div class="tbl-h">device_types <span class="count">7 записей</span></div>
+      <ul>
+        <li><span><span class="pk">PK</span> id</span><span class="t">INT</span></li>
+        <li><span>name <i>UNIQUE</i></span><span class="t">VARCHAR(100)</span></li>
+        <li><span>is_sensor</span><span class="t">BOOL</span></li>
+        <li><span>created_at</span><span class="t">TIMESTAMP</span></li>
+      </ul>
+    </div>
+    <div class="tbl">
+      <div class="tbl-h">devices <span class="count">9 записей</span></div>
+      <ul>
+        <li><span><span class="pk">PK</span> id</span><span class="t">INT</span></li>
+        <li><span>name</span><span class="t">VARCHAR(100)</span></li>
+        <li><span><span class="fk">FK</span> room_id</span><span class="t">→ rooms</span></li>
+        <li><span><span class="fk">FK</span> device_type_id</span><span class="t">→ types</span></li>
+      </ul>
+    </div>
+    <div class="tbl">
+      <div class="tbl-h">device_states <span class="count">630 записей</span></div>
+      <ul>
+        <li><span><span class="pk">PK</span> id</span><span class="t">INT</span></li>
+        <li><span><span class="fk">FK</span> device_id</span><span class="t">→ devices</span></li>
+        <li><span>state_type</span><span class="t">VARCHAR(50)</span></li>
+        <li><span>state_value</span><span class="t">VARCHAR(50)</span></li>
+        <li><span>changed_at</span><span class="t">TIMESTAMP</span></li>
+        <li><span><span class="fk">FK</span> changed_by</span><span class="t">→ users</span></li>
+      </ul>
+    </div>
+    <div class="tbl">
+      <div class="tbl-h">sensor_readings <span class="count">2160 записей</span></div>
+      <ul>
+        <li><span><span class="pk">PK</span> id</span><span class="t">INT</span></li>
+        <li><span><span class="fk">FK</span> device_id</span><span class="t">→ devices</span></li>
+        <li><span>reading_type</span><span class="t">VARCHAR(50)</span></li>
+        <li><span>value</span><span class="t">FLOAT</span></li>
+        <li><span>recorded_at</span><span class="t">TIMESTAMP</span></li>
+      </ul>
+    </div>
+    <div class="tbl">
+      <div class="tbl-h">users <span class="count">2 записи</span></div>
+      <ul>
+        <li><span><span class="pk">PK</span> id</span><span class="t">INT</span></li>
+        <li><span>full_name</span><span class="t">VARCHAR(100)</span></li>
+        <li><span>email <i>UNIQUE</i></span><span class="t">VARCHAR(150)</span></li>
+        <li><span>password_hash</span><span class="t">VARCHAR(255)</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="er-rels">
+    <b style="color:#fff;">Связи между таблицами:</b><br/>
+    <span class="rel"><code>rooms</code><span class="ar">→</span><code>devices</code> &nbsp;<i style="color:var(--gold);font-style:normal;">1:N</i></span>
+    <span class="rel"><code>device_types</code><span class="ar">→</span><code>devices</code> &nbsp;<i style="color:var(--gold);font-style:normal;">1:N</i></span>
+    <span class="rel"><code>devices</code><span class="ar">→</span><code>device_states</code> &nbsp;<i style="color:var(--gold);font-style:normal;">1:N</i></span><br/>
+    <span class="rel"><code>devices</code><span class="ar">→</span><code>sensor_readings</code> &nbsp;<i style="color:var(--gold);font-style:normal;">1:N</i></span>
+    <span class="rel"><code>users</code><span class="ar">→</span><code>device_states</code> &nbsp;<i style="color:var(--gold);font-style:normal;">1:N</i></span>
+    <br/><br/>
+    <span style="color:var(--text-dim);">Внешние ключи на <code>devices</code> определены с правилом <code style="color:var(--gold);background:none;padding:0;">ON DELETE CASCADE</code>;
+    связь <code>users</code> → <code>device_states</code> — с правилом <code style="color:var(--gold);background:none;padding:0;">ON DELETE SET NULL</code>.</span>
+  </div>
+</section>
+
+<!-- FIG 4 — Server-side structure -->
+<section class="frame" id="f4">
+  <h2 class="frame-title">
+    <span class="num">Рисунок 4</span>
+    Структура серверной части <span class="grad">IndigoSmart</span>
+  </h2>
+  <div class="tree-wrap">
+    <div class="tree">
+<span class="root">smart-app/</span>
+├── <span class="dir">src/smart_app/</span>
+│   ├── <span class="file">main.py</span><span class="com"># инициализация FastAPI, CORS</span>
+│   ├── <span class="file">config.py</span><span class="com"># Settings, чтение .env</span>
+│   ├── <span class="file">db.py</span><span class="com"># engine, SessionLocal, get_db</span>
+│   ├── <span class="file">models.py</span><span class="com"># 6 ORM-моделей</span>
+│   └── <span class="dir">routes/</span>
+│       ├── <span class="file">dashboard.py</span><span class="com"># /dashboard</span>
+│       ├── <span class="file">devices.py</span><span class="com"># /devices, /rooms</span>
+│       ├── <span class="file">sensors.py</span><span class="com"># /sensor-readings</span>
+│       └── <span class="file">analytics.py</span><span class="com"># /analytics/*</span>
+├── <span class="file">pyproject.toml</span><span class="com"># зависимости</span>
+├── <span class="file">init_db.sql</span><span class="com"># DDL схема</span>
+├── <span class="file">seed_all.py</span><span class="com"># генератор тестовых данных</span>
+└── <span class="file">.env</span><span class="com"># параметры MySQL</span>
+    </div>
+    <div class="desc-list">
+      <div class="desc">
+        <h5>main.py · точка входа</h5>
+        <p>Создание объекта FastAPI, подключение CORS middleware для домена клиента, вызов create_all для схемы БД, регистрация всех роутеров.</p>
+      </div>
+      <div class="desc">
+        <h5>models.py · ORM-модели</h5>
+        <p>Room, DeviceType, Device, DeviceState, SensorReading, User. Связи через relationship с каскадом удаления.</p>
+      </div>
+      <div class="desc">
+        <h5>db.py + config.py · подключение</h5>
+        <p>Settings читает параметры MySQL из .env, engine SQLAlchemy и SessionLocal. Функция get_db — генератор сессии для зависимостей FastAPI.</p>
+      </div>
+      <div class="desc">
+        <h5>routes/ · бизнес-логика</h5>
+        <p>4 роутера по предметным областям, 10 эндпоинтов, агрегация через GROUP BY DATE/HOUR в SQLAlchemy.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IndigoSmart — что добавить для полноценного диплома</title>
+<style>
+  :root {
+    --bg-0: #0b0f1f;
+    --bg-1: #11172e;
+    --indigo: #6366f1;
+    --indigo-2: #818cf8;
+    --cyan: #6ad2ff;
+    --gold: #ffd700;
+    --orange: #ff6b00;
+    --green: #22c55e;
+    --red: #ef4444;
+    --purple: #a855f7;
+    --text: #e7ecff;
+    --text-dim: #a3aed0;
+    --border: rgba(163, 174, 208, 0.18);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+    color: var(--text);
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(99,102,241,0.25), transparent 60%),
+      radial-gradient(ellipse at 80% 100%, rgba(106,210,255,0.18), transparent 55%),
+      linear-gradient(180deg, var(--bg-0), var(--bg-1));
+    overflow: hidden;
+  }
+  .stage { position: relative; height: 100vh; width: 100vw; overflow: hidden; }
+
+  .slide {
+    position: absolute; inset: 0;
+    padding: 56px 72px 88px;
+    display: flex; flex-direction: column;
+    opacity: 0; transform: translateX(40px);
+    transition: opacity 450ms ease, transform 450ms ease;
+    pointer-events: none;
+    overflow-y: auto;
+  }
+  .slide.active { opacity: 1; transform: translateX(0); pointer-events: auto; }
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--indigo-2);
+    margin-bottom: 14px;
+  }
+  .eyebrow::before {
+    content: ''; width: 22px; height: 2px;
+    background: var(--indigo-2); border-radius: 2px;
+  }
+
+  h1 { font-size: 60px; font-weight: 800; line-height: 1.05; letter-spacing: -0.02em; }
+  h2 { font-size: 40px; font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 6px; }
+  h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; color: #fff; }
+  p.lead { color: var(--text-dim); font-size: 16px; line-height: 1.55; max-width: 880px; }
+
+  .grad {
+    background: linear-gradient(135deg, #fff 0%, var(--indigo-2) 55%, var(--cyan) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 11px; border-radius: 999px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+    background: rgba(99,102,241,0.16);
+    border: 1px solid rgba(99,102,241,0.35);
+    color: var(--indigo-2);
+  }
+  .pill.cyan { background: rgba(106,210,255,0.14); border-color: rgba(106,210,255,0.35); color: var(--cyan); }
+  .pill.gold { background: rgba(255,215,0,0.12); border-color: rgba(255,215,0,0.35); color: var(--gold); }
+  .pill.green { background: rgba(34,197,94,0.13); border-color: rgba(34,197,94,0.4); color: #4ade80; }
+  .pill.red { background: rgba(239,68,68,0.13); border-color: rgba(239,68,68,0.4); color: #fca5a5; }
+  .pill.purple { background: rgba(168,85,247,0.13); border-color: rgba(168,85,247,0.4); color: #c084fc; }
+  .pill.orange { background: rgba(255,107,0,0.13); border-color: rgba(255,107,0,0.4); color: #fb923c; }
+
+  .card {
+    background: linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012));
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px;
+    backdrop-filter: blur(8px);
+  }
+  .card p { color: var(--text-dim); font-size: 13px; line-height: 1.5; }
+
+  .grid { display: grid; gap: 14px; }
+  .g-2 { grid-template-columns: repeat(2, 1fr); }
+  .g-3 { grid-template-columns: repeat(3, 1fr); }
+  .g-4 { grid-template-columns: repeat(4, 1fr); }
+
+  /* nav */
+  .nav {
+    position: absolute; bottom: 18px; left: 0; right: 0;
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+    z-index: 50;
+  }
+  .nav button {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 14px; border-radius: 10px;
+    cursor: pointer; font-size: 12px; font-weight: 600;
+    transition: all 0.2s ease;
+  }
+  .nav button:hover { background: rgba(99,102,241,0.25); border-color: var(--indigo-2); }
+  .counter { font-size: 12px; font-weight: 600; color: var(--text-dim); min-width: 60px; text-align: center; }
+  .dots { display: flex; gap: 5px; flex-wrap: wrap; max-width: 600px; justify-content: center; }
+  .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: rgba(163,174,208,0.3);
+    cursor: pointer; transition: all 0.2s ease;
+  }
+  .dot.active { background: var(--indigo-2); width: 24px; border-radius: 4px; }
+
+  .corner-logo {
+    position: absolute; top: 28px; right: 36px;
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 700; color: var(--text-dim);
+    font-size: 12px; letter-spacing: 0.05em; z-index: 30;
+  }
+  .corner-logo .lm {
+    width: 26px; height: 26px; border-radius: 7px;
+    background: linear-gradient(135deg, var(--indigo), var(--cyan));
+    box-shadow: 0 6px 18px rgba(99,102,241,0.45);
+  }
+
+  .progress {
+    position: absolute; top: 0; left: 0; height: 3px;
+    background: linear-gradient(90deg, var(--indigo), var(--cyan));
+    transition: width 0.4s ease; z-index: 100;
+  }
+
+  /* HERO */
+  .hero { justify-content: center; align-items: flex-start; }
+  .hero .badge {
+    display: inline-flex; padding: 7px 13px; border-radius: 999px;
+    background: rgba(99,102,241,0.15);
+    border: 1px solid rgba(99,102,241,0.4);
+    color: var(--indigo-2); font-size: 12px; font-weight: 600;
+    margin-bottom: 22px;
+  }
+  .hero h1 { font-size: 82px; margin-bottom: 16px; }
+  .hero .sub { font-size: 20px; color: var(--text-dim); max-width: 780px; margin-bottom: 32px; }
+  .hero .stats { display: flex; gap: 36px; padding-top: 24px; border-top: 1px solid var(--border); margin-top: 14px; }
+  .hero .stats div { display: flex; flex-direction: column; gap: 4px; }
+  .hero .stats .v { font-size: 32px; font-weight: 800; color: #fff; line-height: 1; }
+  .hero .stats .k { font-size: 11px; text-transform: uppercase; letter-spacing: 0.18em; color: var(--text-dim); margin-top: 6px; }
+
+  /* CONTEXT slide */
+  .ctx-row { display: grid; grid-template-columns: 24px 200px 1fr; gap: 14px; align-items: start; padding: 14px 4px; border-bottom: 1px dashed var(--border); }
+  .ctx-row:last-child { border-bottom: none; }
+  .ctx-row .ico { font-size: 18px; margin-top: 2px; }
+  .ctx-row .k { font-weight: 700; color: #fff; font-size: 14px; }
+  .ctx-row .v { color: var(--text-dim); font-size: 13px; line-height: 1.55; }
+
+  /* STATE */
+  .state-row { display: grid; grid-template-columns: 220px 1fr; gap: 14px; align-items: center; padding: 11px 16px; border-bottom: 1px dashed var(--border); }
+  .state-row:last-child { border-bottom: none; }
+  .state-row .key { font-weight: 700; color: #fff; font-size: 14px; }
+  .state-row .val { color: var(--text-dim); font-size: 13px; }
+
+  /* GAPS table */
+  .gap-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .gap-cat {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+  }
+  .gap-cat .h {
+    font-size: 12px; font-weight: 800; letter-spacing: 0.1em;
+    text-transform: uppercase; margin-bottom: 10px;
+  }
+  .gap-cat ul { list-style: none; }
+  .gap-cat li {
+    padding: 6px 0; font-size: 12px; color: var(--text-dim);
+    display: flex; align-items: flex-start; gap: 6px;
+  }
+  .gap-cat li::before { content: '•'; color: var(--indigo-2); }
+  .gap-cat.crit .h { color: #fca5a5; }
+  .gap-cat.high .h { color: var(--indigo-2); }
+  .gap-cat.med .h { color: var(--cyan); }
+  .gap-cat.wow .h { color: #c084fc; }
+
+  /* IDEA card */
+  .idea-wrap {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 28px;
+    margin-top: 18px;
+    flex: 1;
+    min-height: 0;
+  }
+  .idea-main h2 .pin {
+    font-size: 14px; vertical-align: middle;
+    background: linear-gradient(135deg, var(--indigo), var(--cyan));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    margin-right: 10px;
+  }
+  .idea-body {
+    background: linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.012));
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px;
+    margin-top: 14px;
+  }
+  .idea-section { margin-top: 18px; }
+  .idea-section:first-child { margin-top: 0; }
+  .idea-section h4 {
+    font-size: 11px; font-weight: 800;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--cyan); margin-bottom: 8px;
+  }
+  .idea-section p { color: var(--text-dim); font-size: 14px; line-height: 1.6; }
+  .idea-section ul { list-style: none; padding-left: 0; }
+  .idea-section li {
+    padding: 4px 0; font-size: 13px; color: var(--text-dim);
+    display: flex; gap: 8px;
+  }
+  .idea-section li::before { content: '→'; color: var(--indigo-2); font-weight: 800; }
+
+  .idea-side { display: flex; flex-direction: column; gap: 12px; }
+  .meter-card { padding: 16px 18px; }
+  .meter-card .lbl { font-size: 11px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-dim); }
+  .meter-card .big { font-size: 28px; font-weight: 800; margin-top: 4px; color: #fff; line-height: 1; }
+  .meter { display: flex; gap: 6px; margin-top: 10px; }
+  .meter span {
+    flex: 1; height: 8px; border-radius: 4px;
+    background: rgba(163,174,208,0.15);
+  }
+  .meter span.on { background: linear-gradient(90deg, var(--indigo), var(--cyan)); }
+
+  .stack-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .stack-tag {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-family: 'Consolas', monospace;
+    font-size: 11px;
+    color: var(--text);
+  }
+
+  /* MATRIX */
+  .matrix {
+    background: rgba(255,255,255,0.025);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 22px;
+  }
+  .matrix table { width: 100%; border-collapse: collapse; }
+  .matrix th, .matrix td {
+    padding: 10px 14px; text-align: left;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .matrix th {
+    background: rgba(99,102,241,0.12);
+    font-weight: 700; color: #fff;
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .matrix td { color: var(--text-dim); }
+  .matrix td.idea { color: #fff; font-weight: 600; }
+  .matrix tr:hover { background: rgba(99,102,241,0.04); }
+  .star { color: var(--gold); }
+  .star.dim { color: rgba(163,174,208,0.3); }
+
+  /* ROADMAP */
+  .roadmap-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 22px; }
+  .road-col h3 {
+    font-size: 13px; font-weight: 800; letter-spacing: 0.15em;
+    text-transform: uppercase; margin-bottom: 12px;
+    padding-bottom: 10px; border-bottom: 1px solid var(--border);
+  }
+  .road-col.phase1 h3 { color: var(--indigo-2); }
+  .road-col.phase2 h3 { color: var(--cyan); }
+  .road-col.phase3 h3 { color: #c084fc; }
+  .road-item {
+    background: rgba(255,255,255,0.025);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+  .road-item .ttl { font-size: 14px; font-weight: 700; color: #fff; }
+  .road-item .meta { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+
+  /* DROPPED ideas slide */
+  .dropped-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 16px; }
+  .dropped { padding: 16px; display: grid; grid-template-columns: 28px 1fr; gap: 10px; }
+  .dropped .strike { font-size: 22px; line-height: 1; color: #fca5a5; }
+  .dropped h3 { font-size: 15px; color: #fff; margin-bottom: 4px; }
+  .dropped p { font-size: 12px; color: var(--text-dim); }
+
+  /* FINAL */
+  .final { text-align: center; justify-content: center; align-items: center; }
+  .final h1 { font-size: 60px; margin-bottom: 16px; }
+  .final p { color: var(--text-dim); font-size: 17px; max-width: 760px; margin: 0 auto 28px; }
+  .top3 { display: flex; gap: 18px; margin-top: 14px; justify-content: center; }
+  .top3 .card {
+    width: 230px; padding: 22px 18px;
+    background: linear-gradient(160deg, rgba(99,102,241,0.18), rgba(106,210,255,0.06));
+  }
+  .top3 .num {
+    font-size: 32px; font-weight: 800;
+    background: linear-gradient(135deg, var(--indigo-2), var(--cyan));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    line-height: 1;
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="progress" id="progress"></div>
+  <div class="corner-logo">
+    <span class="lm"></span>
+    <span>ROADMAP · INDIGOSMART · DIPLOMA</span>
+  </div>
+
+  <!-- 1: HERO -->
+  <section class="slide hero active">
+    <span class="badge">Анализ под дипломный проект-симуляцию</span>
+    <h1>Куда расти <span class="grad">IndigoSmart</span></h1>
+    <p class="sub">Что добавить в проект-симуляцию, чтобы дипломная работа выглядела глубокой, академичной и впечатляющей на защите. Без коммерциализации, без реального железа.</p>
+    <div class="stats">
+      <div><span class="v">6</span><span class="k">таблиц БД</span></div>
+      <div><span class="v">10</span><span class="k">эндпоинтов</span></div>
+      <div><span class="v">3</span><span class="k">страницы UI</span></div>
+      <div><span class="v">15</span><span class="k">идей развития</span></div>
+      <div><span class="v">3</span><span class="k">фазы внедрения</span></div>
+    </div>
+  </section>
+
+  <!-- 2: CONTEXT -->
+  <section class="slide">
+    <span class="eyebrow">Контекст · что учитываю</span>
+    <h2>Это <span class="grad">дипломная симуляция</span></h2>
+    <p class="lead">Идеи отбирал под этот сценарий: впечатлить комиссию знаниями, а не вывести продукт на рынок.</p>
+
+    <div class="card" style="margin-top: 22px; padding: 4px 18px;">
+      <div class="ctx-row">
+        <div class="ico">🎓</div>
+        <div class="k">Цель — академическая</div>
+        <div class="v">Показать владение архитектурой, алгоритмами, БД, веб-стеком. Важно глубоко погружаться в каждую тему, а не закрыть ширину «маркетинговыми» фичами.</div>
+      </div>
+      <div class="ctx-row">
+        <div class="ico">🚫</div>
+        <div class="k">Без монетизации</div>
+        <div class="v">Идеи с рублёвой экономикой, биллингом, тарифами — убраны или переформулированы в технические метрики (часы работы, кВт·ч).</div>
+      </div>
+      <div class="ctx-row">
+        <div class="ico">🪛</div>
+        <div class="k">Без реального железа</div>
+        <div class="v">Никаких ESP32 и MQTT-брокеров с лампочками. Вместо этого — программный симулятор IoT-устройств в реальном времени.</div>
+      </div>
+      <div class="ctx-row">
+        <div class="ico">📞</div>
+        <div class="k">Без внешних сервисов</div>
+        <div class="v">Telegram-бот, Алиса, мобильное приложение — необязательны. Защита проходит на ноутбуке, всё должно работать локально.</div>
+      </div>
+      <div class="ctx-row">
+        <div class="ico">📚</div>
+        <div class="k">Глубина важнее ширины</div>
+        <div class="v">Лучше одна качественно реализованная и описанная в пояснительной записке фича, чем пять полу-готовых.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3: STATE -->
+  <section class="slide">
+    <span class="eyebrow">Где мы сейчас</span>
+    <h2>Текущая <span class="grad">база</span></h2>
+    <p class="lead">Что уже работает — фундамент, на котором можно строить.</p>
+
+    <div class="card" style="margin-top: 18px; padding: 4px 18px;">
+      <div class="state-row"><div class="key">📊 Backend</div><div class="val">FastAPI + SQLAlchemy + MySQL, 4 роутера, 10 эндпоинтов, авто-документация Swagger UI</div></div>
+      <div class="state-row"><div class="key">⚛️ Frontend</div><div class="val">React 19 SPA, Tailwind, ApexCharts, тёмная glass-тема, polling каждые 10 сек</div></div>
+      <div class="state-row"><div class="key">🗄 База данных</div><div class="val">6 таблиц с FK + CASCADE: rooms, device_types, devices, device_states, sensor_readings, users</div></div>
+      <div class="state-row"><div class="key">📈 Аналитика</div><div class="val">Температура по дням (min/avg/max), движение, активность по часам, типы устройств</div></div>
+      <div class="state-row"><div class="key">🔌 Устройства</div><div class="val">7 типов: лампа, розетка, умная розетка, кондиционер + 3 сенсора (температура, движение, влажность)</div></div>
+      <div class="state-row"><div class="key">🌱 Данные</div><div class="val">seed_all.py заполняет БД статическими историческими данными — но «живых» поступлений нет</div></div>
+      <div class="state-row"><div class="key">👤 Пользователи</div><div class="val">Таблица users есть, но <b style="color:#fca5a5;">логина и проверки доступа нет</b></div></div>
+    </div>
+  </section>
+
+  <!-- 4: GAPS -->
+  <section class="slide">
+    <span class="eyebrow">Что мешает быть полноценным</span>
+    <h2>Гэп-анализ · <span class="grad">4 категории</span></h2>
+    <p class="lead">15 пробелов, сгруппированных по влиянию на качество диплома.</p>
+
+    <div class="gap-grid" style="margin-top: 22px;">
+      <div class="gap-cat crit">
+        <div class="h">🔴 Академический must-have</div>
+        <ul>
+          <li>Аутентификация и роли</li>
+          <li>Автотесты (pytest)</li>
+          <li>Docker compose</li>
+          <li>Симулятор живых данных</li>
+        </ul>
+      </div>
+      <div class="gap-cat high">
+        <div class="h">🟣 Высокая ценность</div>
+        <ul>
+          <li>WebSocket real-time</li>
+          <li>Сценарии (Scenes)</li>
+          <li>Правила автоматизации</li>
+          <li>Учёт времени работы и кВт·ч</li>
+          <li>Детальная страница устройства</li>
+          <li>ML-прогноз показаний</li>
+        </ul>
+      </div>
+      <div class="gap-cat med">
+        <div class="h">🔵 Полировка</div>
+        <ul>
+          <li>Floor plan комнат</li>
+          <li>Расписания включений</li>
+          <li>Toast-уведомления в UI</li>
+          <li>Audit log действий</li>
+        </ul>
+      </div>
+      <div class="gap-cat wow">
+        <div class="h">🟪 Wow / факультатив</div>
+        <ul>
+          <li>Light/Dark переключатель</li>
+          <li>Экспорт CSV / PDF отчётов</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5: CRITERIA -->
+  <section class="slide">
+    <span class="eyebrow">Как я оцениваю</span>
+    <h2>Четыре <span class="grad">критерия</span></h2>
+    <p class="lead">Каждая идея получит оценку, чтобы вы могли сами расставить приоритеты.</p>
+
+    <div class="grid g-4" style="margin-top: 22px;">
+      <div class="card" style="text-align:center;padding:22px 18px;">
+        <h3>⭐ Ценность</h3>
+        <p style="margin-top:8px;">Насколько добавляет глубины проекту и материала в пояснительную записку.</p>
+      </div>
+      <div class="card" style="text-align:center;padding:22px 18px;">
+        <h3>⏱ Сложность</h3>
+        <p style="margin-top:8px;">Часы работы. От 4 до 30 — закладывайте время на пояснительную записку отдельно.</p>
+      </div>
+      <div class="card" style="text-align:center;padding:22px 18px;">
+        <h3>🔧 Готовность базы</h3>
+        <p style="margin-top:8px;">Сколько уже сделано в текущей архитектуре — высокая значит «можно надстраивать».</p>
+      </div>
+      <div class="card" style="text-align:center;padding:22px 18px;">
+        <h3>🎓 На защите</h3>
+        <p style="margin-top:8px;">Как впечатляюще выглядит при демонстрации и в вопросах комиссии.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6: IDEA 01 — AUTH -->
+  <section class="slide">
+    <span class="eyebrow">Идея 01 · академический must-have</span>
+    <div class="idea-wrap">
+      <div class="idea-main">
+        <h2><span class="pin">01</span>Аутентификация <span class="grad">и роли</span></h2>
+        <p class="lead">JWT-логин, хеширование паролей, ролевая модель (admin / user). Таблица <code style="color:var(--gold);">users</code> существует, но логина нет — это первое, что заметит комиссия.</p>
+
+        <div class="idea-body">
+          <div class="idea-section">
+            <h4>Что добавить</h4>
+            <ul>
+              <li>Эндпоинты <code>/auth/register</code>, <code>/auth/login</code>, <code>/auth/me</code></li>
+              <li>JWT-токены (python-jose) с refresh-механизмом</li>
+              <li>Хеширование паролей через passlib + bcrypt</li>
+              <li>Зависимость <code>get_current_user</code>, защищающая PUT /devices/state</li>
+              <li>Поле <code>role</code> в users + декоратор проверки</li>
+              <li>Страница входа + сохранение токена в localStorage</li>
+            </ul>
+          </div>
+          <div class="idea-section">
+            <h4>Зачем в дипломе</h4>
+            <p>Демонстрирует знание безопасности веб-приложений — отдельная глава в пояснительной записке («Подсистема аутентификации и авторизации»). Поле <code>changed_by</code> в device_states наконец заполняется реальным пользователем.</p>
+          </div>
+        </div>
+      </div>
+
+      <aside class="idea-side">
+        <div class="card meter-card">
+          <div class="lbl">Ценность</div>
+          <div class="big">5/5</div>
+          <div class="meter"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span></div>
+        </div>
+        <div class="card meter-card">
+          <div class="lbl">Сложность</div>
+          <div class="big">8–12 ч</div>
+        </div>
+        <div class="card meter-card">
+          <div class="lbl">На защите</div>
+          <div class="big">★★★★☆</div>
+          <p style="margin-top:6px;font-size:12px;color:var(--text-dim);">Обязательная база — без неё снимут баллы за безопасность.</p>
+        </div>
+        <div class="card">
+          <div class="lbl" style="font-size:11px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Стек</div>
+          <div class="stack-tags">
+            <span class="stack-tag">python-jose</span>
+            <span class="stack-tag">passlib[bcrypt]</span>
+            <span class="stack-tag">FastAPI Depends</span>
+            <span class="stack-tag">React Context</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 7: IDEA 02 — SIMULATOR (NEW!) -->
+  <section class="slide">
+    <span class="eyebrow">Идея 02 · академический must-have</span>
+    <div class="idea-wrap">
+      <div class="idea-main">
+        <h2><span class="pin">02</span>Симулятор <span class="grad">IoT-устройств</span></h2>
+        <p class="lead">Главная замена реальному железу: фоновый сервис, который имитирует поведение датчиков и устройств в реальном времени — графики на демонстрации «оживают» прямо во время защиты.</p>
+
+        <div class="idea-body">
+          <div class="idea-section">
+            <h4>Что добавить</h4>
+            <ul>
+              <li>Отдельный python-процесс (или asyncio-задача в FastAPI на старте) с APScheduler</li>
+              <li>Раз в 30–60 секунд: для каждого датчика — реалистичное значение по модели (sin + шум для температуры, Бернулли для движения)</li>
+              <li>Раз в 5–15 минут: случайное переключение состояния исполнительных устройств с логикой «в спальне ночью лампа чаще выключена»</li>
+              <li>Эндпоинт-переключатель <code>POST /simulator/{start|stop|speed}</code> для управления симуляцией с UI</li>
+              <li>Виджет в Navbar: «Симулятор: ▶ 1× · 60 событий/мин»</li>
+            </ul>
+          </div>
+          <div class="idea-section">
+            <h4>Зачем в дипломе</h4>
+            <p>Решает главную проблему симуляции — статичные seed-данные. Теперь во время защиты комиссия видит, как графики реально обновляются, как срабатывают правила автоматизации, как Live-индикатор моргает. Целая глава по «модели поведения устройств» в записке.</p>
+          </div>
+        </div>
+      </div>
+
+      <aside class="idea-side">
+        <div class="card meter-card">
+          <div class="lbl">Ценность</div>
+          <div class="big">5/5</div>
+          <div class="meter"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span></div>
+        </div>
+        <div class="card meter-card">
+          <div class="lbl">Сложность</div>
+          <div class="big">10–14 ч</div>
+        </div>
+        <div class="card meter-card">
+          <div class="lbl">На защите</div>
+          <div class="big">★★★★★</div>
+          <p style="margin-top:6px;font-size:12px;color:var(--text-dim);">Решает проблему «застывшего демо».</p>
+        </div>
+        <div class="card">
+          <div class="lbl" style="font-size:11px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Стек</div>
+          <div class="stack-tags">
+            <span class="stack-tag">APScheduler</span>
+            <span class="stack-tag">numpy.random</span>
+            <span class="stack-tag">asyncio</span>
+            <span class="stack-tag">FastAPI startup</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 8: IDEA 03 — WEBSOCKET -->
+  <section class="slide">
+    <span class="eyebrow">Идея 03 · высокая ценность</span>
+    <div class="idea-wrap">
+      <div class="idea-main">
+        <h2><span class="pin">03</span>WebSocket <span class="grad">real-time</span></h2>
+        <p class="lead">Сейчас дашборд опрашивает сервер каждые 10 секунд (polling). С симулятором (идея 02) это особенно заметно — события приходят с задержкой. WebSocket делает обновления мгновенными.</p>
+
+        <div class="idea-body">
+          <div class="idea-section">
+            <h4>Что добавить</h4>
+            <ul>
+              <li>Эндпоинт <code>WS /ws/updates</code> на FastAPI</li>
+              <li>Менеджер соединений (ConnectionManager) для рассылки</li>
+              <li>После каждой записи (от симулятора или PUT) — broadcast события всем клиентам</li>
+              <li>На фронте: <code>useWebSocket</code> хук, обновляющий состояние без перезапроса</li>
+              <li>Анимация «новое значение» — короткая подсветка при поступлении данных</li>
+            </ul>
+          </div>
+          <div class="idea-section">
+            <h4>Зачем в дипломе</h4>
+            <p>Демонстрирует знание двунаправленных протоколов и реактивных архитектур. Отдельная глава о «push vs pull» — теоретическое сравнение с обоснованием выбора.</p>
+          </div>
+        </div>
+      </div>
+
+      <aside class="idea-side">
+        <div class="card meter-card">
+          <div class="lbl">Ценность</div>
+          <div class="big">4/5</div>
+          <div class="meter"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span></div>
+        </div>
+        <div class="card meter-card">
+          <div class="lbl">Сложность</div>
+          <div class="big">10–14 ч</div>
+        </div>
+        <div class="card meter-card">
+          <div class="lbl">На защите</div>
+          <div class="big">★★★★★</div>
+          <p style="margin-top:6px;font-size:12px;color:var(--text-dim);">Особенно эффектно в паре с симулятором.</p>
+        </div>
+        <div class="card">
+          <div class="lbl" style="font-size:11px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Стек</div>
+          <div class="stack-tags">
+            <span class="stack-tag">FastAPI WebSocket</span>
+            <span class="stack-tag">asyncio</span>
+            <span class="stack-tag">react-use-websocket</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 9: IDEA 04 — SCENES -->
+  <section class="slide">
+    <span class="eyebrow">Идея 04 · высокая ценность</span>
+    <div class="idea-wrap">
+      <div class="idea-main">
+        <h2><span class="pin">04</span>Сценарии <span class="grad">(Scenes)</span></h2>
+        <p class="lead">Одна кнопка — несколько действий. «Ушёл из дома» гасит весь свет и выключает розетки; «Доброе утро» включает свет в кухне.</p>
+
+        <div class="idea-body">
+          <div class="idea-section">
+            <h4>Что добавить</h4>
+            <ul>
+              <li>Таблица <code>scenes</code> (id, name, icon, created_by) и <code>scene_actions</code> (scene_id, device_id, state_type, state_value, order_num)</li>
+              <li>Эндпоинты <code>POST /scenes</code>, <code>GET /scenes</code>, <code>POST /scenes/{id}/run</code></li>
+              <li>Новая страница «Сценарии» с карточками и кнопкой «Запустить»</li>
+              <li>Простой конструктор — список устройств с заданием конечного состояния</li>
+            </ul>
+          </div>
+          <div class="idea-section">
+            <h4>Зачем в дипломе</h4>
+            <p>Превращает «панель монитора» в реальную «домашнюю систему». В записке — раздел «Композитные команды и батч-операции». На защите — одно нажатие меняет десяток виджетов одновременно, очень наглядно.</p>
+          </div>
+        </div>
+      </div>
+
+      <aside class="idea-side">
+        <div class="card meter-card">
+          <div class="lbl">Ценность</div>
+          <div class="big">5/5</div>
+          <div class="meter"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span></div>
+        </div>
+        <div class="card meter-card">
+          <div class="lbl">Сложность</div>
+          <div class="big">14–20 ч</div>
+        </div>
+        <div class="card meter-card">
+          <div class="lbl">На защите</div>
+          <div class="big">★★★★★</div>
+          <p style="margin-top:6px;font-size:12px;color:var(--text-dim);">Понятно даже нетехнической комиссии.</p>
+        </div>
+        <div class="card">
+          <div class="lbl" style="font-size:11px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Стек</div>
+          <div class="stack-tags">
+            <span class="stack-tag">2 новые таблицы</span>
+            <span class="stack-tag">существующий API</span>
+            <span class="stack-tag">React forms</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 10: IDEA 05 — AUTOMATION -->
+  <section class="slide">
+    <span class="eyebrow">Идея 05 · высокая ценность</span>
+    <div class="idea-wrap">
+      <div class="idea-main">
+        <h2><span class="pin">05</span>Правила <span class="grad">автоматизации</span></h2>
+        <p class="lead">«Если в кухне после 23:00 обнаружено движение — включить ночной свет». «Если температура в спальне выше 26°C — включить кондиционер». Логика «IF–THEN» для дома.</p>
+
+        <div class="idea-body">
+          <div class="idea-section">
+            <h4>Что добавить</h4>
+            <ul>
+              <li>Таблица <code>automation_rules</code>: condition (JSON: sensor_type, operator, value, time_range), action (JSON: device_id, state)</li>
+              <li>Фоновый воркер (APScheduler — тот же, что для симулятора): раз в минуту проверяет последние показания и срабатывание правил</li>
+              <li>Эндпоинты <code>CRUD /rules</code>, <code>GET /rules/log</code> (журнал срабатываний)</li>
+              <li>UI-конструктор правил с выпадающими списками</li>
+            </ul>
+          </div>
+          <div class="idea-section">
+            <h4>Зачем в дипломе</h4>
+            <p>Алгоритмическая часть, которую любит комиссия. Можно посвятить отдельную главу: «Подсистема принятия решений: модель условий, обработка триггеров, журнал срабатываний». В паре с симулятором — реально срабатывает на защите при росте температуры.</p>
+          </div>
+        </div>
+      </div>
+
+      <aside class="idea-side">
+        <div class="card meter-card">
+          <div class="lbl">Ценность</div>
+          <div class="big">5/5</div>
+          <div class="meter"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span></div>
+        </div>
+        <div class="card meter-card">
+          <div class="lbl">Сложность</div>
+          <div class="big">20–30 ч</div>
+        </div>
+        <div class="card meter-card">
+          <div class="lbl">На защите</div>
+          <div class="big">★★★★★</div>
+          <p style="margin-top:6px;font-size:12px;color:var(--text-dim);">Алгоритмическая глубина = плюсы по защите.</p>
+        </div>
+        <div class="card">
+          <div class="lbl" style="font-size:11px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Стек</div>
+          <div class="stack-tags">
+            <span class="stack-tag">APScheduler</span>
+            <span class="stack-tag">JSON-конфиги</span>
+            <span class="stack-tag">Pydantic-схемы</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 11: IDEA 06 — ENERGY (no money) -->
+  <section class="slide">
+    <span class="eyebrow">Идея 06 · высокая ценность</span>
+    <div class="idea-wrap">
+      <div class="idea-main">
+        <h2><span class="pin">06</span>Учёт времени <span class="grad">и кВт·ч</span></h2>
+        <p class="lead">Сколько часов работала каждая лампа, сколько потребила. Без денег — чисто технические метрики. На защите выглядит как полноценная статистика устройств.</p>
+
+        <div class="idea-body">
+          <div class="idea-section">
+            <h4>Что добавить</h4>
+            <ul>
+              <li>Поле <code>power_watts</code> в devices (паспортная мощность)</li>
+              <li>SQL-расчёт времени включенности: парная функция по DeviceState (от ON до следующего OFF) с GROUP BY device, day</li>
+              <li>Эндпоинты <code>/analytics/uptime/{device|room|total}?period=...</code></li>
+              <li>Виджет «Часов работы за неделю» с тенденцией ↑↓ к прошлому периоду</li>
+              <li>Bar chart «Топ устройств по времени работы»</li>
+            </ul>
+          </div>
+          <div class="idea-section">
+            <h4>Зачем в дипломе</h4>
+            <p>Демонстрирует сложные SQL-запросы (LAG/LEAD window functions, разность временных меток) — отдельный пункт в разделе про БД. Заодно даёт повод для главы «Аналитический модуль» с алгоритмом подсчёта.</p>
+          </div>
+        </div>
+      </div>
+
+      <aside class="idea-side">
+        <div class="card meter-card">
+          <div class="lbl">Ценность</div>
+          <div class="big">4/5</div>
+          <div class="meter"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span></div>
+        </div>
+        <div class="card meter-card">
+          <div class="lbl">Сложность</div>
+          <div class="big">10–14 ч</div>
+        </div>
+        <div class="card meter-card">
+          <div class="lbl">На защите</div>
+          <div class="big">★★★★☆</div>
+          <p style="margin-top:6px;font-size:12px;color:var(--text-dim);">Сложный SQL = вопросы по БД.</p>
+        </div>
+        <div class="card">
+          <div class="lbl" style="font-size:11px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Стек</div>
+          <div class="stack-tags">
+            <span class="stack-tag">SQL window funcs</span>
+            <span class="stack-tag">SQLAlchemy core</span>
+            <span class="stack-tag">ApexCharts</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 12: IDEA 07 — DEVICE DETAIL -->
+  <section class="slide">
+    <span class="eyebrow">Идея 07 · высокая ценность</span>
+    <div class="idea-wrap">
+      <div class="idea-main">
+        <h2><span class="pin">07</span>Детальная <span class="grad">страница устройства</span></h2>
+        <p class="lead">Эндпоинт <code style="color:var(--gold);">GET /devices/{id}</code> уже возвращает 20 событий и 50 показаний — но в UI нет страницы, где это посмотреть. Полпути уже сделано.</p>
+
+        <div class="idea-body">
+          <div class="idea-section">
+            <h4>Что добавить</h4>
+            <ul>
+              <li>Маршрут <code>/admin/devices/:id</code> на фронте</li>
+              <li>Шапка устройства: имя, комната, тип, статус, кнопка переключения</li>
+              <li>Большой график для сенсоров (день/неделя/месяц с переключателем периода)</li>
+              <li>Лента событий «вкл/выкл от {user} · 14:32»</li>
+              <li>Календарь активности (heat-map как в GitHub)</li>
+              <li>Действия: переименовать, переместить в другую комнату</li>
+            </ul>
+          </div>
+          <div class="idea-section">
+            <h4>Зачем в дипломе</h4>
+            <p>Закрывает UX-цикл — без этого страница «Устройства» выглядит обрубленной. Heat-map календарь — отдельный плюс к UI-главе и наглядный элемент для скриншотов в записке.</p>
+          </div>
+        </div>
+      </div>
+
+      <aside class="idea-side">
+        <div class="card meter-card">
+          <div class="lbl">Ценность</div>
+          <div class="big">4/5</div>
+          <div class="meter"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span></div>
+        </div>
+        <div class="card meter-card">
+          <div class="lbl">Сложность</div>
+          <div class="big">8–12 ч</div>
+          <p style="margin-top:6px;font-size:12px;color:var(--text-dim);">API уже готов — только UI.</p>
+        </div>
+        <div class="card meter-card">
+          <div class="lbl">На защите</div>
+          <div class="big">★★★★☆</div>
+        </div>
+        <div class="card">
+          <div class="lbl" style="font-size:11px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Стек</div>
+          <div class="stack-tags">
+            <span class="stack-tag">React Router :id</span>
+            <span class="stack-tag">существующий API</span>
+            <span class="stack-tag">ApexCharts heatmap</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 13: IDEA 08 — ML FORECAST -->
+  <section class="slide">
+    <span class="eyebrow">Идея 08 · высокая ценность</span>
+    <div class="idea-wrap">
+      <div class="idea-main">
+        <h2><span class="pin">08</span>ML-прогноз <span class="grad">показаний</span></h2>
+        <p class="lead">«Температура в спальне через 6 часов будет ~24°C». Готовые библиотеки, минимум кода, но в дипломе появляется глава с подзаголовком «Машинное обучение». Идеальная фича для академического проекта.</p>
+
+        <div class="idea-body">
+          <div class="idea-section">
+            <h4>Что добавить</h4>
+            <ul>
+              <li>Фоновая задача (APScheduler) раз в час: для каждого датчика — обучить простую модель Prophet/ARIMA на исторических показаниях</li>
+              <li>Кешировать прогноз на следующие 24 часа в новой таблице <code>forecasts</code></li>
+              <li>Эндпоинт <code>GET /analytics/forecast/{device_id}</code></li>
+              <li>На графике температуры — пунктирная линия «прогноз» после текущей точки</li>
+              <li>В записке: глава по теории временных рядов, выбор модели, метрики MAE/RMSE</li>
+            </ul>
+          </div>
+          <div class="idea-section">
+            <h4>Зачем в дипломе</h4>
+            <p>«ML» — слово-магнит для комиссии. Даёт целый раздел теории (стационарность, тренд, сезонность), сравнение моделей, метрики качества. Лучшее соотношение «впечатление / трудозатраты» среди всех идей.</p>
+          </div>
+        </div>
+      </div>
+
+      <aside class="idea-side">
+        <div class="card meter-card">
+          <div class="lbl">Ценность</div>
+          <div class="big">4/5</div>
+          <div class="meter"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span></div>
+        </div>
+        <div class="card meter-card">
+          <div class="lbl">Сложность</div>
+          <div class="big">14–22 ч</div>
+        </div>
+        <div class="card meter-card">
+          <div class="lbl">На защите</div>
+          <div class="big">★★★★★</div>
+          <p style="margin-top:6px;font-size:12px;color:var(--text-dim);">«ML в дипломе» — серьёзный плюс к оценке.</p>
+        </div>
+        <div class="card">
+          <div class="lbl" style="font-size:11px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Стек</div>
+          <div class="stack-tags">
+            <span class="stack-tag">Prophet</span>
+            <span class="stack-tag">или statsmodels ARIMA</span>
+            <span class="stack-tag">pandas</span>
+            <span class="stack-tag">scikit-learn metrics</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 14: IDEA 09 — TESTS -->
+  <section class="slide">
+    <span class="eyebrow">Идея 09 · академический must-have</span>
+    <div class="idea-wrap">
+      <div class="idea-main">
+        <h2><span class="pin">09</span>Автотесты <span class="grad">(pytest)</span></h2>
+        <p class="lead">В дипломе есть раздел «Тестирование» — сейчас он закрыт ручным тестированием. Автотесты превратят его в полноценную главу с цифрами покрытия.</p>
+
+        <div class="idea-body">
+          <div class="idea-section">
+            <h4>Что добавить</h4>
+            <ul>
+              <li>Pytest + httpx.AsyncClient + FastAPI TestClient</li>
+              <li>Фикстуры с in-memory SQLite — изолированная БД для каждого теста</li>
+              <li>Тесты для каждого эндпоинта: happy path, валидация, 404, авторизация</li>
+              <li>Тесты для алгоритмов: правила автоматизации, расчёт uptime, прогноз</li>
+              <li>Pytest-cov для покрытия + GitHub Actions для CI</li>
+              <li>В записке: пирамида тестирования, скриншот отчёта, % покрытия</li>
+            </ul>
+          </div>
+          <div class="idea-section">
+            <h4>Зачем в дипломе</h4>
+            <p>Закрывает обязательный академический пункт. Цифра «покрытие 78%» в отчёте — конкретный измеримый результат, который любят комиссии.</p>
+          </div>
+        </div>
+      </div>
+
+      <aside class="idea-side">
+        <div class="card meter-card">
+          <div class="lbl">Ценность</div>
+          <div class="big">4/5</div>
+          <div class="meter"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span></div>
+        </div>
+        <div class="card meter-card">
+          <div class="lbl">Сложность</div>
+          <div class="big">10–14 ч</div>
+        </div>
+        <div class="card meter-card">
+          <div class="lbl">На защите</div>
+          <div class="big">★★★★☆</div>
+          <p style="margin-top:6px;font-size:12px;color:var(--text-dim);">Цифры покрытия = факты в защите.</p>
+        </div>
+        <div class="card">
+          <div class="lbl" style="font-size:11px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Стек</div>
+          <div class="stack-tags">
+            <span class="stack-tag">pytest</span>
+            <span class="stack-tag">pytest-cov</span>
+            <span class="stack-tag">FastAPI TestClient</span>
+            <span class="stack-tag">GitHub Actions</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 15: IDEAS 10-13 — MID -->
+  <section class="slide">
+    <span class="eyebrow">Идеи 10–13 · полировка</span>
+    <h2>Дополнения <span class="grad">по мере наличия времени</span></h2>
+    <p class="lead">Не критичные, но добавят завершённости.</p>
+
+    <div class="grid g-2" style="margin-top: 20px;">
+      <div class="card">
+        <span class="pill">10 · 6 ч</span>
+        <h3 style="margin-top:10px;">🐳 Docker compose</h3>
+        <p>Два сервиса: backend и mysql. Один <code>docker compose up</code> — всё работает. Дополнительная глава в записке про развёртывание + плюс к воспроизводимости.</p>
+        <p style="margin-top:8px;color:var(--cyan);">Ценность: 4/5 · Защита: ★★★★☆</p>
+      </div>
+      <div class="card">
+        <span class="pill cyan">11 · 16 ч</span>
+        <h3 style="margin-top:10px;">🗺 Floor plan</h3>
+        <p>SVG-план квартиры, расставить устройства точками. Клик по точке = переключение. Сильно повышает наглядность UI и даёт красивый скриншот в записку.</p>
+        <p style="margin-top:8px;color:var(--cyan);">Ценность: 4/5 · Защита: ★★★★★</p>
+      </div>
+      <div class="card">
+        <span class="pill gold">12 · 8 ч</span>
+        <h3 style="margin-top:10px;">⏰ Расписания</h3>
+        <p>«Включить в 19:00, выключить в 23:00». Подмножество автоматизации — только время. Отдельная страница, новая таблица schedules.</p>
+        <p style="margin-top:8px;color:var(--cyan);">Ценность: 3/5 · Защита: ★★★☆☆</p>
+      </div>
+      <div class="card">
+        <span class="pill green">13 · 6 ч</span>
+        <h3 style="margin-top:10px;">📜 Audit log</h3>
+        <p>Таблица audit_log: кто, что, когда сделал. Страница «История действий» с фильтрами. Закрывает security-главу записки.</p>
+        <p style="margin-top:8px;color:var(--cyan);">Ценность: 3/5 · Защита: ★★★☆☆</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 16: IDEAS 14-15 — small wow -->
+  <section class="slide">
+    <span class="eyebrow">Идеи 14–15 · факультатив</span>
+    <h2>Косметика <span class="grad">по желанию</span></h2>
+    <p class="lead">Маленькие штрихи, заметные комиссии при беглом взгляде.</p>
+
+    <div class="grid g-2" style="margin-top: 20px;">
+      <div class="card">
+        <span class="pill purple">14 · 4 ч</span>
+        <h3 style="margin-top:10px;">🌗 Светлая тема (toggle)</h3>
+        <p>Tailwind уже умеет dark mode — нужно добавить переключатель в Navbar и привести светлый вариант в порядок. Бонус: для записки можно делать скриншоты в светлой теме (лучше печатается).</p>
+        <p style="margin-top:8px;color:var(--cyan);">Ценность: 3/5 · Защита: ★★★☆☆</p>
+      </div>
+      <div class="card">
+        <span class="pill cyan">15 · 6 ч</span>
+        <h3 style="margin-top:10px;">📤 Экспорт CSV/PDF</h3>
+        <p>Кнопка «Скачать отчёт за период» — CSV-выгрузка показаний или мини-PDF (через reportlab) с графиками. Демонстрирует работу с разными форматами.</p>
+        <p style="margin-top:8px;color:var(--cyan);">Ценность: 3/5 · Защита: ★★★☆☆</p>
+      </div>
+    </div>
+
+    <div style="margin-top: 22px; padding: 18px 22px; background: rgba(239,68,68,0.06); border-left: 3px solid #fca5a5; border-radius: 8px;">
+      <h3 style="color:#fca5a5;">Что я НЕ рекомендую делать (учитывая контекст)</h3>
+      <p style="color:var(--text-dim); font-size:14px; line-height:1.6; margin-top:6px;">
+        <b>MQTT + реальное железо</b> — переусложнит защиту, требует купить ESP32, может сломаться прямо на демо.
+        <b>Telegram-бот</b> — без целевой аудитории «нужно общаться с домом удалённо» теряет смысл.
+        <b>Голосовое управление</b> — слишком сложно для дипломного срока, легко получить «не работает» на защите.
+        <b>Учёт энергии в рублях</b> — без монетизации не нужен экономический KPI, технических метрик достаточно.
+      </p>
+    </div>
+  </section>
+
+  <!-- 17: MATRIX -->
+  <section class="slide">
+    <span class="eyebrow">Сводная матрица</span>
+    <h2>15 идей · <span class="grad">в одном месте</span></h2>
+
+    <div class="matrix">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Идея</th>
+            <th>Ценность</th>
+            <th>Часы</th>
+            <th>Защита</th>
+            <th>Категория</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>01</td><td class="idea">Аутентификация и роли</td><td><span class="star">★★★★★</span></td><td>10</td><td><span class="star">★★★★</span><span class="star dim">★</span></td><td><span class="pill red">must-have</span></td></tr>
+          <tr><td>02</td><td class="idea">Симулятор IoT-устройств</td><td><span class="star">★★★★★</span></td><td>12</td><td><span class="star">★★★★★</span></td><td><span class="pill red">must-have</span></td></tr>
+          <tr><td>03</td><td class="idea">WebSocket real-time</td><td><span class="star">★★★★</span><span class="star dim">★</span></td><td>12</td><td><span class="star">★★★★★</span></td><td><span class="pill">высокая</span></td></tr>
+          <tr><td>04</td><td class="idea">Сценарии (Scenes)</td><td><span class="star">★★★★★</span></td><td>16</td><td><span class="star">★★★★★</span></td><td><span class="pill">высокая</span></td></tr>
+          <tr><td>05</td><td class="idea">Правила автоматизации</td><td><span class="star">★★★★★</span></td><td>24</td><td><span class="star">★★★★★</span></td><td><span class="pill">высокая</span></td></tr>
+          <tr><td>06</td><td class="idea">Учёт времени и кВт·ч</td><td><span class="star">★★★★</span><span class="star dim">★</span></td><td>12</td><td><span class="star">★★★★</span><span class="star dim">★</span></td><td><span class="pill">высокая</span></td></tr>
+          <tr><td>07</td><td class="idea">Страница устройства</td><td><span class="star">★★★★</span><span class="star dim">★</span></td><td>10</td><td><span class="star">★★★★</span><span class="star dim">★</span></td><td><span class="pill">высокая</span></td></tr>
+          <tr><td>08</td><td class="idea">ML-прогноз показаний</td><td><span class="star">★★★★</span><span class="star dim">★</span></td><td>18</td><td><span class="star">★★★★★</span></td><td><span class="pill">высокая</span></td></tr>
+          <tr><td>09</td><td class="idea">Автотесты (pytest)</td><td><span class="star">★★★★</span><span class="star dim">★</span></td><td>12</td><td><span class="star">★★★★</span><span class="star dim">★</span></td><td><span class="pill red">must-have</span></td></tr>
+          <tr><td>10</td><td class="idea">Docker compose</td><td><span class="star">★★★★</span><span class="star dim">★</span></td><td>6</td><td><span class="star">★★★★</span><span class="star dim">★</span></td><td><span class="pill cyan">полировка</span></td></tr>
+          <tr><td>11</td><td class="idea">Floor plan</td><td><span class="star">★★★★</span><span class="star dim">★</span></td><td>16</td><td><span class="star">★★★★★</span></td><td><span class="pill cyan">полировка</span></td></tr>
+          <tr><td>12</td><td class="idea">Расписания</td><td><span class="star">★★★</span><span class="star dim">★★</span></td><td>8</td><td><span class="star">★★★</span><span class="star dim">★★</span></td><td><span class="pill cyan">полировка</span></td></tr>
+          <tr><td>13</td><td class="idea">Audit log</td><td><span class="star">★★★</span><span class="star dim">★★</span></td><td>6</td><td><span class="star">★★★</span><span class="star dim">★★</span></td><td><span class="pill cyan">полировка</span></td></tr>
+          <tr><td>14</td><td class="idea">Light/Dark toggle</td><td><span class="star">★★★</span><span class="star dim">★★</span></td><td>4</td><td><span class="star">★★★</span><span class="star dim">★★</span></td><td><span class="pill purple">факультатив</span></td></tr>
+          <tr><td>15</td><td class="idea">Экспорт CSV/PDF</td><td><span class="star">★★★</span><span class="star dim">★★</span></td><td>6</td><td><span class="star">★★★</span><span class="star dim">★★</span></td><td><span class="pill purple">факультатив</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 18: ROADMAP -->
+  <section class="slide">
+    <span class="eyebrow">План внедрения</span>
+    <h2>3 фазы <span class="grad">для диплома</span></h2>
+    <p class="lead">Если выбирать, что делать сначала — рекомендую такой порядок.</p>
+
+    <div class="roadmap-grid">
+      <div class="road-col phase1">
+        <h3>① Базис · ~46 ч</h3>
+        <div class="road-item">
+          <div class="ttl">01 · Аутентификация и роли</div>
+          <div class="meta">10 ч · защищает PUT-эндпоинты</div>
+        </div>
+        <div class="road-item">
+          <div class="ttl">02 · Симулятор устройств</div>
+          <div class="meta">12 ч · оживляет демонстрацию</div>
+        </div>
+        <div class="road-item">
+          <div class="ttl">10 · Docker compose</div>
+          <div class="meta">6 ч · воспроизводимый запуск</div>
+        </div>
+        <div class="road-item">
+          <div class="ttl">09 · Автотесты</div>
+          <div class="meta">12 ч · академический пункт</div>
+        </div>
+        <div class="road-item">
+          <div class="ttl">07 · Страница устройства</div>
+          <div class="meta">10 ч · UX-завершённость</div>
+        </div>
+      </div>
+
+      <div class="road-col phase2">
+        <h3>② Глубина · ~64 ч</h3>
+        <div class="road-item">
+          <div class="ttl">06 · Учёт времени и кВт·ч</div>
+          <div class="meta">12 ч · сложные SQL-запросы</div>
+        </div>
+        <div class="road-item">
+          <div class="ttl">04 · Сценарии</div>
+          <div class="meta">16 ч · батч-операции</div>
+        </div>
+        <div class="road-item">
+          <div class="ttl">05 · Правила автоматизации</div>
+          <div class="meta">24 ч · алгоритмическое ядро</div>
+        </div>
+        <div class="road-item">
+          <div class="ttl">03 · WebSocket</div>
+          <div class="meta">12 ч · убирает polling</div>
+        </div>
+      </div>
+
+      <div class="road-col phase3">
+        <h3>③ Эффект · ~30 ч</h3>
+        <div class="road-item">
+          <div class="ttl">08 · ML-прогноз показаний</div>
+          <div class="meta">18 ч · «AI» в дипломе</div>
+        </div>
+        <div class="road-item">
+          <div class="ttl">11 · Floor plan</div>
+          <div class="meta">16 ч · красивый скриншот</div>
+        </div>
+        <div class="road-item">
+          <div class="ttl">13 · Audit log</div>
+          <div class="meta">6 ч · security-глава</div>
+        </div>
+        <div class="road-item">
+          <div class="ttl">14, 15 · Темы / экспорт</div>
+          <div class="meta">10 ч · мелочи на остаток</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 19: FINAL -->
+  <section class="slide final">
+    <span class="eyebrow" style="justify-content:center;">Краткий вывод</span>
+    <h1>Топ-4 под <span class="grad">дипломный сценарий</span></h1>
+    <p>Минимум, который превратит проект из «застывшей seed-демки» в живую систему с алгоритмической глубиной и материалом для пояснительной записки.</p>
+
+    <div class="top3">
+      <div class="card">
+        <div class="num">02</div>
+        <h3 style="margin-top:8px;">Симулятор</h3>
+        <p>~12 ч. Графики «оживают», правила реально срабатывают. Решает главную проблему статичного демо.</p>
+      </div>
+      <div class="card">
+        <div class="num">01</div>
+        <h3 style="margin-top:8px;">Аутентификация</h3>
+        <p>~10 ч. Закрывает security-главу. Без неё первый же вопрос комиссии будет неприятным.</p>
+      </div>
+      <div class="card">
+        <div class="num">05</div>
+        <h3 style="margin-top:8px;">Автоматизация</h3>
+        <p>~24 ч. Целая глава по «системе принятия решений». В паре с симулятором — срабатывает на защите вживую.</p>
+      </div>
+      <div class="card">
+        <div class="num">08</div>
+        <h3 style="margin-top:8px;">ML-прогноз</h3>
+        <p>~18 ч. «Машинное обучение» в дипломе. Лучшее соотношение впечатления к трудозатратам.</p>
+      </div>
+    </div>
+
+    <p style="margin-top: 32px; font-size: 14px; color: var(--text-dim);">
+      Готов реализовать любую из 15 идей — скажите, какую и я начну.
+    </p>
+  </section>
+
+  <div class="nav">
+    <button id="prev">← Назад</button>
+    <div class="dots" id="dots"></div>
+    <span class="counter" id="counter">1 / 19</span>
+    <button id="next">Вперёд →</button>
+  </div>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  const counter = document.getElementById('counter');
+  const progress = document.getElementById('progress');
+  const dotsBox = document.getElementById('dots');
+  let cur = 0;
+
+  for (let i = 0; i < total; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot';
+    d.onclick = () => go(i);
+    dotsBox.appendChild(d);
+  }
+  const dots = document.querySelectorAll('.dot');
+
+  function go(i) {
+    if (i < 0 || i >= total) return;
+    slides[cur].classList.remove('active');
+    cur = i;
+    slides.forEach((s, idx) => { if (idx !== cur) s.classList.remove('active'); });
+    slides[cur].classList.add('active');
+    counter.textContent = `${cur + 1} / ${total}`;
+    progress.style.width = `${((cur + 1) / total) * 100}%`;
+    dots.forEach((d, idx) => d.classList.toggle('active', idx === cur));
+  }
+
+  document.getElementById('prev').onclick = () => go(cur - 1);
+  document.getElementById('next').onclick = () => go(cur + 1);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') go(cur + 1);
+    if (e.key === 'ArrowLeft') go(cur - 1);
+    if (e.key === 'Home') go(0);
+    if (e.key === 'End') go(total - 1);
+  });
+
+  go(0);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IndigoSmart v2.0 — отчёт о реализации</title>
+<style>
+  :root {
+    --bg-0:#0b0f1f; --bg-1:#11172e;
+    --indigo:#6366f1; --indigo-2:#818cf8; --cyan:#6ad2ff;
+    --gold:#ffd700; --green:#22c55e; --red:#ef4444; --purple:#a855f7;
+    --text:#e7ecff; --text-dim:#a3aed0;
+    --border:rgba(163,174,208,0.18);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+    color: var(--text);
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(99,102,241,0.25), transparent 60%),
+      radial-gradient(ellipse at 80% 100%, rgba(106,210,255,0.18), transparent 55%),
+      linear-gradient(180deg, var(--bg-0), var(--bg-1));
+    overflow: hidden;
+  }
+  .stage { position: relative; height: 100vh; width: 100vw; overflow: hidden; }
+  .slide {
+    position: absolute; inset: 0;
+    padding: 50px 64px 80px;
+    display: flex; flex-direction: column;
+    opacity: 0; transform: translateX(40px);
+    transition: opacity 450ms ease, transform 450ms ease;
+    pointer-events: none;
+    overflow-y: auto;
+  }
+  .slide.active { opacity: 1; transform: translateX(0); pointer-events: auto; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--indigo-2); margin-bottom: 14px;
+  }
+  .eyebrow::before { content: ''; width: 22px; height: 2px; background: var(--indigo-2); border-radius: 2px; }
+  h1 { font-size: 56px; font-weight: 800; line-height: 1.05; letter-spacing: -0.02em; }
+  h2 { font-size: 36px; font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 6px; }
+  h3 { font-size: 17px; font-weight: 700; margin-bottom: 6px; color: #fff; }
+  p.lead { color: var(--text-dim); font-size: 16px; line-height: 1.55; max-width: 920px; }
+  .grad {
+    background: linear-gradient(135deg, #fff 0%, var(--indigo-2) 55%, var(--cyan) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 11px; border-radius: 999px;
+    font-size: 11px; font-weight: 700;
+    background: rgba(99,102,241,0.16); border: 1px solid rgba(99,102,241,0.35); color: var(--indigo-2);
+  }
+  .pill.cyan { background: rgba(106,210,255,0.14); border-color: rgba(106,210,255,0.35); color: var(--cyan); }
+  .pill.gold { background: rgba(255,215,0,0.12); border-color: rgba(255,215,0,0.35); color: var(--gold); }
+  .pill.green { background: rgba(34,197,94,0.13); border-color: rgba(34,197,94,0.4); color: #4ade80; }
+  .card {
+    background: linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012));
+    border: 1px solid var(--border); border-radius: 16px; padding: 18px;
+  }
+  .card p { color: var(--text-dim); font-size: 13px; line-height: 1.5; }
+
+  .grid { display: grid; gap: 14px; }
+  .g-2 { grid-template-columns: repeat(2, 1fr); }
+  .g-3 { grid-template-columns: repeat(3, 1fr); }
+  .g-4 { grid-template-columns: repeat(4, 1fr); }
+
+  .nav { position: absolute; bottom: 18px; left: 0; right: 0; display: flex; align-items: center; justify-content: center; gap: 14px; z-index: 50; }
+  .nav button {
+    background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+    color: var(--text); padding: 8px 14px; border-radius: 10px;
+    cursor: pointer; font-size: 12px; font-weight: 600; transition: all .2s;
+  }
+  .nav button:hover { background: rgba(99,102,241,0.25); border-color: var(--indigo-2); }
+  .counter { font-size: 12px; font-weight: 600; color: var(--text-dim); min-width: 60px; text-align: center; }
+  .dots { display: flex; gap: 5px; flex-wrap: wrap; max-width: 600px; justify-content: center; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(163,174,208,0.3); cursor: pointer; transition: all .2s; }
+  .dot.active { background: var(--indigo-2); width: 24px; border-radius: 4px; }
+
+  .corner-logo { position: absolute; top: 24px; right: 32px; display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--text-dim); font-size: 12px; letter-spacing: .05em; z-index: 30; }
+  .corner-logo .lm { width: 26px; height: 26px; border-radius: 7px; background: linear-gradient(135deg, var(--indigo), var(--cyan)); box-shadow: 0 6px 18px rgba(99,102,241,.45); }
+  .progress { position: absolute; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--indigo), var(--cyan)); transition: width .4s; z-index: 100; }
+
+  .hero { justify-content: center; align-items: flex-start; }
+  .hero h1 { font-size: 80px; margin-bottom: 16px; }
+  .hero .badge { display: inline-flex; padding: 7px 13px; border-radius: 999px; background: rgba(34,197,94,0.18); border: 1px solid rgba(34,197,94,0.4); color: #4ade80; font-size: 12px; font-weight: 600; margin-bottom: 22px; }
+  .hero .sub { font-size: 20px; color: var(--text-dim); max-width: 800px; margin-bottom: 32px; }
+  .hero .stats { display: flex; gap: 32px; padding-top: 24px; border-top: 1px solid var(--border); margin-top: 14px; flex-wrap: wrap; }
+  .hero .stats div { display: flex; flex-direction: column; gap: 4px; }
+  .hero .stats .v { font-size: 30px; font-weight: 800; color: #fff; line-height: 1; }
+  .hero .stats .k { font-size: 11px; text-transform: uppercase; letter-spacing: .18em; color: var(--text-dim); margin-top: 6px; }
+
+  .db-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 14px; }
+  .db-item {
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 14px; padding: 14px;
+  }
+  .db-item .num { font-size: 32px; font-weight: 800; background: linear-gradient(135deg, var(--indigo-2), var(--cyan)); -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1; }
+  .db-item .lbl { font-size: 11px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: .1em; margin-top: 6px; }
+  .db-item .desc { font-size: 12px; color: var(--text-dim); margin-top: 8px; line-height: 1.5; }
+
+  .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .feature {
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 12px; padding: 14px;
+  }
+  .feature .head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .feature .ico { width: 32px; height: 32px; border-radius: 10px; background: linear-gradient(135deg, var(--indigo), var(--cyan)); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .feature .num { font-size: 11px; font-weight: 800; color: var(--gold); }
+  .feature h4 { font-size: 14px; font-weight: 700; color: #fff; }
+  .feature p { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+
+  .ss-wrap { display: grid; grid-template-columns: 1fr 280px; gap: 22px; margin-top: 18px; flex: 1; min-height: 0; }
+  .ss-img { border-radius: 14px; overflow: hidden; border: 1px solid var(--border); background: #0a0e1d; padding: 12px; }
+  .ss-img img { max-height: 100%; max-width: 100%; border-radius: 8px; display: block; margin: 0 auto; }
+  .ss-side { display: flex; flex-direction: column; gap: 10px; }
+
+  .matrix { background: rgba(255,255,255,0.025); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-top: 14px; }
+  .matrix table { width: 100%; border-collapse: collapse; }
+  .matrix th, .matrix td { padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border); font-size: 12px; }
+  .matrix th { background: rgba(99,102,241,0.12); font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: .08em; font-size: 10px; }
+  .matrix td { color: var(--text-dim); }
+  .matrix td.idea { color: #fff; font-weight: 600; }
+
+  .code-block {
+    background: #0a0e1d; border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 18px; font-family: 'Consolas', monospace; font-size: 12px;
+    color: var(--text); line-height: 1.7;
+  }
+  .code-block .k { color: var(--indigo-2); }
+  .code-block .s { color: var(--gold); }
+  .code-block .c { color: #6c7793; }
+
+  .final { text-align: center; justify-content: center; align-items: center; }
+  .final h1 { font-size: 56px; margin-bottom: 16px; }
+  .final p { color: var(--text-dim); font-size: 17px; max-width: 720px; margin: 0 auto 28px; }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="progress" id="progress"></div>
+  <div class="corner-logo">
+    <span class="lm"></span>
+    <span>INDIGOSMART v2.0 · RELEASE</span>
+  </div>
+
+  <!-- 1: HERO -->
+  <section class="slide hero active">
+    <span class="badge">✅ Все 15 идей реализованы</span>
+    <h1>Indigo<span class="grad">Smart v2.0</span></h1>
+    <p class="sub">Дипломная симуляция выросла из 3-страничного дашборда в полноценную платформу управления умным домом с акцентом на работу с базами данных.</p>
+    <div class="stats">
+      <div><span class="v">14</span><span class="k">таблиц БД</span></div>
+      <div><span class="v">4</span><span class="k">VIEW</span></div>
+      <div><span class="v">3</span><span class="k">триггера</span></div>
+      <div><span class="v">1</span><span class="k">stored proc</span></div>
+      <div><span class="v">~30</span><span class="k">эндпоинтов</span></div>
+      <div><span class="v">10</span><span class="k">страниц UI</span></div>
+      <div><span class="v">15/15</span><span class="k">идей</span></div>
+    </div>
+  </section>
+
+  <!-- 2: WHAT WAS DONE -->
+  <section class="slide">
+    <span class="eyebrow">Все 15 идей реализованы</span>
+    <h2>Что <span class="grad">сделано</span></h2>
+    <p class="lead">Полная реализация роадмапа, без пропусков. Каждая фича закончена end-to-end: БД → бэкенд → UI.</p>
+
+    <div class="feature-grid" style="margin-top: 18px;">
+      <div class="feature"><div class="head"><div class="ico">🔐</div><div><span class="num">01</span><h4>Аутентификация</h4></div></div><p>JWT + bcrypt + роли admin/user. Защищены все мутации. /auth/register, /login, /me</p></div>
+      <div class="feature"><div class="head"><div class="ico">🤖</div><div><span class="num">02</span><h4>Симулятор IoT</h4></div></div><p>APScheduler генерирует показания каждые 30 сек. sin-волна по часам, шум, вероятностное переключение</p></div>
+      <div class="feature"><div class="head"><div class="ico">⚡</div><div><span class="num">03</span><h4>WebSocket</h4></div></div><p>/ws/updates · ConnectionManager · события симулятора, правил, сценариев push-уведомления</p></div>
+      <div class="feature"><div class="head"><div class="ico">🎬</div><div><span class="num">04</span><h4>Сценарии</h4></div></div><p>Таблицы scenes + scene_actions, /scenes/{id}/run применяет batch. UI-конструктор</p></div>
+      <div class="feature"><div class="head"><div class="ico">⚙️</div><div><span class="num">05</span><h4>Автоматизация</h4></div></div><p>IF-THEN правила с операторами &gt; &lt; = motion, cooldown, журнал срабатываний, фоновый воркер</p></div>
+      <div class="feature"><div class="head"><div class="ico">🔋</div><div><span class="num">06</span><h4>Энергия (kWh)</h4></div></div><p>VIEW v_daily_uptime с LEAD() window function, хранимая процедура calc_energy_for_period, экспорт</p></div>
+      <div class="feature"><div class="head"><div class="ico">📱</div><div><span class="num">07</span><h4>Страница устройства</h4></div></div><p>Полная история состояний, последние показания, кнопка управления, кнопка прогноза</p></div>
+      <div class="feature"><div class="head"><div class="ico">🧠</div><div><span class="num">08</span><h4>ML-прогноз</h4></div></div><p>Линейная регрессия + почасовая сезонность, MAE-метрика, кеширование в таблице forecasts</p></div>
+      <div class="feature"><div class="head"><div class="ico">⏰</div><div><span class="num">09</span><h4>Расписания</h4></div></div><p>Таблица schedules с битовой маской дней, фоновый воркер APScheduler, UI с переключателями дней</p></div>
+      <div class="feature"><div class="head"><div class="ico">📜</div><div><span class="num">10</span><h4>Audit log</h4></div></div><p>3 триггера MySQL AFTER INSERT, JSON-детали, страница с фильтром, статистика по типам</p></div>
+      <div class="feature"><div class="head"><div class="ico">🗺</div><div><span class="num">11</span><h4>Floor plan</h4></div></div><p>SVG-план с pos_x/pos_y в devices, клик по устройству = переключение, цветовое кодирование</p></div>
+      <div class="feature"><div class="head"><div class="ico">🌗</div><div><span class="num">12</span><h4>Темы Light/Dark</h4></div></div><p>Переключатель в Navbar, сохранение в localStorage, отдельная палитра для светлой темы</p></div>
+      <div class="feature"><div class="head"><div class="ico">📤</div><div><span class="num">13</span><h4>Экспорт CSV</h4></div></div><p>StreamingResponse, /export/readings.csv и /export/events.csv с авторизацией</p></div>
+      <div class="feature"><div class="head"><div class="ico">🐳</div><div><span class="num">14</span><h4>Docker compose</h4></div></div><p>3 сервиса: MySQL + backend + frontend. Healthcheck, init-скрипты, named volume</p></div>
+      <div class="feature"><div class="head"><div class="ico">🧪</div><div><span class="num">15</span><h4>Pytest</h4></div></div><p>tests/ с фикстурами, in-memory SQLite, тесты auth + scenes + security. 8 тестов, все зелёные</p></div>
+    </div>
+  </section>
+
+  <!-- 3: DATABASE EMPHASIS -->
+  <section class="slide">
+    <span class="eyebrow">Главный акцент — работа с БД</span>
+    <h2>СУБД-возможности, которые <span class="grad">показаны</span></h2>
+    <p class="lead">Демонстрация всех ключевых возможностей реляционных СУБД — отдельная глава в записке.</p>
+
+    <div class="db-grid">
+      <div class="db-item">
+        <div class="num">14</div>
+        <div class="lbl">таблиц</div>
+        <div class="desc">Расширенный домен: rooms, device_types, devices, device_states, sensor_readings, users, scenes, scene_actions, automation_rules, automation_log, schedules, audit_log, forecasts, simulator_state</div>
+      </div>
+      <div class="db-item">
+        <div class="num">4</div>
+        <div class="lbl">VIEW</div>
+        <div class="desc">v_current_device_status, v_device_on_intervals (с LEAD()), v_daily_uptime, v_energy_leaders. Инкапсулируют сложные JOIN и агрегации</div>
+      </div>
+      <div class="db-item">
+        <div class="num">3</div>
+        <div class="lbl">TRIGGER</div>
+        <div class="desc">trg_device_state_audit, trg_rule_create_audit, trg_scene_create_audit — автоматически заполняют audit_log без вмешательства приложения</div>
+      </div>
+      <div class="db-item">
+        <div class="num">1</div>
+        <div class="lbl">STORED PROCEDURE</div>
+        <div class="desc">calc_energy_for_period(device_id, from, to) — расчёт энергопотребления в произвольном окне с интерсекцией интервалов</div>
+      </div>
+      <div class="db-item">
+        <div class="num">12+</div>
+        <div class="lbl">ИНДЕКСОВ</div>
+        <div class="desc">Композитные индексы для типичных запросов: (device_id, reading_type, recorded_at), (user_id, occurred_at)</div>
+      </div>
+      <div class="db-item">
+        <div class="num">∞</div>
+        <div class="lbl">WINDOW FUNC</div>
+        <div class="desc">LEAD()/LAG() для подсчёта длительности состояний, ROW_NUMBER() для последних записей, PERCENTILE через GROUP BY + ORDER BY</div>
+      </div>
+      <div class="db-item">
+        <div class="num">2</div>
+        <div class="lbl">CTE</div>
+        <div class="desc">WITH last_30, prev_30 для сравнения текущего и предыдущего периодов в /energy/summary</div>
+      </div>
+      <div class="db-item">
+        <div class="num">JSON</div>
+        <div class="lbl">КОЛОНКА</div>
+        <div class="desc">audit_log.details хранит произвольный JSON с деталями события, читается через JSON_OBJECT() в триггере</div>
+      </div>
+      <div class="db-item">
+        <div class="num">ENUM</div>
+        <div class="lbl">+ CASCADE</div>
+        <div class="desc">role ENUM, operator ENUM, result ENUM. FK с ON DELETE CASCADE и SET NULL для целостности</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4: SQL examples -->
+  <section class="slide">
+    <span class="eyebrow">Примеры запросов</span>
+    <h2>SQL, <span class="grad">которым можно гордиться</span></h2>
+    <p class="lead">Фрагменты из миграции и роутеров — есть что показывать в записке.</p>
+
+    <div class="grid g-2" style="margin-top:16px; flex:1; min-height:0;">
+      <div>
+        <p class="pill" style="margin-bottom:8px;">Window function LEAD() для интервалов</p>
+        <div class="code-block">
+<span class="c">-- v_device_on_intervals: интервалы включения</span>
+<span class="k">CREATE VIEW</span> v_device_on_intervals <span class="k">AS</span>
+<span class="k">SELECT</span> device_id, state_value,
+  changed_at <span class="k">AS</span> started_at,
+  <span class="k">LEAD</span>(changed_at) <span class="k">OVER</span> (
+    <span class="k">PARTITION BY</span> device_id
+    <span class="k">ORDER BY</span> changed_at
+  ) <span class="k">AS</span> ended_at,
+  <span class="k">TIMESTAMPDIFF</span>(<span class="s">SECOND</span>, changed_at,
+    <span class="k">COALESCE</span>(
+      <span class="k">LEAD</span>(changed_at) <span class="k">OVER</span> (...),
+      <span class="k">NOW</span>()
+    )
+  ) <span class="k">AS</span> duration_seconds
+<span class="k">FROM</span> device_states
+<span class="k">WHERE</span> state_type = <span class="s">'ON/OFF'</span>;
+        </div>
+
+        <p class="pill cyan" style="margin-top:14px;margin-bottom:8px;">CTE для сравнения периодов</p>
+        <div class="code-block">
+<span class="k">WITH</span> last_30 <span class="k">AS</span> (
+  <span class="k">SELECT SUM</span>(kwh) <span class="k">AS</span> kwh
+  <span class="k">FROM</span> v_daily_uptime
+  <span class="k">WHERE</span> day &gt;= <span class="k">CURRENT_DATE</span> - <span class="k">INTERVAL</span> 30 <span class="s">DAY</span>
+),
+prev_30 <span class="k">AS</span> (
+  <span class="k">SELECT SUM</span>(kwh) <span class="k">AS</span> kwh
+  <span class="k">FROM</span> v_daily_uptime
+  <span class="k">WHERE</span> day <span class="k">BETWEEN</span> ... <span class="k">AND</span> ...
+)
+<span class="k">SELECT</span> l.kwh, p.kwh,
+  (l.kwh - p.kwh) / p.kwh * 100 <span class="k">AS</span> delta_pct
+<span class="k">FROM</span> last_30 l, prev_30 p;
+        </div>
+      </div>
+
+      <div>
+        <p class="pill gold" style="margin-bottom:8px;">Триггер AFTER INSERT</p>
+        <div class="code-block">
+<span class="k">CREATE TRIGGER</span> trg_device_state_audit
+<span class="k">AFTER INSERT ON</span> device_states
+<span class="k">FOR EACH ROW</span>
+<span class="k">BEGIN</span>
+  <span class="k">INSERT INTO</span> audit_log
+    (user_id, action, entity_type,
+     entity_id, details)
+  <span class="k">VALUES</span> (
+    <span class="s">NEW</span>.changed_by,
+    <span class="s">'device_state'</span>,
+    <span class="s">'device'</span>,
+    <span class="s">NEW</span>.device_id,
+    <span class="k">JSON_OBJECT</span>(
+      <span class="s">'state_type'</span>, <span class="s">NEW</span>.state_type,
+      <span class="s">'state_value'</span>, <span class="s">NEW</span>.state_value
+    )
+  );
+<span class="k">END</span>
+        </div>
+
+        <p class="pill green" style="margin-top:14px;margin-bottom:8px;">Хранимая процедура</p>
+        <div class="code-block">
+<span class="k">CALL</span> calc_energy_for_period(
+  device_id, from_date, to_date
+);
+<span class="c">-- Интерсекция периодов:</span>
+<span class="c">-- LEAST(end, to) - GREATEST(start, from)</span>
+<span class="c">-- Учитывает текущее открытое состояние</span>
+<span class="c">-- (ended_at IS NULL → NOW())</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5: SCREENSHOT: dashboard -->
+  <section class="slide">
+    <span class="eyebrow">Главная страница</span>
+    <h2>Dashboard · <span class="grad">обновляется в реальном времени</span></h2>
+
+    <div class="ss-wrap">
+      <div class="ss-img">
+        <img src="../figures/v2-dashboard.png" alt="Главная страница" />
+      </div>
+      <div class="ss-side">
+        <div class="card">
+          <span class="pill cyan">Live · WS</span>
+          <h3 style="margin-top:8px;">Realtime через WebSocket</h3>
+          <p>Индикатор «Live · N» в Navbar считает события симулятора, правил и пользователей.</p>
+        </div>
+        <div class="card">
+          <span class="pill green">JWT</span>
+          <h3 style="margin-top:8px;">Защищённый доступ</h3>
+          <p>Иван Иванов · admin. Last login обновляется при каждом логине, кнопка «Выход» с очисткой токена.</p>
+        </div>
+        <div class="card">
+          <span class="pill gold">Тема</span>
+          <h3 style="margin-top:8px;">Light / Dark</h3>
+          <p>Переключатель в Navbar. Сохраняется в localStorage между сессиями.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6: SCREENSHOT: floorplan -->
+  <section class="slide">
+    <span class="eyebrow">План помещений</span>
+    <h2>Floor plan · <span class="grad">визуальная карта</span></h2>
+
+    <div class="ss-wrap">
+      <div class="ss-img">
+        <img src="../figures/v2-floorplan.png" alt="План помещений" />
+      </div>
+      <div class="ss-side">
+        <div class="card">
+          <span class="pill">Координаты в БД</span>
+          <h3 style="margin-top:8px;">pos_x, pos_y</h3>
+          <p>Колонки DECIMAL(5,2) в таблице devices, заполняются seed-данными.</p>
+        </div>
+        <div class="card">
+          <span class="pill cyan">Интерактив</span>
+          <h3 style="margin-top:8px;">Клик = переключение</h3>
+          <p>Лампы загораются жёлтым с glow-эффектом, датчики выделены циан. Hover-tooltip с именем устройства.</p>
+        </div>
+        <div class="card">
+          <span class="pill gold">3 комнаты</span>
+          <h3 style="margin-top:8px;">SVG-разметка</h3>
+          <p>Гостиная, Кухня, Спальня размечены полупрозрачными зонами.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7: SCREENSHOT: energy -->
+  <section class="slide">
+    <span class="eyebrow">Энергоучёт</span>
+    <h2>Energy · <span class="grad">SQL window functions в деле</span></h2>
+
+    <div class="ss-wrap">
+      <div class="ss-img">
+        <img src="../figures/v2-energy.png" alt="Энергопотребление" />
+      </div>
+      <div class="ss-side">
+        <div class="card">
+          <span class="pill gold">VIEW</span>
+          <h3 style="margin-top:8px;">v_daily_uptime</h3>
+          <p>Скрывает LEAD() и TIMESTAMPDIFF, отдаёт готовые kWh по дням.</p>
+        </div>
+        <div class="card">
+          <span class="pill cyan">Stored proc</span>
+          <h3 style="margin-top:8px;">Точная интерсекция</h3>
+          <p>calc_energy_for_period обрабатывает интервалы пересекающие границы окна корректно.</p>
+        </div>
+        <div class="card">
+          <span class="pill green">CSV</span>
+          <h3 style="margin-top:8px;">Экспорт</h3>
+          <p>StreamingResponse — выгрузка показаний и событий с JOIN на устройства, комнаты, пользователей.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8: SCREENSHOT: audit -->
+  <section class="slide">
+    <span class="eyebrow">Журнал действий</span>
+    <h2>Audit · <span class="grad">триггеры MySQL автоматически</span></h2>
+
+    <div class="ss-wrap">
+      <div class="ss-img">
+        <img src="../figures/v2-audit.png" alt="Журнал действий" />
+      </div>
+      <div class="ss-side">
+        <div class="card">
+          <span class="pill">Триггеры</span>
+          <h3 style="margin-top:8px;">AFTER INSERT</h3>
+          <p>3 триггера автоматически заполняют audit_log. Приложение даже не знает — БД сама ведёт журнал.</p>
+        </div>
+        <div class="card">
+          <span class="pill cyan">JSON</span>
+          <h3 style="margin-top:8px;">details</h3>
+          <p>JSON_OBJECT() в триггере сохраняет произвольные данные о событии — гибко и расширяемо.</p>
+        </div>
+        <div class="card">
+          <span class="pill gold">Window func</span>
+          <h3 style="margin-top:8px;">Статистика</h3>
+          <p>SUM() OVER () считает процент каждого типа действия от общего количества.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9: STACK -->
+  <section class="slide">
+    <span class="eyebrow">Технологический стек</span>
+    <h2>Что <span class="grad">используется</span></h2>
+
+    <div class="grid g-3" style="margin-top: 16px;">
+      <div class="card">
+        <h3>📦 Backend</h3>
+        <p style="margin-top:8px;line-height:1.7;">
+          <strong style="color:#fff;">FastAPI 0.135</strong> · async REST API<br/>
+          <strong style="color:#fff;">SQLAlchemy 2.0</strong> · ORM + Core<br/>
+          <strong style="color:#fff;">PyMySQL</strong> · MySQL driver<br/>
+          <strong style="color:#fff;">python-jose</strong> · JWT<br/>
+          <strong style="color:#fff;">bcrypt</strong> · хеши паролей<br/>
+          <strong style="color:#fff;">APScheduler</strong> · фоновые задачи<br/>
+          <strong style="color:#fff;">Pydantic</strong> · валидация
+        </p>
+      </div>
+      <div class="card">
+        <h3>🗄 База данных</h3>
+        <p style="margin-top:8px;line-height:1.7;">
+          <strong style="color:#fff;">MySQL 9.0</strong> · InnoDB<br/>
+          14 таблиц, 4 VIEW<br/>
+          3 триггера, 1 stored proc<br/>
+          Window functions (LEAD, OVER)<br/>
+          CTE (WITH ...)<br/>
+          JSON columns + JSON_OBJECT()<br/>
+          ENUM, FK CASCADE / SET NULL
+        </p>
+      </div>
+      <div class="card">
+        <h3>⚛️ Frontend</h3>
+        <p style="margin-top:8px;line-height:1.7;">
+          <strong style="color:#fff;">React 19</strong> · SPA<br/>
+          <strong style="color:#fff;">React Router 6</strong><br/>
+          <strong style="color:#fff;">Tailwind CSS</strong><br/>
+          <strong style="color:#fff;">ApexCharts</strong> · графики<br/>
+          <strong style="color:#fff;">WebSocket hook</strong><br/>
+          JWT в localStorage<br/>
+          10 страниц UI
+        </p>
+      </div>
+    </div>
+
+    <div class="grid g-3" style="margin-top: 14px;">
+      <div class="card">
+        <h3>🤖 Симуляция</h3>
+        <p style="margin-top:8px;line-height:1.7;">
+          APScheduler · tick каждые 30 сек<br/>
+          sin-волна по часам суток<br/>
+          Гауссов шум для реалистичности<br/>
+          Бернулли для motion-сенсоров<br/>
+          Случайные переключения 5%/тик
+        </p>
+      </div>
+      <div class="card">
+        <h3>🧪 Тесты + DevOps</h3>
+        <p style="margin-top:8px;line-height:1.7;">
+          <strong style="color:#fff;">pytest</strong> + httpx + sqlite<br/>
+          8 тестов · все зелёные<br/>
+          <strong style="color:#fff;">Docker compose</strong><br/>
+          3 сервиса с healthcheck<br/>
+          Init-скрипты схемы + миграция
+        </p>
+      </div>
+      <div class="card">
+        <h3>🧠 ML</h3>
+        <p style="margin-top:8px;line-height:1.7;">
+          Линейная регрессия (МНК)<br/>
+          + почасовая сезонность<br/>
+          MAE-метрика на трейне<br/>
+          Кеш прогнозов в forecasts<br/>
+          Без внешних библиотек ML
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10: ENDPOINTS -->
+  <section class="slide">
+    <span class="eyebrow">REST API</span>
+    <h2>Все эндпоинты <span class="grad">по группам</span></h2>
+
+    <div class="matrix">
+      <table>
+        <thead>
+          <tr><th>Группа</th><th>Метод · Путь</th><th>Описание</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="idea">Auth</td><td>POST /auth/register · /login · /logout, GET /me</td><td>JWT-аутентификация с ролями</td></tr>
+          <tr><td class="idea">Devices</td><td>GET /devices · /rooms · /devices/{id}, PUT /devices/{id}/state</td><td>CRUD устройств, изменение состояний (auth required)</td></tr>
+          <tr><td class="idea">Sensors</td><td>GET /sensor-readings</td><td>Последние 50 показаний всех датчиков</td></tr>
+          <tr><td class="idea">Dashboard</td><td>GET /dashboard</td><td>Сводка KPI для главной</td></tr>
+          <tr><td class="idea">Analytics</td><td>GET /analytics/* (7 эндпоинтов)</td><td>Аналитика по температуре, движению, активности, типам</td></tr>
+          <tr><td class="idea">Scenes</td><td>CRUD /scenes, POST /scenes/{id}/run</td><td>Batch-операции над устройствами</td></tr>
+          <tr><td class="idea">Automation</td><td>CRUD /rules, GET /rules/log</td><td>Правила IF-THEN с журналом срабатываний</td></tr>
+          <tr><td class="idea">Schedules</td><td>CRUD /schedules</td><td>Регулярные включения с маской дней недели</td></tr>
+          <tr><td class="idea">Energy</td><td>GET /energy/daily · /by-device · /period · /summary</td><td>SQL window functions + stored procedure</td></tr>
+          <tr><td class="idea">Forecast</td><td>POST /forecast/generate/{id}, GET /forecast/{id}</td><td>ML-прогноз с кешированием в БД</td></tr>
+          <tr><td class="idea">Audit</td><td>GET /audit · /audit/stats</td><td>Журнал, заполняется триггерами</td></tr>
+          <tr><td class="idea">Simulator</td><td>GET /state, POST /start · /stop</td><td>Управление симулятором</td></tr>
+          <tr><td class="idea">Export</td><td>GET /export/readings.csv · /events.csv</td><td>Streaming CSV</td></tr>
+          <tr><td class="idea">WebSocket</td><td>WS /ws/updates</td><td>Real-time push событий</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 11: FILE TREE -->
+  <section class="slide">
+    <span class="eyebrow">Структура проекта</span>
+    <h2>Что лежит <span class="grad">в репозитории</span></h2>
+
+    <div class="grid g-2" style="margin-top:16px; flex:1; min-height:0;">
+      <div>
+        <p class="pill" style="margin-bottom:8px;">smart-app/ (backend)</p>
+        <div class="code-block" style="white-space: pre; font-size: 11px;">
+src/smart_app/
+├── main.py            <span class="c"># lifespan: simulator + automation</span>
+├── config.py          <span class="c"># Settings + JWT + env</span>
+├── db.py              <span class="c"># engine, SessionLocal, get_db</span>
+├── models.py          <span class="c"># 14 ORM-моделей</span>
+├── security.py        <span class="c"># JWT, bcrypt, deps</span>
+├── ws_manager.py      <span class="c"># ConnectionManager (singleton)</span>
+├── simulator_engine.py <span class="c"># Фоновая генерация данных</span>
+├── automation_engine.py <span class="c"># Воркер правил + schedules</span>
+└── routes/
+    ├── auth.py · dashboard.py
+    ├── devices.py · sensors.py
+    ├── analytics.py · scenes.py
+    ├── automation.py · schedules.py
+    ├── energy.py · forecast.py
+    ├── audit.py · simulator.py
+    ├── export.py · websocket.py
+
+migration_v2.sql       <span class="c"># Все таблицы/триггеры/views</span>
+Dockerfile             <span class="c"># Python 3.12 slim</span>
+tests/
+├── conftest.py        <span class="c"># Фикстуры с in-mem SQLite</span>
+├── test_auth.py · test_scenes.py · test_security.py
+        </div>
+      </div>
+
+      <div>
+        <p class="pill cyan" style="margin-bottom:8px;">smart-board/ (frontend)</p>
+        <div class="code-block" style="white-space: pre; font-size: 11px;">
+src/
+├── App.jsx            <span class="c"># RequireAuth + routes</span>
+├── routes.js          <span class="c"># 10 маршрутов</span>
+├── config/
+│   ├── api.js         <span class="c"># API_BASE</span>
+│   └── auth.js        <span class="c"># JWT в localStorage + apiFetch</span>
+├── hooks/
+│   └── useWebSocket.js <span class="c"># auto-reconnect</span>
+├── components/
+│   ├── navbar/        <span class="c"># Live, theme, logout</span>
+│   ├── sidebar/       <span class="c"># 9 ссылок</span>
+│   ├── card/ · widget/
+│   └── charts/
+└── views/
+    ├── auth/Login.jsx
+    └── admin/
+        ├── default/   <span class="c"># Главная</span>
+        ├── tables/    <span class="c"># Устройства</span>
+        ├── analytics/ <span class="c"># Аналитика</span>
+        ├── scenes/    · automation/
+        ├── schedules/ · energy/
+        ├── audit/     · floorplan/
+        └── device/    <span class="c"># /admin/device/:id</span>
+
+docker-compose.yml     <span class="c"># 3 сервиса</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12: HOW TO RUN -->
+  <section class="slide">
+    <span class="eyebrow">Как запустить</span>
+    <h2>Локально <span class="grad">или в Docker</span></h2>
+
+    <div class="grid g-2" style="margin-top:16px;">
+      <div>
+        <h3 style="color:var(--cyan);margin-bottom:8px;">Локально (как сейчас)</h3>
+        <div class="code-block">
+<span class="c"># База данных</span>
+<span class="k">mysql</span> -uroot smart_home_db &lt; <span class="s">smart_home_db.sql</span>
+<span class="k">mysql</span> -uroot smart_home_db &lt; <span class="s">migration_v2.sql</span>
+
+<span class="c"># Backend</span>
+<span class="k">cd</span> smart-app
+<span class="k">pip install</span> -r requirements.txt
+<span class="k">uvicorn</span> main:app --app-dir src/smart_app --port 8000
+
+<span class="c"># Frontend</span>
+<span class="k">cd</span> smart-board
+<span class="k">npm install</span>
+<span class="k">npm start</span>
+
+<span class="c"># Тесты</span>
+<span class="k">pytest</span> tests/ -v --cov=src
+        </div>
+      </div>
+
+      <div>
+        <h3 style="color:var(--indigo-2);margin-bottom:8px;">Через Docker</h3>
+        <div class="code-block">
+<span class="c"># Одна команда — поднимает всё</span>
+<span class="k">docker compose up</span> -d
+
+<span class="c"># Сервисы:</span>
+<span class="c">#  indigo_mysql      :3307</span>
+<span class="c">#  indigo_backend    :8000</span>
+<span class="c">#  indigo_frontend   :3000</span>
+
+<span class="c"># Логи</span>
+<span class="k">docker compose logs</span> -f backend
+
+<span class="c"># Остановка</span>
+<span class="k">docker compose down</span>
+
+<span class="c"># Полная очистка с БД</span>
+<span class="k">docker compose down</span> -v
+        </div>
+
+        <h3 style="color:var(--gold);margin-top:14px;margin-bottom:8px;">Демо-аккаунты</h3>
+        <div class="code-block">
+<span class="s">ivan@example.com</span>  · admin
+<span class="s">anna@example.com</span>  · user
+Пароль обоих: <span class="s">demo123</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13: METRICS -->
+  <section class="slide">
+    <span class="eyebrow">Цифры проекта</span>
+    <h2>Что <span class="grad">в репозитории</span></h2>
+
+    <div class="grid g-4" style="margin-top:20px;">
+      <div class="db-item"><div class="num">~3500</div><div class="lbl">строк Python</div><div class="desc">Backend, симулятор, движок правил, тесты</div></div>
+      <div class="db-item"><div class="num">~2800</div><div class="lbl">строк JSX/JS</div><div class="desc">10 страниц, компоненты, hooks, auth</div></div>
+      <div class="db-item"><div class="num">~400</div><div class="lbl">строк SQL</div><div class="desc">Миграция: таблицы, views, триггеры, процедура</div></div>
+      <div class="db-item"><div class="num">14</div><div class="lbl">таблиц</div><div class="desc">от rooms до forecasts и simulator_state</div></div>
+      <div class="db-item"><div class="num">~30</div><div class="lbl">REST endpoints</div><div class="desc">14 групп API</div></div>
+      <div class="db-item"><div class="num">10</div><div class="lbl">страниц UI</div><div class="desc">login + 9 admin-страниц</div></div>
+      <div class="db-item"><div class="num">8</div><div class="lbl">тестов</div><div class="desc">pytest + httpx + in-mem SQLite</div></div>
+      <div class="db-item"><div class="num">15 / 15</div><div class="lbl">идей роадмапа</div><div class="desc">100% реализовано</div></div>
+    </div>
+  </section>
+
+  <!-- 14: FINAL -->
+  <section class="slide final">
+    <span class="eyebrow" style="justify-content:center;">Итог</span>
+    <h1>Проект <span class="grad">готов к защите</span></h1>
+    <p>Реализованы все 15 идей. Особый фокус — на возможностях MySQL: триггеры, views с window-функциями, хранимая процедура, JSON-колонки, CTE, ENUM, каскадные FK, композитные индексы.</p>
+
+    <div class="grid g-3" style="margin-top: 24px; gap: 14px;">
+      <div class="card" style="background: linear-gradient(160deg, rgba(99,102,241,0.18), rgba(106,210,255,0.06));">
+        <h3>📚 В пояснительную записку</h3>
+        <p>Готовые главы: «Аутентификация и роли», «Симуляция IoT», «Подсистема автоматизации», «Энергоучёт через SQL window functions», «ML-прогноз», «Журнал действий через триггеры»</p>
+      </div>
+      <div class="card" style="background: linear-gradient(160deg, rgba(106,210,255,0.18), rgba(168,85,247,0.06));">
+        <h3>🎓 На защите</h3>
+        <p>Live-демо: запускается симулятор → графики обновляются в реальном времени → срабатывает правило автоматизации → событие фиксируется в audit_log через триггер MySQL</p>
+      </div>
+      <div class="card" style="background: linear-gradient(160deg, rgba(168,85,247,0.18), rgba(255,215,0,0.06));">
+        <h3>✅ Cледующий шаг</h3>
+        <p>Дополнить пояснительную записку главами под новые фичи (могу сгенерировать), сделать второй проход скриншотов, провести репетицию демо</p>
+      </div>
+    </div>
+
+    <p style="margin-top: 28px; font-size: 13px; color: var(--text-dim);">
+      Открой <code style="color:var(--gold);">http://localhost:3000</code> — войди как <code style="color:var(--cyan);">ivan@example.com</code> / <code style="color:var(--cyan);">demo123</code>.
+    </p>
+  </section>
+
+  <div class="nav">
+    <button id="prev">← Назад</button>
+    <div class="dots" id="dots"></div>
+    <span class="counter" id="counter">1 / 14</span>
+    <button id="next">Вперёд →</button>
+  </div>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  const counter = document.getElementById('counter');
+  const progress = document.getElementById('progress');
+  const dotsBox = document.getElementById('dots');
+  let cur = 0;
+  for (let i = 0; i < total; i++) {
+    const d = document.createElement('div'); d.className = 'dot';
+    d.onclick = () => go(i);
+    dotsBox.appendChild(d);
+  }
+  const dots = document.querySelectorAll('.dot');
+  function go(i) {
+    if (i < 0 || i >= total) return;
+    slides[cur].classList.remove('active');
+    cur = i;
+    slides.forEach((s, idx) => { if (idx !== cur) s.classList.remove('active'); });
+    slides[cur].classList.add('active');
+    counter.textContent = `${cur + 1} / ${total}`;
+    progress.style.width = `${((cur + 1) / total) * 100}%`;
+    dots.forEach((d, idx) => d.classList.toggle('active', idx === cur));
+  }
+  document.getElementById('prev').onclick = () => go(cur - 1);
+  document.getElementById('next').onclick = () => go(cur + 1);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') go(cur + 1);
+    if (e.key === 'ArrowLeft') go(cur - 1);
+    if (e.key === 'Home') go(0);
+    if (e.key === 'End') go(total - 1);
+  });
+  go(0);
+</script>
+
+</body>
+</html>
