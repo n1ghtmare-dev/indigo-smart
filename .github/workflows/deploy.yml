@@ -60,11 +60,19 @@ jobs:
           ssh-keyscan -p "$SSH_PORT" "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
           echo "SSH ready: ${SSH_USER}@${SSH_HOST}:${SSH_PORT}"
 
+      - name: Test SSH connection
+        run: |
+          ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} \
+            -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+            -o LogLevel=ERROR -o ConnectTimeout=20 \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+            'whoami && hostname && rsync --version | head -1 && ls -ld ${{ env.FRONTEND_PATH }} ${{ env.BACKEND_PATH }}'
+
       - name: Rsync frontend build
         run: |
-          rsync -rlDz --delete \
+          rsync -rlDzv --delete \
             --no-perms --no-owner --no-group \
-            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=accept-new" \
+            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -o ConnectTimeout=20" \
             smart-board/build/ \
             ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ env.FRONTEND_PATH }}
 
@@ -75,14 +83,15 @@ jobs:
             --exclude='.pytest_cache/' \
             --exclude='*.pyc' \
             --no-perms --no-owner --no-group \
-            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=accept-new" \
+            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -o ConnectTimeout=20" \
             smart-app/src/smart_app/ \
             ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ env.BACKEND_PATH }}
 
       - name: Restart backend (pm2)
         run: |
           ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} \
-            -o StrictHostKeyChecking=accept-new \
+            -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+            -o LogLevel=ERROR -o ConnectTimeout=20 \
             ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
             'export NVM_DIR="$HOME/.nvm"; . "$NVM_DIR/nvm.sh"; nvm use 22 >/dev/null && pm2 restart indigosmart-api --update-env'
 
