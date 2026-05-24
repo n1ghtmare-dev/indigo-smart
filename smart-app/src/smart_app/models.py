@@ -13,6 +13,10 @@ class Room(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), nullable=False)
     description = Column(String(255))
+    layout_x = Column(DECIMAL(5, 2), nullable=True)
+    layout_y = Column(DECIMAL(5, 2), nullable=True)
+    layout_w = Column(DECIMAL(5, 2), nullable=True)
+    layout_h = Column(DECIMAL(5, 2), nullable=True)
     created_at = Column(TIMESTAMP, default=datetime.utcnow)
     devices = relationship("Device", back_populates="room")
 
