@@ -8,39 +8,56 @@ import {
   MdMeetingRoom,
   MdLightbulb,
 } from "react-icons/md";
-import { API_BASE } from "config/api";
+import { apiFetch } from "config/auth";
 
 const Tables = () => {
   const [devices, setDevices] = useState([]);
   const [rooms, setRooms] = useState([]);
+  const [busy, setBusy] = useState(null);
+  const [error, setError] = useState(null);
 
   const refresh = () => {
     Promise.all([
-      fetch(`${API_BASE}/devices`).then((r) => r.json()),
-      fetch(`${API_BASE}/rooms`).then((r) => r.json()),
+      apiFetch("/devices").then((r) => r.json()),
+      apiFetch("/rooms").then((r) => r.json()),
     ])
       .then(([d, rm]) => {
         setDevices(d);
         setRooms(rm);
       })
-      .catch(console.error);
+      .catch((e) => setError(e.message));
   };
 
   useEffect(() => {
     refresh();
   }, []);
 
-  const toggleDevice = (deviceId, currentStatus) => {
-    fetch(`${API_BASE}/devices/${deviceId}/state`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        state_type: "ON/OFF",
-        state_value: currentStatus === "on" ? "0" : "1",
-      }),
-    })
-      .then(refresh)
-      .catch(console.error);
+  const toggleDevice = async (deviceId, currentStatus) => {
+    setBusy(deviceId);
+    setError(null);
+    try {
+      const r = await apiFetch(`/devices/${deviceId}/state`, {
+        method: "PUT",
+        body: JSON.stringify({
+          state_type: "ON/OFF",
+          state_value: currentStatus === "on" ? "0" : "1",
+        }),
+      });
+      if (r.status === 401) {
+        setError("Сессия истекла. Войдите заново.");
+        return;
+      }
+      if (!r.ok) {
+        const txt = await r.text();
+        setError(`Ошибка ${r.status}: ${txt.slice(0, 120)}`);
+        return;
+      }
+      refresh();
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setBusy(null);
+    }
   };
 
   return (
@@ -99,6 +116,12 @@ const Tables = () => {
             {devices.filter((d) => d.status === "on").length} активны
           </span>
         </div>
+
+        {error && (
+          <div className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-300">
+            {error}
+          </div>
+        )}
 
         <div className="hidden overflow-x-auto sm:block">
           <table className="w-full text-left">
@@ -172,11 +195,17 @@ const Tables = () => {
                     {!d.is_sensor ? (
                       <button
                         onClick={() => toggleDevice(d.id, d.status)}
+                        disabled={busy === d.id}
                         className={
-                          d.status === "on" ? "btn-danger" : "btn-primary"
+                          (d.status === "on" ? "btn-danger" : "btn-primary") +
+                          (busy === d.id ? " opacity-50" : "")
                         }
                       >
-                        {d.status === "on" ? "Выключить" : "Включить"}
+                        {busy === d.id
+                          ? "..."
+                          : d.status === "on"
+                          ? "Выключить"
+                          : "Включить"}
                       </button>
                     ) : (
                       <span className="text-[11px] text-gray-600">сенсор</span>
@@ -210,11 +239,12 @@ const Tables = () => {
               {!d.is_sensor && (
                 <button
                   onClick={() => toggleDevice(d.id, d.status)}
+                  disabled={busy === d.id}
                   className={`mt-3 w-full ${
                     d.status === "on" ? "btn-danger" : "btn-primary"
-                  }`}
+                  } ${busy === d.id ? "opacity-50" : ""}`}
                 >
-                  {d.status === "on" ? "Выключить" : "Включить"}
+                  {busy === d.id ? "..." : d.status === "on" ? "Выключить" : "Включить"}
                 </button>
               )}
             </div>
