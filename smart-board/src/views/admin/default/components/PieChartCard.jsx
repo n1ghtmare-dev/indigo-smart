@@ -1,51 +1,74 @@
+import React, { useState, useEffect } from "react";
 import PieChart from "components/charts/PieChart";
-import { pieChartData, pieChartOptions } from "variables/charts";
 import Card from "components/card";
+import { API_BASE } from "config/api";
 
 const PieChartCard = () => {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    fetch(`${API_BASE}/analytics/device-types`)
+      .then((res) => res.json())
+      .then(setData)
+      .catch(console.error);
+  }, []);
+
+  const colors = ["#ffd700", "#6AD2FF", "#ff6b00", "#4ade80", "#a78bfa", "#f87171", "#38bdf8"];
+  const total = data.reduce((sum, d) => sum + d.count, 0);
+
+  const chartOptions = {
+    labels: data.map((d) => d.type),
+    colors: colors.slice(0, data.length),
+    chart: { width: "50px" },
+    states: { hover: { filter: { type: "none" } } },
+    legend: { show: false },
+    dataLabels: { enabled: false },
+    hover: { mode: null },
+    plotOptions: { donut: { expandOnClick: false } },
+    fill: { colors: colors.slice(0, data.length) },
+    tooltip: { enabled: true, theme: "dark" },
+  };
+
   return (
-    <Card extra="rounded-[20px] p-3">
-      <div className="flex flex-row justify-between px-3 pt-2">
+    <Card extra="!p-[22px]">
+      <div className="flex items-start justify-between">
         <div>
-          <h4 className="text-lg font-bold text-navy-700 dark:text-white">
-            Your Pie Chart
-          </h4>
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+            Распределение
+          </p>
+          <h4 className="mt-1 text-xl font-bold text-white">Типы устройств</h4>
         </div>
-
-        <div className="mb-6 flex items-center justify-center">
-          <select className="mb-3 mr-2 flex items-center justify-center text-sm font-bold text-gray-600 hover:cursor-pointer dark:!bg-navy-800 dark:text-white">
-            <option value="monthly">Monthly</option>
-            <option value="yearly">Yearly</option>
-            <option value="weekly">Weekly</option>
-          </select>
-        </div>
+        <span className="pill pill-gold">{total} шт</span>
       </div>
 
-      <div className="mb-auto flex h-[220px] w-full items-center justify-center">
-        <PieChart options={pieChartOptions} series={pieChartData} />
+      <div className="mb-2 mt-2 flex h-[200px] w-full items-center justify-center">
+        {data.length > 0 ? (
+          <PieChart options={chartOptions} series={data.map((d) => d.count)} />
+        ) : (
+          <p className="text-sm text-gray-600">Загрузка...</p>
+        )}
       </div>
-      <div className="flex flex-row !justify-between rounded-2xl px-6 py-3 shadow-2xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-        <div className="flex flex-col items-center justify-center">
-          <div className="flex items-center justify-center">
-            <div className="h-2 w-2 rounded-full bg-brand-500" />
-            <p className="ml-1 text-sm font-normal text-gray-600">Your Files</p>
+      <div className="flex flex-row flex-wrap justify-center gap-3 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-3 py-3">
+        {data.map((d, i) => (
+          <div
+            key={d.type}
+            className="flex flex-col items-center justify-center"
+          >
+            <div className="flex items-center justify-center gap-1.5">
+              <div
+                className="h-2.5 w-2.5 rounded-full"
+                style={{
+                  backgroundColor: colors[i],
+                  boxShadow: `0 0 8px ${colors[i]}88`,
+                }}
+              />
+              <p className="text-[11px] font-medium text-gray-600">{d.type}</p>
+            </div>
+            <p className="mt-0.5 text-base font-extrabold text-white">
+              {total > 0 ? Math.round((d.count / total) * 100) : 0}%
+            </p>
           </div>
-          <p className="mt-px text-xl font-bold text-navy-700  dark:text-white">
-            63%
-          </p>
-        </div>
-
-        <div className="h-11 w-px bg-gray-300 dark:bg-white/10" />
-
-        <div className="flex flex-col items-center justify-center">
-          <div className="flex items-center justify-center">
-            <div className="h-2 w-2 rounded-full bg-[#6AD2FF]" />
-            <p className="ml-1 text-sm font-normal text-gray-600">System</p>
-          </div>
-          <p className="mt-px text-xl font-bold text-navy-700 dark:text-white">
-            25%
-          </p>
-        </div>
+        ))}
       </div>
     </Card>
   );

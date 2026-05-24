@@ -1,52 +1,32 @@
 import React from "react";
 
-// Admin Imports
 import MainDashboard from "views/admin/default";
-import NFTMarketplace from "views/admin/marketplace";
-import Profile from "views/admin/profile";
 import DataTables from "views/admin/tables";
-import RTLDefault from "views/rtl/default";
+import Analytics from "views/admin/analytics";
+import Scenes from "views/admin/scenes";
+import Automation from "views/admin/automation";
+import Schedules from "views/admin/schedules";
+import Energy from "views/admin/energy";
+import Audit from "views/admin/audit";
+import FloorPlan from "views/admin/floorplan";
+import DeviceDetail from "views/admin/device";
 
-// Auth Imports
-import SignIn from "views/auth/SignIn";
-
-// Icon Imports
 import {
-  MdHome,
-  MdOutlineShoppingCart,
-  MdBarChart,
-  MdPerson,
-  MdLock,
+  MdHome, MdDevices, MdBarChart, MdAutoAwesome,
+  MdAutoFixHigh, MdSchedule, MdBolt, MdSecurity, MdMap,
 } from "react-icons/md";
 
 const routes = [
-  {
-    name: "Главная",
-    layout: "/admin",
-    path: "default",
-    icon: <MdHome className="h-6 w-6" />,
-    component: <MainDashboard />,
-  },
-  {
-    name: "Устройства",
-    layout: "/admin",
-    icon: <MdBarChart className="h-6 w-6" />,
-    path: "data-tables",
-    component: <DataTables />,
-  },
-  {
-    name: "Profile",
-    layout: "/admin",
-    path: "profile",
-    icon: <MdPerson className="h-6 w-6" />,
-    component: <Profile />,
-  },
-  {
-    name: "Аналитика",
-    layout: "/rtl",
-    path: "rtl",
-    icon: <MdHome className="h-6 w-6" />,
-    component: <RTLDefault />,
-  },
+  { name: "Главная", layout: "/admin", path: "default", icon: <MdHome className="h-6 w-6" />, component: <MainDashboard /> },
+  { name: "Устройства", layout: "/admin", path: "devices", icon: <MdDevices className="h-6 w-6" />, component: <DataTables /> },
+  { name: "План помещений", layout: "/admin", path: "floorplan", icon: <MdMap className="h-6 w-6" />, component: <FloorPlan /> },
+  { name: "Сценарии", layout: "/admin", path: "scenes", icon: <MdAutoAwesome className="h-6 w-6" />, component: <Scenes /> },
+  { name: "Автоматизация", layout: "/admin", path: "automation", icon: <MdAutoFixHigh className="h-6 w-6" />, component: <Automation /> },
+  { name: "Расписания", layout: "/admin", path: "schedules", icon: <MdSchedule className="h-6 w-6" />, component: <Schedules /> },
+  { name: "Аналитика", layout: "/admin", path: "analytics", icon: <MdBarChart className="h-6 w-6" />, component: <Analytics /> },
+  { name: "Энергия", layout: "/admin", path: "energy", icon: <MdBolt className="h-6 w-6" />, component: <Energy /> },
+  { name: "Аудит", layout: "/admin", path: "audit", icon: <MdSecurity className="h-6 w-6" />, component: <Audit /> },
+  // Hidden routes (not in sidebar)
+  { name: "Устройство", layout: "/admin", path: "device/:id", icon: <MdDevices className="h-6 w-6" />, component: <DeviceDetail />, hidden: true },
 ];
 export default routes;

@@ -1,15 +1,25 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
-import RtlLayout from "layouts/rtl";
 import AdminLayout from "layouts/admin";
-import AuthLayout from "layouts/auth";
+import Login from "views/auth/Login";
+import { auth } from "config/auth";
+
+const RequireAuth = ({ children }) =>
+  auth.isAuthed() ? children : <Navigate to="/login" replace />;
+
 const App = () => {
   return (
     <Routes>
-      <Route path="auth/*" element={<AuthLayout />} />
-      <Route path="admin/*" element={<AdminLayout />} />
-      <Route path="rtl/*" element={<RtlLayout />} />
+      <Route path="/login" element={<Login />} />
+      <Route
+        path="admin/*"
+        element={
+          <RequireAuth>
+            <AdminLayout />
+          </RequireAuth>
+        }
+      />
       <Route path="/" element={<Navigate to="/admin" replace />} />
     </Routes>
   );

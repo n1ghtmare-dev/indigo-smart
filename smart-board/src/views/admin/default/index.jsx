@@ -1,117 +1,109 @@
-import MiniCalendar from "components/calendar/MiniCalendar";
-import WeeklyRevenue from "views/admin/default/components/WeeklyRevenue";
+import WeeklyActivity from "views/admin/default/components/WeeklyActivity";
 import TemperatureChart from "views/admin/default/components/TemperatureChart";
 import PieChartCard from "views/admin/default/components/PieChartCard";
 import { IoMdHome } from "react-icons/io";
 import { IoDocuments } from "react-icons/io5";
-import { MdBarChart, MdDashboard } from "react-icons/md";
+import { MdBarChart, MdDashboard, MdThermostat, MdSensors } from "react-icons/md";
 import { useState, useEffect } from "react";
-
-import { columnsDataCheck, columnsDataComplex } from "./variables/columnsData";
+import { API_BASE } from "config/api";
 
 import Widget from "components/widget/Widget";
-import CheckTable from "views/admin/default/components/CheckTable";
-import ComplexTable from "views/admin/default/components/ComplexTable";
-import DailyTraffic from "views/admin/default/components/DailyTraffic";
-import TaskCard from "views/admin/default/components/TaskCard";
-import tableDataCheck from "./variables/tableDataCheck.json";
-import tableDataComplex from "./variables/tableDataComplex.json";
+import MotionEvents from "views/admin/default/components/MotionEvents";
+import DeviceStatusCard from "views/admin/default/components/DeviceStatusCard";
+import MiniCalendar from "components/calendar/MiniCalendar";
 
 const Dashboard = () => {
-  const [dashboard, setDashboard] = useState({});
+  const [dashboard, setDashboard] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = () => {
-      fetch("http://127.0.0.1:8000/dashboard")
-      .then(res => res.json())
-      .then(data => setDashboard(data))
-      .catch(err => console.error(err));
-    }
+      fetch(`${API_BASE}/dashboard`)
+        .then((res) => res.json())
+        .then((data) => {
+          setDashboard(data);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error(err);
+          setLoading(false);
+        });
+    };
 
     fetchData();
-
-    const interval = setInterval(fetchData, 2000);
-
+    const interval = setInterval(fetchData, 10000);
     return () => clearInterval(interval);
-    
   }, []);
 
-  return (
-    <div>
-      {/* Card widget */}
+  if (loading) {
+    return (
+      <div className="flex h-[60vh] items-center justify-center">
+        <p className="text-lg text-gray-500 dark:text-gray-400">Загрузка...</p>
+      </div>
+    );
+  }
 
-      <div className="mt-3 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-6">
+  return (
+    <div className="pt-4">
+      <div className="mb-6 flex items-end justify-between">
+        <div>
+          <span className="pill">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-indigo-400 shadow-[0_0_6px_rgba(129,140,248,0.9)]" />
+            Обновляется каждые 10 сек
+          </span>
+          <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-white">
+            Обзор <span className="text-grad">умного дома</span>
+          </h2>
+          <p className="mt-1 text-sm text-gray-600">
+            Состояние датчиков, устройств и последние события — всё на одном экране.
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-3 grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-6">
         <Widget
           icon={<IoMdHome className="h-6 w-6" />}
-          title={"Количество комнат"}
-          subtitle={dashboard.rooms_count}
+          title={"Комнаты"}
+          subtitle={dashboard?.rooms_count ?? "—"}
         />
         <Widget
           icon={<MdBarChart className="h-7 w-7" />}
           title={"Устройства"}
-          subtitle={dashboard.devices_count}
+          subtitle={dashboard?.devices_count ?? "—"}
         />
         <Widget
           icon={<IoDocuments className="h-6 w-6" />}
-          title={"Активные устройства"}
-          subtitle={dashboard.active_devices}
+          title={"Активные"}
+          subtitle={dashboard?.active_devices ?? "—"}
         />
         <Widget
-          icon={<MdBarChart className="h-7 w-7" />}
-          title={"Активность сегодня"}
-          subtitle={dashboard.activity_today}
+          icon={<MdSensors className="h-7 w-7" />}
+          title={"Сенсоров"}
+          subtitle={dashboard?.sensor_count ?? "—"}
         />
         <Widget
           icon={<MdDashboard className="h-6 w-6" />}
-          title={"Последнее действие"}
-          subtitle={dashboard.last_action}
+          title={"Событий сегодня"}
+          subtitle={dashboard?.activity_today ?? "—"}
         />
         <Widget
-          icon={<MdBarChart className="h-7 w-7" />}
-          title={"Средняя температура"}
-          subtitle={`${dashboard.avg_temperature}°C`}
+          icon={<MdThermostat className="h-7 w-7" />}
+          title={"Ср. температура"}
+          subtitle={dashboard?.avg_temperature ? `${dashboard.avg_temperature}°C` : "—"}
         />
       </div>
-
-      {/* Charts */}
 
       <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
         <TemperatureChart />
-        <WeeklyRevenue />
+        <WeeklyActivity />
       </div>
 
-      {/* Tables & Charts */}
-
       <div className="mt-5 grid grid-cols-1 gap-5 xl:grid-cols-2">
-        {/* Check Table */}
-        <div>
-          <CheckTable
-            columnsData={columnsDataCheck}
-            tableData={tableDataCheck}
-          />
-        </div>
-
-        {/* Traffic chart & Pie Chart */}
+        <DeviceStatusCard />
 
         <div className="grid grid-cols-1 gap-5 rounded-[20px] md:grid-cols-2">
-          <DailyTraffic />
+          <MotionEvents />
           <PieChartCard />
-        </div>
-
-        {/* Complex Table , Task & Calendar */}
-
-        <ComplexTable
-          columnsData={columnsDataComplex}
-          tableData={tableDataComplex}
-        />
-
-        {/* Task chart & Calendar */}
-
-        <div className="grid grid-cols-1 gap-5 rounded-[20px] md:grid-cols-2">
-          <TaskCard />
-          <div className="grid grid-cols-1 rounded-[20px]">
-            <MiniCalendar />
-          </div>
         </div>
       </div>
     </div>

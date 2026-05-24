@@ -1,10 +1,9 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import func, distinct
 
 from db import get_db
 from models import Room, Device, DeviceState, SensorReading
-import random
 
 router = APIRouter()
 
@@ -14,10 +13,22 @@ def get_dashboard(db: Session = Depends(get_db)):
     rooms_count = db.query(Room).count()
     devices_count = db.query(Device).count()
 
+    from sqlalchemy import and_
+    subq = (
+        db.query(
+            DeviceState.device_id,
+            func.max(DeviceState.id).label("max_id")
+        )
+        .filter(DeviceState.state_type == "ON/OFF")
+        .group_by(DeviceState.device_id)
+        .subquery()
+    )
     active_devices = (
         db.query(DeviceState)
-        .filter(DeviceState.state_type == "power")
-        .filter(DeviceState.state_value == "on")
+        .join(subq, and_(
+            DeviceState.id == subq.c.max_id
+        ))
+        .filter(DeviceState.state_value == "1")
         .count()
     )
 
@@ -26,6 +37,8 @@ def get_dashboard(db: Session = Depends(get_db)):
         .filter(func.date(DeviceState.changed_at) == func.current_date())
         .count()
     )
+
+    total_events = db.query(DeviceState).count()
 
     last_state = (
         db.query(DeviceState)
@@ -39,20 +52,19 @@ def get_dashboard(db: Session = Depends(get_db)):
         .scalar()
     )
 
+    sensor_count = (
+        db.query(Device)
+        .filter(Device.device_type.has(is_sensor=True))
+        .count()
+    )
+
     return {
         "rooms_count": rooms_count,
         "devices_count": devices_count,
-        "active_devices": random.randint(2,6),
-        "activity_today": random.randint(19,40),
-        "last_action": random.choice(['ON', 'OFF', 'CHECK TEMP', 'WATER']),
-        "avg_temperature": f"{random.randint(20, 24)}.{random.randint(0,9)}"
+        "active_devices": active_devices,
+        "activity_today": activity_today,
+        "total_events": total_events,
+        "last_action": f"{last_state.state_type}: {last_state.state_value}" if last_state else None,
+        "avg_temperature": round(avg_temp, 1) if avg_temp else None,
+        "sensor_count": sensor_count
     }
-
-    # return {
-    #     "rooms_count": rooms_count,
-    #     "devices_count": devices_count,
-    #     "active_devices": active_devices,
-    #     "activity_today": activity_today,
-    #     "last_action": f"{last_state.state_type} {last_state.state_value}" if last_state else None,
-    #     "avg_temperature": round(avg_temp, 1) if avg_temp else None
-    # }

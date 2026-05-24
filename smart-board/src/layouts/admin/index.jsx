@@ -8,20 +8,31 @@ import routes from "routes.js";
 export default function Admin(props) {
   const { ...rest } = props;
   const location = useLocation();
-  const [open, setOpen] = React.useState(true);
-  const [currentRoute, setCurrentRoute] = React.useState("Main Dashboard");
+  const [open, setOpen] = React.useState(window.innerWidth >= 1200);
+  const [currentRoute, setCurrentRoute] = React.useState("Главная");
 
   React.useEffect(() => {
-    window.addEventListener("resize", () =>
-      window.innerWidth < 1200 ? setOpen(false) : setOpen(true)
-    );
+    const saved = localStorage.getItem("theme") || "dark";
+    if (saved === "dark") document.body.classList.add("dark");
+    else document.body.classList.remove("dark");
   }, []);
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      window.innerWidth < 1200 ? setOpen(false) : setOpen(true);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   React.useEffect(() => {
     getActiveRoute(routes);
+    if (window.innerWidth < 1200) {
+      setOpen(false);
+    }
   }, [location.pathname]);
 
   const getActiveRoute = (routes) => {
-    let activeRoute = "Main Dashboard";
     for (let i = 0; i < routes.length; i++) {
       if (
         window.location.href.indexOf(
@@ -31,28 +42,16 @@ export default function Admin(props) {
         setCurrentRoute(routes[i].name);
       }
     }
-    return activeRoute;
   };
-  const getActiveNavbar = (routes) => {
-    let activeNavbar = false;
-    for (let i = 0; i < routes.length; i++) {
-      if (
-        window.location.href.indexOf(routes[i].layout + routes[i].path) !== -1
-      ) {
-        return routes[i].secondary;
-      }
-    }
-    return activeNavbar;
-  };
+
   const getRoutes = (routes) => {
     return routes.map((prop, key) => {
       if (prop.layout === "/admin") {
         return (
           <Route path={`/${prop.path}`} element={prop.component} key={key} />
         );
-      } else {
-        return null;
       }
+      return null;
     });
   };
 
@@ -60,25 +59,26 @@ export default function Admin(props) {
   return (
     <div className="flex h-full w-full">
       <Sidebar open={open} onClose={() => setOpen(false)} />
-      {/* Navbar & Main Content */}
-      <div className="h-full w-full bg-lightPrimary dark:!bg-navy-900">
-        {/* Main Content */}
+      {/* Overlay for mobile sidebar */}
+      {open && window.innerWidth < 1200 && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm xl:hidden"
+          onClick={() => setOpen(false)}
+        />
+      )}
+      <div className="h-full w-full">
         <main
-          className={`mx-[12px] h-full flex-none transition-all md:pr-2 xl:ml-[313px]`}
+          className="mx-[12px] h-full flex-none transition-all md:pr-2 xl:ml-[300px]"
         >
-          {/* Routes */}
           <div className="h-full">
             <Navbar
-              onOpenSidenav={() => setOpen(true)}
-              logoText={"Horizon UI Tailwind React"}
+              onOpenSidenav={() => setOpen(!open)}
               brandText={currentRoute}
-              secondary={getActiveNavbar(routes)}
               {...rest}
             />
-            <div className="pt-5s mx-auto mb-auto h-full min-h-[84vh] p-2 md:pr-2">
+            <div className="mx-auto mb-auto h-full min-h-[84vh] p-2 md:pr-2">
               <Routes>
                 {getRoutes(routes)}
-
                 <Route
                   path="/"
                   element={<Navigate to="/admin/default" replace />}

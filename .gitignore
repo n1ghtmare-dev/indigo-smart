@@ -1,7 +1,18 @@
 .env
 .env.*
 *.env
-!.env.prod.example
+
+# Local-only artefacts (session helpers, deploy keys, AI tooling state)
+.deploy_key*
+.tmp_*
+.playwright-mcp/
+.superpowers/
+.mcp.json
+db-page.png
+
+# Word backup/lock files
+~$*.docx
+*.BACKUP_*.docx
 
 __pycache__/
 *.py[cod]
