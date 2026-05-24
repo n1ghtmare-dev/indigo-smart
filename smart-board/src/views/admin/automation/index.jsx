@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Card from "components/card";
 import { apiFetch } from "config/auth";
-import { MdAdd, MdDelete, MdAutoAwesome, MdToggleOn, MdToggleOff } from "react-icons/md";
+import { MdAdd, MdDelete, MdAutoAwesome, MdToggleOn, MdToggleOff, MdPlayArrow } from "react-icons/md";
 
 const Automation = () => {
   const [rules, setRules] = useState([]);
@@ -35,6 +35,16 @@ const Automation = () => {
   const remove = async (id) => {
     if (!window.confirm("Удалить правило?")) return;
     await apiFetch(`/rules/${id}`, { method: "DELETE" });
+    refresh();
+  };
+
+  const runNow = async (id) => {
+    const r = await apiFetch(`/rules/${id}/run`, { method: "POST" });
+    if (r.ok) {
+      const data = await r.json();
+      const v = data.trigger_value != null ? ` (датчик: ${data.trigger_value})` : "";
+      alert(`Правило выполнено${v}. Целевое устройство переключено.`);
+    }
     refresh();
   };
 
@@ -186,7 +196,14 @@ const Automation = () => {
                         ТО {target?.name || `#${r.target_device_id}`} → {r.action_state_value === "1" ? "ВКЛ" : "ВЫКЛ"}
                       </p>
                     </div>
-                    <div className="flex gap-1">
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => runNow(r.id)}
+                        title="Запустить вручную (без cooldown)"
+                        className="rounded-lg border border-cyan-400/30 bg-cyan-400/10 px-2 py-1 text-cyan-300 hover:bg-cyan-400/20"
+                      >
+                        <MdPlayArrow className="h-5 w-5" />
+                      </button>
                       <button onClick={() => toggle(r.id, r.enabled)} className="p-1 text-white">
                         {r.enabled ? <MdToggleOn className="h-7 w-7 text-green-400" /> : <MdToggleOff className="h-7 w-7 text-gray-500" />}
                       </button>

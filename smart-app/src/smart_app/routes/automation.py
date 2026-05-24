@@ -1,5 +1,5 @@
 """Automation rules CRUD + log."""
-from datetime import time
+from datetime import time, datetime
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
@@ -7,8 +7,9 @@ from sqlalchemy.orm import Session
 from sqlalchemy import desc
 
 from db import get_db
-from models import AutomationRule, AutomationLog, User
+from models import AutomationRule, AutomationLog, DeviceState, SensorReading, User
 from security import require_user_or_admin
+from ws_manager import manager
 
 router = APIRouter(prefix="/rules", tags=["automation"])
 
@@ -78,6 +79,53 @@ def delete_rule(rule_id: int, db: Session = Depends(get_db),
     db.delete(rule)
     db.commit()
     return {"ok": True}
+
+
+@router.post("/{rule_id}/run")
+def run_now(rule_id: int, db: Session = Depends(get_db),
+            user: User = Depends(require_user_or_admin)):
+    """Force-execute a rule: applies its action immediately, bypassing cooldown.
+    Used for demo / manual override."""
+    rule = db.query(AutomationRule).filter(AutomationRule.id == rule_id).first()
+    if not rule:
+        raise HTTPException(404, "Rule not found")
+
+    trigger_value = None
+    if rule.sensor_device_id and rule.reading_type:
+        latest = (
+            db.query(SensorReading)
+            .filter(
+                SensorReading.device_id == rule.sensor_device_id,
+                SensorReading.reading_type == rule.reading_type,
+            )
+            .order_by(desc(SensorReading.recorded_at))
+            .first()
+        )
+        trigger_value = latest.value if latest else None
+
+    db.add(DeviceState(
+        device_id=rule.target_device_id,
+        state_type=rule.action_state_type,
+        state_value=rule.action_state_value,
+        changed_by=user.id,
+    ))
+    rule.last_triggered_at = datetime.utcnow()
+    db.add(AutomationLog(
+        rule_id=rule.id, trigger_value=trigger_value,
+        result="success",
+        message=f"Manual run by {user.email}" + (f" (sensor={trigger_value})" if trigger_value is not None else ""),
+    ))
+    db.commit()
+
+    manager.broadcast_sync({
+        "type": "rule_triggered",
+        "rule_id": rule.id,
+        "rule_name": rule.name,
+        "device_id": rule.target_device_id,
+        "state": rule.action_state_value,
+        "manual": True,
+    })
+    return {"ok": True, "trigger_value": trigger_value}
 
 
 @router.get("/log")
