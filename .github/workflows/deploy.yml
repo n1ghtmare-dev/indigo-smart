@@ -32,17 +32,39 @@ jobs:
           npm run build
 
       - name: Setup SSH
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
+          set -e
+          # Validate secrets
+          missing=()
+          [ -z "$SSH_HOST" ] && missing+=("SSH_HOST")
+          [ -z "$SSH_USER" ] && missing+=("SSH_USER")
+          [ -z "$SSH_PORT" ] && missing+=("SSH_PORT")
+          [ -z "$SSH_PRIVATE_KEY" ] && missing+=("SSH_PRIVATE_KEY")
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "ERROR: missing GitHub Secrets: ${missing[*]}"
+            echo "Set them at: https://github.com/${{ github.repository }}/settings/secrets/actions"
+            exit 1
+          fi
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 700 ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+          # Sanity-check the key actually parses
+          ssh-keygen -y -f ~/.ssh/deploy_key > ~/.ssh/deploy_key.pub
+          # known_hosts via keyscan (non-fatal — StrictHostKeyChecking handles it)
+          ssh-keyscan -p "$SSH_PORT" "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+          echo "SSH ready: ${SSH_USER}@${SSH_HOST}:${SSH_PORT}"
 
       - name: Rsync frontend build
         run: |
           rsync -rlDz --delete \
             --no-perms --no-owner --no-group \
-            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }}" \
+            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=accept-new" \
             smart-board/build/ \
             ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ env.FRONTEND_PATH }}
 
@@ -53,13 +75,14 @@ jobs:
             --exclude='.pytest_cache/' \
             --exclude='*.pyc' \
             --no-perms --no-owner --no-group \
-            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }}" \
+            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=accept-new" \
             smart-app/src/smart_app/ \
             ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ env.BACKEND_PATH }}
 
       - name: Restart backend (pm2)
         run: |
           ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} \
+            -o StrictHostKeyChecking=accept-new \
             ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
             'export NVM_DIR="$HOME/.nvm"; . "$NVM_DIR/nvm.sh"; nvm use 22 >/dev/null && pm2 restart indigosmart-api --update-env'
 
