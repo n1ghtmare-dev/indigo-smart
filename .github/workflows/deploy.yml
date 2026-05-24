@@ -54,8 +54,12 @@ jobs:
           chmod 700 ~/.ssh
           printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          # Sanity-check the key actually parses
+          # Sanity-check the key actually parses + print public for comparison
           ssh-keygen -y -f ~/.ssh/deploy_key > ~/.ssh/deploy_key.pub
+          echo "Derived public key from secret:"
+          cat ~/.ssh/deploy_key.pub
+          echo "Expected on server (~/.ssh/authorized_keys for indigosmart):"
+          echo "  ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMuWcXzyIPZ5em0VxfXTQ9hcRzO8Wv5G1GArwIHcHSUt github-actions@indigosmart"
           # known_hosts via keyscan (non-fatal — StrictHostKeyChecking handles it)
           ssh-keyscan -p "$SSH_PORT" "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
           echo "SSH ready: ${SSH_USER}@${SSH_HOST}:${SSH_PORT}"
