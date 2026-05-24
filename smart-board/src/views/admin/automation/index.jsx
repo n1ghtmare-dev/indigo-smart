@@ -74,7 +74,8 @@ const Automation = () => {
             Правила <span className="text-grad">автоматизации</span>
           </h2>
           <p className="mt-1 text-sm text-gray-600">
-            «Если в спальне жарко &gt; 26°C — включить кондиционер». Если-то логика для дома.
+            «Если в гостиной температура выше 24°C — включить кондиционер».
+            Логика «если-то» для умного дома.
           </p>
         </div>
         <button onClick={() => setCreating(!creating)} className="btn-primary">
@@ -222,19 +223,25 @@ const Automation = () => {
         <Card extra="!p-5">
           <h3 className="mb-3 text-xl font-bold text-white">Журнал срабатываний</h3>
           <div className="flex flex-col gap-1.5">
-            {logs.slice(0, 12).map((l) => (
-              <div key={l.id} className="flex items-center justify-between rounded-lg border border-white/[0.06] bg-white/[0.02] p-2.5">
-                <div>
-                  <p className="text-xs text-gray-600">
-                    {new Date(l.triggered_at).toLocaleString("ru-RU")}
-                  </p>
-                  <p className="text-sm font-medium text-white">{l.message}</p>
+            {logs.slice(0, 12).map((l) => {
+              const label = {
+                success: "Сработало",
+                skipped_cooldown: "Пропуск (cooldown)",
+                error: "Ошибка",
+              }[l.result] || l.result;
+              const pill = l.result === "success" ? "pill-green" : l.result === "error" ? "pill-red" : "pill-gold";
+              return (
+                <div key={l.id} className="flex items-center justify-between rounded-lg border border-white/[0.06] bg-white/[0.02] p-2.5">
+                  <div>
+                    <p className="text-xs text-gray-600">
+                      {new Date(l.triggered_at).toLocaleString("ru-RU")}
+                    </p>
+                    <p className="text-sm font-medium text-white">{l.message}</p>
+                  </div>
+                  <span className={`pill ${pill}`}>{label}</span>
                 </div>
-                <span className={`pill ${l.result === "success" ? "pill-green" : "pill-red"}`}>
-                  {l.result}
-                </span>
-              </div>
-            ))}
+              );
+            })}
             {logs.length === 0 && <p className="py-6 text-center text-sm text-gray-600">Срабатываний пока не было</p>}
           </div>
         </Card>

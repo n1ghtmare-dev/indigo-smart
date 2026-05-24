@@ -110,10 +110,13 @@ def run_now(rule_id: int, db: Session = Depends(get_db),
         changed_by=user.id,
     ))
     rule.last_triggered_at = datetime.utcnow()
+    msg = f"Запуск вручную ({user.email})"
+    if trigger_value is not None:
+        msg += f" — текущее показание: {trigger_value}"
     db.add(AutomationLog(
         rule_id=rule.id, trigger_value=trigger_value,
         result="success",
-        message=f"Manual run by {user.email}" + (f" (sensor={trigger_value})" if trigger_value is not None else ""),
+        message=msg,
     ))
     db.commit()
 

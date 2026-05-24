@@ -83,10 +83,17 @@ def _check_rules():
                 )
                 db.add(new_state)
                 rule.last_triggered_at = datetime.utcnow()
+                sensor = db.query(Device).filter(Device.id == rule.sensor_device_id).first()
+                sensor_name = sensor.name if sensor else f"датчик #{rule.sensor_device_id}"
+                reading_ru = {
+                    "temperature": "температура",
+                    "humidity": "влажность",
+                    "motion": "движение",
+                }.get(rule.reading_type, rule.reading_type)
                 db.add(AutomationLog(
                     rule_id=rule.id, trigger_value=val,
                     result="success",
-                    message=f"Sensor {rule.sensor_device_id} {rule.reading_type}={val} {op} {thr}",
+                    message=f"{sensor_name}: {reading_ru} {val} {op} {thr}",
                 ))
                 db.commit()
                 log.info(f"Rule '{rule.name}' triggered: {val} {op} {thr}")
