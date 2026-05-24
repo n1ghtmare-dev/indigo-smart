@@ -30,7 +30,14 @@ const TemperatureChart = () => {
     grid: { show: true, borderColor: "rgba(163, 174, 208, 0.15)" },
     xaxis: {
       categories: data.map((d) => d.date.slice(5)),
-      labels: { style: { colors: "#A3AED0", fontSize: "11px" }, rotate: -45, rotateAlways: data.length > 10 },
+      labels: {
+        style: { colors: "#A3AED0", fontSize: "11px" },
+        rotate: -45,
+        rotateAlways: data.length > 10,
+        // Avoid label overlap on dense series — show every Nth label
+        hideOverlappingLabels: true,
+      },
+      tickAmount: Math.min(10, Math.max(2, data.length - 1)),
       axisBorder: { show: false },
       axisTicks: { show: false },
     },
@@ -67,14 +74,12 @@ const TemperatureChart = () => {
         </div>
       </div>
 
-      <div className="h-full w-full mt-4 overflow-x-auto">
-        <div className="min-w-[400px]">
-          {data.length > 0 ? (
-            <LineChart options={chartOptions} series={chartSeries} />
-          ) : (
-            <p className="py-10 text-gray-400">Загрузка данных...</p>
-          )}
-        </div>
+      <div className="mt-4 h-[260px] w-full xl:h-[340px]">
+        {data.length > 0 ? (
+          <LineChart options={chartOptions} series={chartSeries} />
+        ) : (
+          <p className="py-10 text-gray-400">Загрузка данных...</p>
+        )}
       </div>
     </Card>
   );
