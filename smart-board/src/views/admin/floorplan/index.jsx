@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Card from "components/card";
 import { apiFetch } from "config/auth";
+import { useLiveEvents } from "contexts/LiveEvents";
 import {
   MdLightbulb,
   MdSensors,
@@ -37,6 +38,17 @@ const FloorPlan = () => {
   const [newRoom, setNewRoom] = useState({ name: "", description: "" });
   const canvasRef = useRef(null);
   const dragRef = useRef(null);
+
+  const { subscribe } = useLiveEvents();
+  const [alertRoom, setAlertRoom] = useState(null); // { roomId, cooling } | null
+  useEffect(() => {
+    const unsub = subscribe((msg) => {
+      if (msg.type !== "scenario_step") return;
+      if (msg.phase === "resolved" || msg.phase === "error") { setAlertRoom(null); return; }
+      setAlertRoom({ roomId: msg.room_id, cooling: msg.phase === "cooling" });
+    });
+    return unsub;
+  }, [subscribe]);
 
   const refresh = useCallback(() => {
     apiFetch("/devices").then((r) => r.json()).then(setDevices);
@@ -381,6 +393,14 @@ const FloorPlan = () => {
                   top: `${r.layout_y}%`,
                   width: `${r.layout_w}%`,
                   height: `${r.layout_h}%`,
+                  ...(alertRoom && alertRoom.roomId === r.id
+                    ? {
+                        boxShadow: alertRoom.cooling
+                          ? "0 0 0 3px rgba(16,185,129,0.9), 0 0 30px rgba(16,185,129,0.6)"
+                          : "0 0 0 3px rgba(239,68,68,0.9), 0 0 30px rgba(239,68,68,0.7)",
+                        transition: "box-shadow 0.4s ease",
+                      }
+                    : {}),
                 }}
               >
                 <div
