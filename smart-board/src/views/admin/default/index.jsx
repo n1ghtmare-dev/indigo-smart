@@ -11,6 +11,7 @@ import Widget from "components/widget/Widget";
 import MotionEvents from "views/admin/default/components/MotionEvents";
 import DeviceStatusCard from "views/admin/default/components/DeviceStatusCard";
 import MiniCalendar from "components/calendar/MiniCalendar";
+import ScenarioLaunchButton from "components/scenario/ScenarioLaunchButton";
 
 const Dashboard = () => {
   const [dashboard, setDashboard] = useState(null);
@@ -45,7 +46,7 @@ const Dashboard = () => {
 
   return (
     <div className="pt-4">
-      <div className="mb-6 flex items-end justify-between">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <span className="pill">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-indigo-400 shadow-[0_0_6px_rgba(129,140,248,0.9)]" />
@@ -58,6 +59,7 @@ const Dashboard = () => {
             Состояние датчиков, устройств и последние события — всё на одном экране.
           </p>
         </div>
+        <ScenarioLaunchButton className="w-full sm:w-auto" />
       </div>
 
       <div className="mt-3 grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-6">
