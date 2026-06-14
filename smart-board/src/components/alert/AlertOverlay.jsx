@@ -175,10 +175,11 @@ const AlertOverlay = () => {
   return (
     <div className={`ao-root ${cooling ? "cool" : "hot"}`} style={{ "--accent": accent }}>
       <div className="ao-topbar" />
-      <div className="ao-aura" />
-      <div className="ao-card">
-        <div className="ao-sheen" />
-        <div className="ao-accentbar" />
+      <div className={`ao-dock ${cooling ? "top" : ""}`}>
+        <div className="ao-aura" />
+        <div className="ao-card">
+          <div className="ao-sheen" />
+          <div className="ao-accentbar" />
         <button
           className="ao-close"
           onClick={() => {
@@ -274,6 +275,7 @@ const AlertOverlay = () => {
               IndigoSmart · <b>авто-отклик</b>
             </span>
             <span>порог {TH}.0°C</span>
+          </div>
           </div>
         </div>
       </div>

@@ -20,21 +20,35 @@
   backdrop-filter: blur(7px);
   -webkit-backdrop-filter: blur(7px);
 }
+/* охлаждение: затемнение/блюр фона убираем — страница видна, карточка уезжает вверх */
 .ao-root.cool {
-  background: rgba(4, 16, 22, 0.4);
-  backdrop-filter: blur(16px) saturate(1.2);
-  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  background: rgba(4, 16, 22, 0.04);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
 }
 @keyframes ao-fade { from { opacity: 0; } to { opacity: 1; } }
+
+/* «док» — обёртка карточки, плавно перемещается из центра к верху экрана */
+.ao-dock {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+.ao-dock.top {
+  transform: translateY(calc(50% - 50vh + 20px));
+}
 
 /* дрейфующее атмосферное свечение за карточкой */
 .ao-aura {
   position: absolute; left: 50%; top: 50%;
-  width: min(112vw, 820px); height: min(112vw, 820px);
+  width: min(112vw, 760px); height: min(112vw, 760px);
   border-radius: 50%; filter: blur(72px); opacity: 0.4; pointer-events: none;
   background: radial-gradient(circle, var(--accent), transparent 62%);
   animation: ao-drift 7.5s ease-in-out infinite;
 }
+.ao-root.cool .ao-aura { opacity: 0.28; }
 @keyframes ao-drift {
   0% { transform: translate(-53%, -55%) scale(1); }
   50% { transform: translate(-47%, -45%) scale(1.14); }
@@ -72,11 +86,12 @@
 .ao-card {
   position: relative;
   width: 100%;
-  max-width: 440px;
-  background: linear-gradient(180deg, rgba(24, 26, 33, 0.94), rgba(15, 17, 23, 0.96));
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: linear-gradient(180deg, rgba(26, 28, 36, 0.8), rgba(16, 18, 24, 0.84));
+  backdrop-filter: blur(20px) saturate(1.15);
+  -webkit-backdrop-filter: blur(20px) saturate(1.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
-  box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.75);
+  box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.7);
   overflow: hidden;
   animation: ao-rise 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
