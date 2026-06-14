@@ -9,8 +9,14 @@ class ConnectionManager:
     def __init__(self):
         self._clients: Set[WebSocket] = set()
         self._lock = asyncio.Lock()
+        # Ссылка на event loop uvicorn (главный поток). Захватывается при
+        # подключении клиента — этот код выполняется ВНУТРИ loop. Нужна, чтобы
+        # фоновые потоки (движки сценария/симулятора/автоматизации) доставляли
+        # события через run_coroutine_threadsafe, а не теряли их.
+        self._loop: asyncio.AbstractEventLoop | None = None
 
     async def connect(self, ws: WebSocket):
+        self._loop = asyncio.get_running_loop()
         await ws.accept()
         async with self._lock:
             self._clients.add(ws)
@@ -31,15 +37,20 @@ class ConnectionManager:
             await self.disconnect(ws)
 
     def broadcast_sync(self, event: dict):
-        """Broadcast from a sync context (background worker)."""
+        """Рассылка из синхронного контекста (фоновый поток движков).
+
+        Использует event loop, захваченный в connect(). asyncio.get_event_loop()
+        здесь нельзя: в не-главном потоке он кидает RuntimeError (Python 3.12+),
+        и события молча терялись.
+        """
+        loop = self._loop
+        if loop is None:
+            # Ещё ни один клиент не подключался — некому доставлять.
+            return
         try:
-            loop = asyncio.get_event_loop()
-            if loop.is_running():
-                asyncio.run_coroutine_threadsafe(self.broadcast(event), loop)
-            else:
-                loop.run_until_complete(self.broadcast(event))
+            asyncio.run_coroutine_threadsafe(self.broadcast(event), loop)
         except RuntimeError:
-            # No event loop in this thread — store events for later or skip
+            # Loop остановлен (выключение сервера) — пропускаем.
             pass
 
     @property
