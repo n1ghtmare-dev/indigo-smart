@@ -120,17 +120,24 @@ const AlertOverlay = () => {
     };
   }, [subscribe]);
 
-  // Частицы (угли/снег) — позиции фиксируем один раз.
+  // Частицы (угли/снег) — только у левого и правого краёв, медленные.
   const particles = useMemo(
     () =>
-      Array.from({ length: 26 }, (_, i) => ({
-        id: i,
-        left: Math.round(Math.random() * 100),
-        size: 5 + Math.round(Math.random() * 16),
-        delay: (Math.random() * 3.2).toFixed(2),
-        dur: (2.4 + Math.random() * 2.8).toFixed(2),
-        drift: Math.round(Math.random() * 80 - 40),
-      })),
+      Array.from({ length: 16 }, (_, i) => {
+        const side = i % 2; // чередуем края
+        const left =
+          side === 0
+            ? Math.round(Math.random() * 15)
+            : 85 + Math.round(Math.random() * 15);
+        return {
+          id: i,
+          left,
+          size: 5 + Math.round(Math.random() * 11),
+          delay: (Math.random() * 5).toFixed(2),
+          dur: (4.5 + Math.random() * 3).toFixed(2),
+          drift: Math.round(Math.random() * 36 - 18),
+        };
+      }),
     []
   );
 
@@ -167,8 +174,6 @@ const AlertOverlay = () => {
   return (
     <div className="ao-root">
       <div className={`ao-base ${mode}`} />
-      <div className={`ao-bloom ${mode}`} />
-      {!cooling && <div className="ao-siren" />}
       <div className={`ao-vignette ${mode}`} />
 
       <div className="ao-particles" aria-hidden="true">
