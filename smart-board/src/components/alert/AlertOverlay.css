@@ -37,9 +37,9 @@
   transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform;
 }
-/* при охлаждении блок уезжает к верху экрана (высоту уменьшает компактный layout) */
+/* при охлаждении блок уезжает к верху экрана с небольшим отступом */
 .ao-dock.top {
-  transform: translateY(calc(50% - 50vh + 14px));
+  transform: translateY(calc(50% - 50vh + max(28px, env(safe-area-inset-top, 0px) + 14px)));
 }
 
 /* плавная смена содержимого карточки (полная ⇄ компактная) */
