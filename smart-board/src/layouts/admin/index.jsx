@@ -5,6 +5,7 @@ import Sidebar from "components/sidebar";
 import Footer from "components/footer/Footer";
 import routes from "routes.js";
 import { LiveEventsProvider } from "contexts/LiveEvents";
+import AlertOverlay from "components/alert/AlertOverlay";
 
 export default function Admin(props) {
   const { ...rest } = props;
@@ -59,6 +60,7 @@ export default function Admin(props) {
   document.documentElement.dir = "ltr";
   return (
     <LiveEventsProvider>
+      <AlertOverlay />
       <div className="flex h-full w-full">
         <Sidebar open={open} onClose={() => setOpen(false)} />
         {/* Overlay for mobile sidebar */}
