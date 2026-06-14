@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { MdWarningAmber, MdCheckCircle, MdAcUnit } from "react-icons/md";
+import React, { useEffect, useRef, useState } from "react";
+import { MdAcUnit, MdCheck, MdClose } from "react-icons/md";
 import { useLiveEvents } from "contexts/LiveEvents";
 import "./AlertOverlay.css";
 
-// Короткий тон через Web Audio (без бинарных ассетов).
-function tone(ctx, freq, durationMs, type = "square", gainVal = 0.05, when = 0) {
+// Мягкий уведомительный тон (Web Audio, без ассетов).
+function tone(ctx, freq, durationMs, type = "sine", gainVal = 0.05, when = 0) {
   if (!ctx) return;
   try {
     const t = ctx.currentTime + when;
@@ -20,21 +20,28 @@ function tone(ctx, freq, durationMs, type = "square", gainVal = 0.05, when = 0) 
   } catch {}
 }
 
-// Диапазон термометра для кольца-датчика.
-const T_MIN = 20;
-const T_MAX = 38;
+const TH = 30; // порог перегрева, °C
+const Y_MIN = 20;
+const Y_MAX = 38;
+const SW = 392; // ширина области спарклайна (viewBox)
+const SH = 66;
+
+const yPos = (v) => SH - ((Math.max(Y_MIN, Math.min(Y_MAX, v)) - Y_MIN) / (Y_MAX - Y_MIN)) * SH;
 
 const AlertOverlay = () => {
   const { subscribe } = useLiveEvents();
   const [active, setActive] = useState(false);
-  const [phase, setPhase] = useState(null); // rising | rule_fired | cooling | resolved | error
-  const [temp, setTemp] = useState(null); // целевое значение
-  const [shown, setShown] = useState(null); // плавно анимируемое значение
+  const [phase, setPhase] = useState(null);
+  const [temp, setTemp] = useState(null);
+  const [shown, setShown] = useState(null);
+  const [history, setHistory] = useState([]);
   const [armed, setArmed] = useState(false);
+
   const audioCtx = useRef(null);
   const hideTimer = useRef(null);
   const rafRef = useRef(null);
   const shownRef = useRef(null);
+  const histRef = useRef([]);
 
   const clearHideTimer = () => {
     if (hideTimer.current) {
@@ -53,13 +60,13 @@ const AlertOverlay = () => {
     setArmed(true);
   };
 
-  // Плавный «счётчик»: анимируем shown → temp.
+  // Плавный счётчик метрики.
   useEffect(() => {
     if (temp == null) return;
     cancelAnimationFrame(rafRef.current);
     const from = shownRef.current == null ? temp : shownRef.current;
     const to = temp;
-    const dur = 550;
+    const dur = 600;
     let start = null;
     const tick = (ts) => {
       if (start == null) start = ts;
@@ -79,35 +86,46 @@ const AlertOverlay = () => {
     const unsub = subscribe((msg) => {
       if (msg.type !== "scenario_step") return;
       const p = msg.phase;
+
+      if (p === "start") {
+        // новый инцидент — сбрасываем историю
+        histRef.current = [];
+        setHistory([]);
+        shownRef.current = null;
+        setShown(null);
+        setTemp(null);
+      }
       setPhase(p);
-      if (msg.value != null) setTemp(msg.value);
+
+      if (msg.value != null) {
+        setTemp(msg.value);
+        histRef.current = [...histRef.current, msg.value].slice(-16);
+        setHistory(histRef.current);
+      }
 
       if (p === "rising") {
         clearHideTimer();
         setActive(true);
-        if (navigator.vibrate) navigator.vibrate([90, 50, 90]);
-        // нарастающий тревожный тон
-        const f = 660 + (msg.value || 24) * 12;
-        tone(audioCtx.current, f, 220, "sawtooth", 0.05);
-        hideTimer.current = setTimeout(() => setActive(false), 25000);
+        if (navigator.vibrate) navigator.vibrate(40);
+        tone(audioCtx.current, 740, 130, "sine", 0.04);
+        hideTimer.current = setTimeout(() => setActive(false), 30000);
       } else if (p === "rule_fired") {
         clearHideTimer();
         setActive(true);
-        if (navigator.vibrate) navigator.vibrate([300, 80, 300]);
-        tone(audioCtx.current, 1200, 140, "square", 0.05);
-        tone(audioCtx.current, 1500, 160, "square", 0.05, 0.16);
-        hideTimer.current = setTimeout(() => setActive(false), 25000);
+        if (navigator.vibrate) navigator.vibrate([30, 60, 30]);
+        tone(audioCtx.current, 880, 120, "sine", 0.045);
+        tone(audioCtx.current, 1170, 150, "sine", 0.04, 0.13);
+        hideTimer.current = setTimeout(() => setActive(false), 30000);
       } else if (p === "cooling") {
         clearHideTimer();
         setActive(true);
-        hideTimer.current = setTimeout(() => setActive(false), 25000);
+        hideTimer.current = setTimeout(() => setActive(false), 30000);
       } else if (p === "resolved") {
-        if (navigator.vibrate) navigator.vibrate(60);
-        // мягкий «разрешающий» аккорд
-        tone(audioCtx.current, 523, 380, "sine", 0.06);
-        tone(audioCtx.current, 784, 460, "sine", 0.05, 0.05);
+        if (navigator.vibrate) navigator.vibrate(50);
+        tone(audioCtx.current, 660, 320, "sine", 0.05);
+        tone(audioCtx.current, 990, 380, "sine", 0.04, 0.04);
         clearHideTimer();
-        hideTimer.current = setTimeout(() => setActive(false), 3200);
+        hideTimer.current = setTimeout(() => setActive(false), 4000);
       } else if (p === "error") {
         clearHideTimer();
         setActive(false);
@@ -120,33 +138,9 @@ const AlertOverlay = () => {
     };
   }, [subscribe]);
 
-  // Частицы (угли/снег) — только у левого и правого краёв, медленные.
-  const particles = useMemo(
-    () =>
-      Array.from({ length: 16 }, (_, i) => {
-        const side = i % 2; // чередуем края
-        const left =
-          side === 0
-            ? Math.round(Math.random() * 15)
-            : 85 + Math.round(Math.random() * 15);
-        return {
-          id: i,
-          left,
-          size: 5 + Math.round(Math.random() * 11),
-          delay: (Math.random() * 5).toFixed(2),
-          dur: (4.5 + Math.random() * 3).toFixed(2),
-          drift: Math.round(Math.random() * 36 - 18),
-        };
-      }),
-    []
-  );
-
   if (!armed) {
     return (
-      <button
-        onClick={arm}
-        className="fixed bottom-4 right-4 z-[60] rounded-xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur hover:bg-white/20"
-      >
+      <button className="ao-arm" onClick={arm}>
         🔔 Включить уведомления
       </button>
     );
@@ -154,95 +148,121 @@ const AlertOverlay = () => {
 
   if (!active) return null;
 
-  const cooling = phase === "cooling" || phase === "resolved";
-  const mode = cooling ? "cool" : "hot";
+  const resolved = phase === "resolved";
+  const cooling = phase === "cooling" || resolved;
+  const acEngaged = phase === "rule_fired" || phase === "cooling" || resolved;
 
-  // Кольцо-датчик: доля заполнения по температуре.
-  const value = shown == null ? temp || T_MIN : shown;
-  const frac = Math.max(0, Math.min(1, (value - T_MIN) / (T_MAX - T_MIN)));
-  const R = 88;
-  const C = 2 * Math.PI * R;
-  const ringColor = cooling ? "#28e0d2" : frac > 0.7 ? "#ff2d00" : "#ff8a00";
+  const accent = resolved ? "#30a46c" : cooling ? "#4aa3d8" : "#e5484d";
+  const tag = resolved ? "Инцидент закрыт" : cooling ? "Устранение" : "Активный инцидент";
 
-  const title = cooling
-    ? phase === "resolved"
-      ? "Угроза устранена"
-      : "Климат-контроль активирован"
-    : "Критический перегрев";
-  const sub = cooling ? "Система охлаждает помещение" : "Автоматика реагирует…";
+  const value = shown == null ? temp || Y_MIN : shown;
+  const baseline = history.length ? history[0] : 24;
+  const delta = value - baseline;
+  const deltaUp = delta >= 0;
+
+  // спарклайн
+  const pts = history.map((v, i) => {
+    const x = history.length <= 1 ? SW : (i / (history.length - 1)) * SW;
+    return [x, yPos(v)];
+  });
+  const line = pts.map((p) => `${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(" ");
+  const area =
+    pts.length > 1
+      ? `0,${SH} ` + line + ` ${SW},${SH}`
+      : "";
+  const thY = yPos(TH);
 
   return (
-    <div className="ao-root">
-      <div className={`ao-base ${mode}`} />
-      <div className={`ao-vignette ${mode}`} />
+    <div className="ao-root" style={{ "--accent": accent }}>
+      <div className="ao-topbar" />
+      <div className="ao-card">
+        <div className="ao-accentbar" />
+        <button
+          className="ao-close"
+          onClick={() => {
+            clearHideTimer();
+            setActive(false);
+          }}
+          aria-label="Закрыть"
+        >
+          <MdClose />
+        </button>
 
-      <div className="ao-particles" aria-hidden="true">
-        {particles.map((p) => (
-          <span
-            key={p.id}
-            className={`ao-p ${cooling ? "frost" : "ember"}`}
-            style={{
-              left: `${p.left}%`,
-              width: `${p.size}px`,
-              height: `${p.size}px`,
-              animationDelay: `${p.delay}s`,
-              animationDuration: `${p.dur}s`,
-              "--drift": `${p.drift}px`,
-            }}
-          />
-        ))}
-      </div>
+        <div className="ao-inner">
+          <div className="ao-head">
+            <span className="ao-tag">
+              <span className="ao-dot" />
+              {tag}
+            </span>
+            <span className="ao-loc">Гостиная · сейчас</span>
+          </div>
 
-      <button
-        className="ao-close"
-        onClick={() => {
-          clearHideTimer();
-          setActive(false);
-        }}
-        aria-label="Закрыть"
-      >
-        ✕
-      </button>
+          <div className="ao-type">
+            {cooling ? "Температурная аномалия — стабилизируется" : "Обнаружена температурная аномалия"}
+          </div>
+          <div className="ao-metric">
+            <span className="ao-temp">
+              {value.toFixed(1)}
+              <span className="ao-unit">°C</span>
+            </span>
+            <span className={`ao-delta ${deltaUp ? "up" : "down"}`}>
+              {deltaUp ? "▲" : "▼"} {deltaUp ? "+" : ""}
+              {delta.toFixed(1)}°
+            </span>
+          </div>
 
-      <div className="ao-center">
-        <div className="ao-gaugewrap">
-          <svg className="ao-ring" viewBox="0 0 200 200">
-            <circle className="ao-ring-track" cx="100" cy="100" r={R} strokeWidth="9" />
-            <circle
-              className="ao-ring-bar"
-              cx="100"
-              cy="100"
-              r={R}
-              strokeWidth="9"
-              stroke={ringColor}
-              strokeDasharray={C}
-              strokeDashoffset={C * (1 - frac)}
-              style={{ filter: `drop-shadow(0 0 10px ${ringColor})` }}
-            />
-          </svg>
-          <div className="ao-gaugeinner">
-            {cooling ? (
-              <MdAcUnit className={`ao-icon ${mode}`} />
-            ) : (
-              <MdWarningAmber className={`ao-icon ${mode}`} />
+          <svg className="ao-spark" viewBox={`0 0 ${SW} ${SH}`} preserveAspectRatio="none">
+            {/* линия порога */}
+            <line x1="0" y1={thY} x2={SW} y2={thY} stroke="rgba(229,72,77,0.45)" strokeWidth="1" strokeDasharray="4 4" />
+            {area && <polygon points={area} fill={accent} opacity="0.12" />}
+            {pts.length > 1 && (
+              <polyline
+                points={line}
+                fill="none"
+                stroke={accent}
+                strokeWidth="2.5"
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                vectorEffect="non-scaling-stroke"
+              />
             )}
-            <div className={`ao-num ${mode}`}>
-              {Math.round(value)}
-              <span className="ao-deg">°C</span>
+            {pts.length > 0 && (
+              <circle cx={pts[pts.length - 1][0]} cy={pts[pts.length - 1][1]} r="3.5" fill={accent} />
+            )}
+          </svg>
+
+          <div className="ao-divider" />
+
+          <div className="ao-action">
+            <div className="ao-aicon">
+              <MdAcUnit size={18} />
             </div>
-            <div className="ao-chip">
-              {cooling ? "температура падает" : "температура растёт"}
+            <div className="ao-atext">
+              <div className="ao-atitle">Кондиционер · Гостиная</div>
+              <div className="ao-asub">
+                {acEngaged ? "Включён автоматически по правилу" : "Оценка ситуации…"}
+              </div>
+            </div>
+            <div className="ao-status">
+              {acEngaged ? (
+                <>
+                  <MdCheck size={15} /> {resolved ? "норма" : "активен"}
+                </>
+              ) : (
+                <>
+                  <span className="ao-spinner" /> отклик
+                </>
+              )}
             </div>
           </div>
-        </div>
 
-        <h1 className={`ao-title ${mode} ${phase === "resolved" ? "ao-pop" : ""}`}>
-          {phase === "resolved" && (
-            <MdCheckCircle style={{ display: "inline", marginRight: 10, verticalAlign: "-4px" }} />
-          )}
-          {title}
-        </h1>
-        <p className="ao-sub">{sub}</p>
+          <div className="ao-foot">
+            <span>
+              IndigoSmart · <b>авто-отклик</b>
+            </span>
+            <span>порог {TH}.0°C</span>
+          </div>
+        </div>
       </div>
     </div>
   );

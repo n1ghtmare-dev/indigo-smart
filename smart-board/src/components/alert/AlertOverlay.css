@@ -1,199 +1,118 @@
-@import url("https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap");
 
-/* ============ Аварийный оверлей: «перегрев → охлаждение» ============ */
+/* ====== Профессиональная карточка инцидента ====== */
 .ao-root {
   position: fixed;
   inset: 0;
   z-index: 70;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 20px;
+  font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  background: rgba(6, 8, 12, 0.5);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  animation: ao-fade 0.4s ease both;
+}
+@keyframes ao-fade { from { opacity: 0; } to { opacity: 1; } }
+
+/* тонкая системная линия сверху экрана */
+.ao-topbar {
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--accent);
+  box-shadow: 0 0 18px var(--accent);
+  animation: ao-scan 2.8s ease-in-out infinite;
+}
+@keyframes ao-scan { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
+
+.ao-card {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  background: linear-gradient(180deg, rgba(24, 26, 33, 0.94), rgba(15, 17, 23, 0.96));
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 20px;
+  box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.75);
   overflow: hidden;
-  font-family: "Saira Condensed", "Oswald", ui-sans-serif, system-ui, sans-serif;
-  animation: ao-in 0.6s ease both;
-  /* Лёгкое размытие фона — интерфейс слегка смягчён, но хорошо виден. */
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
+  animation: ao-rise 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
-@keyframes ao-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+@keyframes ao-rise {
+  from { opacity: 0; transform: translateY(18px) scale(0.98); }
+  to { opacity: 1; transform: none; }
 }
+.ao-accentbar { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--accent); }
 
-/* «Вуаль» прозрачна в центре и сгущается к краям — середина экрана открыта,
-   тревога живёт по периметру. Пульсирует мягко. */
-.ao-base { position: absolute; inset: 0; transition: background 1.2s ease; }
-.ao-base.hot {
-  background: radial-gradient(ellipse 80% 80% at 50% 50%,
-    transparent 0%, transparent 38%,
-    rgba(150,16,0,0.30) 70%, rgba(70,0,0,0.62) 100%);
-  animation: ao-veil 3s ease-in-out infinite;
-}
-.ao-base.cool {
-  background: radial-gradient(ellipse 80% 80% at 50% 50%,
-    transparent 0%, transparent 40%,
-    rgba(0,95,112,0.26) 72%, rgba(0,30,55,0.55) 100%);
-  animation: ao-veil 4.6s ease-in-out infinite;
-}
-@keyframes ao-veil {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 0.92; }
-}
+.ao-inner { padding: 22px 22px 18px 24px; }
 
-/* «дышащее» свечение из центра */
-.ao-bloom {
-  position: absolute; left: 50%; top: 44%;
-  width: 130vmax; height: 130vmax;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  filter: blur(40px);
-  pointer-events: none;
+.ao-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.ao-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--accent);
 }
-.ao-bloom.hot {
-  background: radial-gradient(circle, rgba(255,64,0,0.4) 0%, rgba(255,120,0,0.16) 34%, transparent 64%);
-  animation: ao-breathe 1.05s ease-in-out infinite;
+.ao-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: ao-ping 1.9s ease-out infinite; }
+@keyframes ao-ping {
+  0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.28); }
+  70% { box-shadow: 0 0 0 8px rgba(255, 255, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
 }
-.ao-bloom.cool {
-  background: radial-gradient(circle, rgba(0,205,215,0.26) 0%, rgba(40,120,255,0.12) 38%, transparent 68%);
-  animation: ao-breathe 3.6s ease-in-out infinite;
-}
-@keyframes ao-breathe {
-  0%, 100% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.78; }
-  50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
-}
+.ao-loc { font-size: 12px; color: #9aa1ad; }
 
-/* вращающийся «маяк» (только перегрев) */
-.ao-siren {
-  position: absolute; left: 50%; top: 50%;
-  width: 170vmax; height: 170vmax;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  opacity: 0.16;
-  mix-blend-mode: screen;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg, rgba(255,45,0,0.95) 22deg, transparent 58deg,
-    transparent 180deg, rgba(255,45,0,0.95) 202deg, transparent 238deg
-  );
-  animation: ao-spin 2.6s linear infinite;
+.ao-type { margin-top: 16px; font-size: 13px; color: #9aa1ad; font-weight: 500; }
+.ao-metric { display: flex; align-items: flex-end; gap: 12px; margin-top: 4px; }
+.ao-temp {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 56px; font-weight: 600; line-height: 1; color: #f3f5f9; letter-spacing: -0.02em;
 }
-@keyframes ao-spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+.ao-unit { font-size: 0.38em; color: #9aa1ad; margin-left: 2px; }
+.ao-delta {
+  font-family: "IBM Plex Mono", monospace; font-size: 14px; font-weight: 600;
+  padding: 3px 8px; border-radius: 8px; margin-bottom: 9px;
+}
+.ao-delta.up { color: #ff7a7a; background: rgba(229, 72, 77, 0.13); }
+.ao-delta.down { color: #84d8bd; background: rgba(48, 164, 108, 0.14); }
 
-/* пульсирующая аварийная рамка */
-.ao-vignette { position: absolute; inset: 0; pointer-events: none; }
-.ao-vignette.hot {
-  box-shadow: inset 0 0 210px 55px rgba(255,36,0,0.6), inset 0 0 80px 14px rgba(255,95,0,0.45);
-  animation: ao-vig 2.8s ease-in-out infinite;
-}
-.ao-vignette.cool {
-  box-shadow: inset 0 0 220px 65px rgba(0,180,210,0.42);
-  animation: ao-vig 4.6s ease-in-out infinite;
-}
-@keyframes ao-vig { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+.ao-spark { margin-top: 16px; width: 100%; height: 66px; display: block; }
+.ao-thlabel { font-size: 10px; fill: #6b7280; font-family: "IBM Plex Mono", monospace; }
 
-/* частицы: угли вверх / снег вниз */
-.ao-particles { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
-.ao-p { position: absolute; border-radius: 50%; will-change: transform, opacity; }
-.ao-p.ember {
-  bottom: -6%;
-  background: radial-gradient(circle, #ffd98a 0%, #ff5a00 55%, rgba(255,80,0,0) 72%);
-  box-shadow: 0 0 9px rgba(255,120,0,0.9);
-  animation-name: ao-ember;
-  animation-timing-function: ease-in;
-  animation-iteration-count: infinite;
-}
-.ao-p.frost {
-  top: -6%;
-  background: radial-gradient(circle, #ffffff 0%, #c7efff 60%, rgba(200,240,255,0) 74%);
-  box-shadow: 0 0 7px rgba(180,235,255,0.8);
-  animation-name: ao-frost;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-}
-@keyframes ao-ember {
-  0% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
-  12% { opacity: 1; }
-  80% { opacity: 0.85; }
-  100% { transform: translateY(-108vh) translateX(var(--drift, 0)) scale(0.25); opacity: 0; }
-}
-@keyframes ao-frost {
-  0% { transform: translateY(0) translateX(0); opacity: 0; }
-  12% { opacity: 0.95; }
-  88% { opacity: 0.85; }
-  100% { transform: translateY(112vh) translateX(var(--drift, 0)); opacity: 0; }
-}
+.ao-divider { height: 1px; background: rgba(255, 255, 255, 0.07); margin: 16px 0; }
 
-/* центр */
-.ao-center {
-  position: relative; z-index: 2;
-  display: flex; flex-direction: column; align-items: center; text-align: center;
-  padding: 0 6vw;
+.ao-action { display: flex; align-items: center; gap: 12px; }
+.ao-aicon {
+  width: 34px; height: 34px; border-radius: 10px; flex: none;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255, 255, 255, 0.06); color: var(--accent);
 }
-.ao-gaugewrap { position: relative; display: grid; place-items: center; }
-.ao-ring { transform: rotate(-90deg); width: min(72vw, 340px); height: min(72vw, 340px); }
-.ao-ring-track { fill: none; stroke: rgba(255,255,255,0.08); }
-.ao-ring-bar { fill: none; stroke-linecap: round; transition: stroke-dashoffset 0.55s ease, stroke 0.8s ease; }
-.ao-gaugeinner {
-  position: absolute; inset: 0; display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
+.ao-atext { flex: 1; min-width: 0; }
+.ao-atitle { font-size: 13.5px; color: #e6e8ee; font-weight: 600; }
+.ao-asub { font-size: 12px; color: #8b929e; margin-top: 1px; }
+.ao-status { font-size: 12px; font-weight: 600; color: var(--accent); display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.ao-spinner {
+  width: 14px; height: 14px; border: 2px solid rgba(255, 255, 255, 0.18);
+  border-top-color: var(--accent); border-radius: 50%; animation: ao-spin 0.8s linear infinite;
 }
-.ao-num {
-  font-weight: 800; line-height: 0.85; font-variant-numeric: tabular-nums;
-  font-size: clamp(4rem, 24vw, 11rem);
-}
-.ao-num.hot {
-  color: #fff;
-  text-shadow: 0 0 26px rgba(255,40,0,0.9), 0 0 64px rgba(255,90,0,0.55);
-}
-.ao-num.cool {
-  color: #eafffe;
-  text-shadow: 0 0 30px rgba(0,215,215,0.9), 0 0 72px rgba(40,120,255,0.5);
-}
-.ao-deg { font-size: 0.42em; vertical-align: super; opacity: 0.85; }
-@keyframes ao-shake {
-  0% { transform: translate(0, 0); }
-  25% { transform: translate(1.5px, -1px); }
-  50% { transform: translate(-1.5px, 1px); }
-  75% { transform: translate(1px, 1.5px); }
-  100% { transform: translate(-1px, -1.5px); }
-}
-.ao-chip {
-  margin-top: 0.4rem; font-size: 0.72rem; letter-spacing: 0.28em; text-transform: uppercase;
-  color: rgba(255,255,255,0.55);
-}
+@keyframes ao-spin { to { transform: rotate(360deg); } }
 
-.ao-title {
-  margin-top: 1.4rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
-  font-size: clamp(1.4rem, 6vw, 2.6rem);
-}
-.ao-title.hot { color: #ff744a; text-shadow: 0 0 20px rgba(255,60,0,0.8); }
-.ao-title.cool { color: #5ff0e6; text-shadow: 0 0 20px rgba(0,210,200,0.7); }
-.ao-sub {
-  margin-top: 0.5rem; letter-spacing: 0.22em; text-transform: uppercase;
-  font-size: 0.8rem; color: rgba(255,255,255,0.6);
-}
-.ao-icon { font-size: clamp(2.2rem, 8vw, 3.2rem); }
-.ao-icon.hot { color: #ff6a3d; filter: drop-shadow(0 0 14px rgba(255,60,0,0.8)); animation: ao-bob 2.4s ease-in-out infinite; }
-.ao-icon.cool { color: #6ff3ea; filter: drop-shadow(0 0 14px rgba(0,210,200,0.7)); }
-@keyframes ao-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-
-@keyframes ao-pop {
-  0% { transform: scale(0.4); opacity: 0; }
-  60% { transform: scale(1.12); }
-  100% { transform: scale(1); opacity: 1; }
-}
-.ao-pop { animation: ao-pop 0.5s cubic-bezier(0.2, 1.3, 0.4, 1) both; }
+.ao-foot { margin-top: 16px; display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: #6b7280; }
+.ao-foot b { color: #9aa1ad; font-weight: 600; }
 
 .ao-close {
-  position: absolute; right: 1rem; top: 1rem; z-index: 3;
-  height: 2.4rem; width: 2.4rem; border-radius: 9999px;
+  position: absolute; top: 12px; right: 12px; width: 30px; height: 30px; border-radius: 8px;
+  background: transparent; color: #7b828e; border: none; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  background: rgba(0,0,0,0.3); color: rgba(255,255,255,0.85);
-  border: 1px solid rgba(255,255,255,0.15);
 }
-.ao-close:hover { background: rgba(0,0,0,0.55); }
+.ao-close:hover { color: #e6e8ee; background: rgba(255, 255, 255, 0.06); }
+
+.ao-arm {
+  position: fixed; bottom: 1rem; right: 1rem; z-index: 60;
+  border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08); padding: 0.5rem 1rem;
+  font-size: 0.85rem; font-weight: 600; color: #fff;
+  font-family: "IBM Plex Sans", system-ui, sans-serif;
+  backdrop-filter: blur(8px);
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .ao-bloom, .ao-siren, .ao-vignette.hot, .ao-num.hot, .ao-icon.hot, .ao-p { animation: none !important; }
+  .ao-topbar, .ao-dot, .ao-spinner, .ao-card { animation: none !important; }
 }
