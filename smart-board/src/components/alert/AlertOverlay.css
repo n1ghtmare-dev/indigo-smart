@@ -37,10 +37,23 @@
   transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform;
 }
-/* при охлаждении блок уезжает вверх И уменьшается — компактный чистый баннер */
+/* при охлаждении блок уезжает к верху экрана (высоту уменьшает компактный layout) */
 .ao-dock.top {
-  transform: translateY(calc(50% - 50vh + 14px)) scale(0.82);
+  transform: translateY(calc(50% - 50vh + 14px));
 }
+
+/* плавная смена содержимого карточки (полная ⇄ компактная) */
+.ao-body { animation: ao-bodyin 0.5s ease both; }
+@keyframes ao-bodyin { from { opacity: 0; } to { opacity: 1; } }
+
+/* компактная плашка: слева температура, справа график, в ~2 раза ниже */
+.ao-compact { display: flex; align-items: center; gap: 14px; padding: 16px 18px; }
+.ao-c-info { display: flex; flex-direction: column; gap: 7px; flex: 1; min-width: 0; }
+.ao-c-metric { display: flex; align-items: center; gap: 10px; }
+.ao-temp-sm { font-size: 38px; }
+.ao-c-status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #9aa1ad; }
+.ao-c-status svg { color: var(--accent); }
+.ao-spark-sm { width: 132px; height: 54px; flex: none; }
 
 /* дрейфующее атмосферное свечение за карточкой */
 .ao-aura {

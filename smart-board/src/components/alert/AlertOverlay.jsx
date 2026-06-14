@@ -23,10 +23,28 @@ function tone(ctx, freq, durationMs, type = "sine", gainVal = 0.05, when = 0) {
 const TH = 30; // порог перегрева, °C
 const Y_MIN = 20;
 const Y_MAX = 38;
-const SW = 392; // ширина области спарклайна (viewBox)
+const SW = 392;
 const SH = 66;
 
 const yPos = (v) => SH - ((Math.max(Y_MIN, Math.min(Y_MAX, v)) - Y_MIN) / (Y_MAX - Y_MIN)) * SH;
+
+// Сглаживание ломаной в плавную кривую (Catmull-Rom → кубические безье).
+function smoothPath(pts) {
+  if (pts.length < 2) return "";
+  const d = [`M ${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)}`];
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] || pts[i];
+    const p1 = pts[i];
+    const p2 = pts[i + 1];
+    const p3 = pts[i + 2] || p2;
+    const c1x = p1[0] + (p2[0] - p0[0]) / 6;
+    const c1y = p1[1] + (p2[1] - p0[1]) / 6;
+    const c2x = p2[0] - (p3[0] - p1[0]) / 6;
+    const c2y = p2[1] - (p3[1] - p1[1]) / 6;
+    d.push(`C ${c1x.toFixed(1)},${c1y.toFixed(1)} ${c2x.toFixed(1)},${c2y.toFixed(1)} ${p2[0].toFixed(1)},${p2[1].toFixed(1)}`);
+  }
+  return d.join(" ");
+}
 
 const AlertOverlay = () => {
   const { subscribe } = useLiveEvents();
@@ -88,7 +106,6 @@ const AlertOverlay = () => {
       const p = msg.phase;
 
       if (p === "start") {
-        // новый инцидент — сбрасываем историю
         histRef.current = [];
         setHistory([]);
         shownRef.current = null;
@@ -125,7 +142,7 @@ const AlertOverlay = () => {
         tone(audioCtx.current, 660, 320, "sine", 0.05);
         tone(audioCtx.current, 990, 380, "sine", 0.04, 0.04);
         clearHideTimer();
-        hideTimer.current = setTimeout(() => setActive(false), 4000);
+        hideTimer.current = setTimeout(() => setActive(false), 4500);
       } else if (p === "error") {
         clearHideTimer();
         setActive(false);
@@ -160,123 +177,130 @@ const AlertOverlay = () => {
   const delta = value - baseline;
   const deltaUp = delta >= 0;
 
-  // спарклайн
   const pts = history.map((v, i) => {
     const x = history.length <= 1 ? SW : (i / (history.length - 1)) * SW;
     return [x, yPos(v)];
   });
-  const line = pts.map((p) => `${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(" ");
-  const area =
-    pts.length > 1
-      ? `0,${SH} ` + line + ` ${SW},${SH}`
-      : "";
+  const linePath = smoothPath(pts);
+  const areaPath = pts.length > 1 ? `${linePath} L ${SW},${SH} L 0,${SH} Z` : "";
   const thY = yPos(TH);
+  const last = pts.length ? pts[pts.length - 1] : null;
+
+  const Spark = ({ className }) => (
+    <svg className={className} viewBox={`0 0 ${SW} ${SH}`} preserveAspectRatio="none">
+      <line x1="0" y1={thY} x2={SW} y2={thY} stroke="rgba(229,72,77,0.45)" strokeWidth="1" strokeDasharray="4 4" />
+      {areaPath && <path d={areaPath} fill={accent} opacity="0.12" />}
+      {linePath && (
+        <path d={linePath} fill="none" stroke={accent} strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+      )}
+      {last && (
+        <>
+          <circle className="ao-ping" cx={last[0]} cy={last[1]} r="4" fill="none" stroke={accent} strokeWidth="2" />
+          <circle cx={last[0]} cy={last[1]} r="3.5" fill={accent} />
+        </>
+      )}
+    </svg>
+  );
+
+  const deltaChip = (
+    <span className={`ao-delta ${deltaUp ? "up" : "down"}`}>
+      {deltaUp ? "▲" : "▼"} {deltaUp ? "+" : ""}
+      {delta.toFixed(1)}°
+    </span>
+  );
 
   return (
     <div className={`ao-root ${cooling ? "cool" : "hot"}`} style={{ "--accent": accent }}>
       <div className="ao-topbar" />
       <div className={`ao-dock ${cooling ? "top" : ""}`}>
         <div className="ao-aura" />
-        <div className="ao-card">
+        <div className={`ao-card ${cooling ? "compact" : ""}`}>
           <div className="ao-sheen" />
           <div className="ao-accentbar" />
-        <button
-          className="ao-close"
-          onClick={() => {
-            clearHideTimer();
-            setActive(false);
-          }}
-          aria-label="Закрыть"
-        >
-          <MdClose />
-        </button>
+          <button
+            className="ao-close"
+            onClick={() => {
+              clearHideTimer();
+              setActive(false);
+            }}
+            aria-label="Закрыть"
+          >
+            <MdClose />
+          </button>
 
-        <div className="ao-inner">
-          <div className="ao-head">
-            <span className="ao-tag">
-              <span className="ao-dot" />
-              {tag}
-            </span>
-            <span className="ao-loc">Гостиная · сейчас</span>
-          </div>
-
-          <div className="ao-type">
-            {cooling ? "Температурная аномалия — стабилизируется" : "Обнаружена температурная аномалия"}
-          </div>
-          <div className="ao-metric">
-            <span className="ao-temp">
-              {value.toFixed(1)}
-              <span className="ao-unit">°C</span>
-            </span>
-            <span className={`ao-delta ${deltaUp ? "up" : "down"}`}>
-              {deltaUp ? "▲" : "▼"} {deltaUp ? "+" : ""}
-              {delta.toFixed(1)}°
-            </span>
-          </div>
-
-          <svg className="ao-spark" viewBox={`0 0 ${SW} ${SH}`} preserveAspectRatio="none">
-            {/* линия порога */}
-            <line x1="0" y1={thY} x2={SW} y2={thY} stroke="rgba(229,72,77,0.45)" strokeWidth="1" strokeDasharray="4 4" />
-            {area && <polygon points={area} fill={accent} opacity="0.12" />}
-            {pts.length > 1 && (
-              <polyline
-                points={line}
-                fill="none"
-                stroke={accent}
-                strokeWidth="2.5"
-                strokeLinejoin="round"
-                strokeLinecap="round"
-                vectorEffect="non-scaling-stroke"
-              />
-            )}
-            {pts.length > 0 && (
-              <>
-                <circle
-                  className="ao-ping"
-                  cx={pts[pts.length - 1][0]}
-                  cy={pts[pts.length - 1][1]}
-                  r="4"
-                  fill="none"
-                  stroke={accent}
-                  strokeWidth="2"
-                />
-                <circle cx={pts[pts.length - 1][0]} cy={pts[pts.length - 1][1]} r="3.5" fill={accent} />
-              </>
-            )}
-          </svg>
-
-          <div className="ao-divider" />
-
-          <div className="ao-action">
-            <div className="ao-aicon">
-              <MdAcUnit size={18} />
+          {cooling ? (
+            /* компактная плашка: слева температура, справа график */
+            <div className="ao-body ao-compact" key="compact">
+              <div className="ao-c-info">
+                <span className="ao-tag">
+                  <span className="ao-dot" />
+                  {tag}
+                </span>
+                <div className="ao-c-metric">
+                  <span className="ao-temp ao-temp-sm">
+                    {value.toFixed(1)}
+                    <span className="ao-unit">°C</span>
+                  </span>
+                </div>
+                <div className="ao-c-status">
+                  <MdAcUnit size={14} /> Кондиционер · {resolved ? "норма" : "активен"}
+                </div>
+              </div>
+              <Spark className="ao-spark-sm" />
             </div>
-            <div className="ao-atext">
-              <div className="ao-atitle">Кондиционер · Гостиная</div>
-              <div className="ao-asub">
-                {acEngaged ? "Включён автоматически по правилу" : "Оценка ситуации…"}
+          ) : (
+            /* полная карточка инцидента */
+            <div className="ao-body ao-inner" key="full">
+              <div className="ao-head">
+                <span className="ao-tag">
+                  <span className="ao-dot" />
+                  {tag}
+                </span>
+                <span className="ao-loc">Гостиная · сейчас</span>
+              </div>
+
+              <div className="ao-type">Обнаружена температурная аномалия</div>
+              <div className="ao-metric">
+                <span className="ao-temp">
+                  {value.toFixed(1)}
+                  <span className="ao-unit">°C</span>
+                </span>
+                {deltaChip}
+              </div>
+
+              <Spark className="ao-spark" />
+
+              <div className="ao-divider" />
+
+              <div className="ao-action">
+                <div className="ao-aicon">
+                  <MdAcUnit size={18} />
+                </div>
+                <div className="ao-atext">
+                  <div className="ao-atitle">Кондиционер · Гостиная</div>
+                  <div className="ao-asub">{acEngaged ? "Включён автоматически по правилу" : "Оценка ситуации…"}</div>
+                </div>
+                <div className="ao-status">
+                  {acEngaged ? (
+                    <>
+                      <MdCheck size={15} /> активен
+                    </>
+                  ) : (
+                    <>
+                      <span className="ao-spinner" /> отклик
+                    </>
+                  )}
+                </div>
+              </div>
+
+              <div className="ao-foot">
+                <span>
+                  IndigoSmart · <b>авто-отклик</b>
+                </span>
+                <span>порог {TH}.0°C</span>
               </div>
             </div>
-            <div className="ao-status">
-              {acEngaged ? (
-                <>
-                  <MdCheck size={15} /> {resolved ? "норма" : "активен"}
-                </>
-              ) : (
-                <>
-                  <span className="ao-spinner" /> отклик
-                </>
-              )}
-            </div>
-          </div>
-
-          <div className="ao-foot">
-            <span>
-              IndigoSmart · <b>авто-отклик</b>
-            </span>
-            <span>порог {TH}.0°C</span>
-          </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
