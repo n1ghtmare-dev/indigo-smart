@@ -40,9 +40,11 @@ const Scenarios = () => {
       if (!r.ok) {
         setPhase(null);
         if (r.status === 409) alert("Сценарий уже выполняется");
+        else alert(`Не удалось запустить сценарий (код ${r.status})`);
       }
-    } catch {
+    } catch (e) {
       setPhase(null);
+      alert("Не удалось связаться с сервером. Проверьте соединение.");
     }
   };
 

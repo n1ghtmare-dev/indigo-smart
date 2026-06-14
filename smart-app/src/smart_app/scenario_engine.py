@@ -25,10 +25,11 @@ from ws_manager import manager
 log = logging.getLogger("scenario")
 
 # --- Таймлайн (константы — легко подправить длительность) ---
-RISING_VALUES = [24.0, 27.0, 30.0, 32.0]   # рост до пика
-COOLING_VALUES = [32.0, 28.0, 24.0]        # возврат к норме
-STEP_DELAY = 3.0                            # сек между шагами
-THRESHOLD = 30.0                            # порог «жары»
+RISING_VALUES = [24.0, 30.0, 36.0]               # резкий скачок вверх (так и ловится перегрев)
+COOLING_VALUES = [36.0, 33.0, 30.0, 27.0, 24.0]  # медленный возврат к норме
+RISE_DELAY = 0.8                                  # быстро между шагами роста
+COOL_DELAY = 3.0                                  # медленно между шагами охлаждения
+THRESHOLD = 30.0                                  # порог «жары»
 
 _lock = threading.Lock()
 # seq — монотонный счётчик шагов: фронт по его изменению понимает, что пришёл
@@ -118,13 +119,13 @@ def _run_overheat(actor_user_id: Optional[int],
             _finish("error")
             return
 
-        # Фаза 1 — рост температуры
+        # Фаза 1 — резкий рост температуры
         for v in RISING_VALUES:
             db.add(SensorReading(device_id=sensor.id, reading_type="temperature",
                                  value=v, recorded_at=datetime.utcnow()))
             db.commit()
             _step("rising", sensor, ac, v)
-            sleep(STEP_DELAY)
+            sleep(RISE_DELAY)
 
         # Фаза 2 — дом реагирует: включить кондиционер + журнал
         db.add(DeviceState(device_id=ac.id, state_type="ON/OFF",
@@ -141,15 +142,15 @@ def _run_overheat(actor_user_id: Optional[int],
             ))
         db.commit()
         _step("rule_fired", sensor, ac, max(RISING_VALUES))
-        sleep(STEP_DELAY)
+        sleep(COOL_DELAY)
 
-        # Фаза 3 — охлаждение
+        # Фаза 3 — медленное охлаждение
         for v in COOLING_VALUES:
             db.add(SensorReading(device_id=sensor.id, reading_type="temperature",
                                  value=v, recorded_at=datetime.utcnow()))
             db.commit()
             _step("cooling", sensor, ac, v)
-            sleep(STEP_DELAY)
+            sleep(COOL_DELAY)
 
         _step("resolved", sensor, ac, COOLING_VALUES[-1], running=False)
     except Exception:

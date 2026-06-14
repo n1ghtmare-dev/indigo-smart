@@ -128,8 +128,12 @@ def test_scenario_state_endpoint(client):
     assert r.json()["running"] is False
 
 
-def test_start_requires_auth(client):
+def test_start_allowed_without_auth(client, monkeypatch):
+    """Демо можно запускать без входа (чтобы стартовать прямо с телефона)."""
     import scenario_engine as se
     se._reset_state()
+    monkeypatch.setattr(se, "_run_overheat", lambda *a, **k: None)
     r = client.post("/api/scenario/overheat/start")
-    assert r.status_code == 401
+    assert r.status_code == 200
+    assert r.json()["ok"] is True
+    se._reset_state()
