@@ -173,9 +173,11 @@ const AlertOverlay = () => {
   const thY = yPos(TH);
 
   return (
-    <div className="ao-root" style={{ "--accent": accent }}>
+    <div className={`ao-root ${cooling ? "cool" : "hot"}`} style={{ "--accent": accent }}>
       <div className="ao-topbar" />
+      <div className="ao-aura" />
       <div className="ao-card">
+        <div className="ao-sheen" />
         <div className="ao-accentbar" />
         <button
           className="ao-close"
@@ -227,7 +229,18 @@ const AlertOverlay = () => {
               />
             )}
             {pts.length > 0 && (
-              <circle cx={pts[pts.length - 1][0]} cy={pts[pts.length - 1][1]} r="3.5" fill={accent} />
+              <>
+                <circle
+                  className="ao-ping"
+                  cx={pts[pts.length - 1][0]}
+                  cy={pts[pts.length - 1][1]}
+                  r="4"
+                  fill="none"
+                  stroke={accent}
+                  strokeWidth="2"
+                />
+                <circle cx={pts[pts.length - 1][0]} cy={pts[pts.length - 1][1]} r="3.5" fill={accent} />
+              </>
             )}
           </svg>
 
