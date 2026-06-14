@@ -67,3 +67,43 @@ def test_get_state_idle_by_default():
     se._reset_state()  # тестовый помощник
     st = se.get_state()
     assert st == {"running": False, "scenario": None, "phase": None}
+
+
+def _auth_header(client):
+    r = client.post("/api/auth/register", json={
+        "full_name": "Demo", "email": "demo@e.com", "password": "p",
+    })
+    return {"Authorization": f"Bearer {r.json()['access_token']}"}
+
+
+def test_start_overheat_endpoint(client, monkeypatch):
+    import scenario_engine as se
+    se._reset_state()
+    # не запускать настоящий поток в тесте: runner-заглушка не сбрасывает состояние
+    monkeypatch.setattr(se, "_run_overheat", lambda *a, **k: None)
+
+    headers = _auth_header(client)
+    r1 = client.post("/api/scenario/overheat/start", headers=headers)
+    assert r1.status_code == 200
+    assert r1.json()["ok"] is True
+
+    # второй запуск, пока «идёт» → 409
+    r2 = client.post("/api/scenario/overheat/start", headers=headers)
+    assert r2.status_code == 409
+
+    se._reset_state()
+
+
+def test_scenario_state_endpoint(client):
+    import scenario_engine as se
+    se._reset_state()
+    r = client.get("/api/scenario/state")
+    assert r.status_code == 200
+    assert r.json()["running"] is False
+
+
+def test_start_requires_auth(client):
+    import scenario_engine as se
+    se._reset_state()
+    r = client.post("/api/scenario/overheat/start")
+    assert r.status_code == 401

@@ -25,6 +25,7 @@ from routes.audit import router as audit_router
 from routes.simulator import router as simulator_router
 from routes.export import router as export_router
 from routes.websocket import router as ws_router
+from routes.scenario import router as scenario_router
 
 from simulator_engine import start_simulator, stop_simulator
 from automation_engine import start_automation, stop_automation
@@ -77,6 +78,7 @@ app.include_router(audit_router, prefix=API_PREFIX)
 app.include_router(simulator_router, prefix=API_PREFIX)
 app.include_router(export_router, prefix=API_PREFIX)
 app.include_router(ws_router, prefix=API_PREFIX)
+app.include_router(scenario_router, prefix=API_PREFIX)
 
 
 @app.get("/api")
