@@ -3,10 +3,14 @@ import { MdOutlineCalendarToday } from "react-icons/md";
 import Card from "components/card";
 import LineChart from "components/charts/LineChart";
 import { API_BASE } from "config/api";
+import { useLiveEvents } from "contexts/LiveEvents";
 
 const TemperatureChart = () => {
   const [data, setData] = useState([]);
   const [avgTemp, setAvgTemp] = useState(null);
+  // Живое значение во время демо-сценария: { value, cooling } | null
+  const [live, setLive] = useState(null);
+  const { subscribe } = useLiveEvents();
 
   useEffect(() => {
     fetch(`${API_BASE}/analytics/temperature/daily`)
@@ -20,6 +24,21 @@ const TemperatureChart = () => {
       })
       .catch(console.error);
   }, []);
+
+  // Реакция на сценарий: температура растёт/падает в реальном времени.
+  useEffect(() => {
+    const unsub = subscribe((msg) => {
+      if (msg.type !== "scenario_step") return;
+      if (msg.phase === "resolved" || msg.phase === "error") {
+        setLive(null);
+        return;
+      }
+      if (msg.value != null) {
+        setLive({ value: msg.value, cooling: msg.phase === "cooling" });
+      }
+    });
+    return unsub;
+  }, [subscribe]);
 
   const chartOptions = {
     legend: { show: true, labels: { colors: "#A3AED0" } },
@@ -58,15 +77,40 @@ const TemperatureChart = () => {
     <Card extra="!p-[22px]">
       <div className="flex items-start justify-between">
         <div className="flex flex-col gap-2">
-          <span className="pill">
-            <MdOutlineCalendarToday className="h-3 w-3" />
-            30 дней
-          </span>
+          {live ? (
+            <span
+              className={`pill ${live.cooling ? "text-emerald-400" : "text-red-400"}`}
+            >
+              <span
+                className={`h-1.5 w-1.5 animate-pulse rounded-full ${
+                  live.cooling ? "bg-emerald-400" : "bg-red-500"
+                }`}
+              />
+              В реальном времени
+            </span>
+          ) : (
+            <span className="pill">
+              <MdOutlineCalendarToday className="h-3 w-3" />
+              30 дней
+            </span>
+          )}
           <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-            Средняя температура
+            {live ? "Текущая температура" : "Средняя температура"}
           </p>
-          <h3 className="text-4xl font-extrabold text-grad">
-            {avgTemp ? `${avgTemp}°C` : "—"}
+          <h3
+            className={`text-4xl font-extrabold transition-colors duration-300 ${
+              live
+                ? live.cooling
+                  ? "text-emerald-400"
+                  : "text-red-500"
+                : "text-grad"
+            }`}
+          >
+            {live
+              ? `${Number(live.value).toFixed(0)}°C`
+              : avgTemp
+              ? `${avgTemp}°C`
+              : "—"}
           </h3>
         </div>
         <div className="ico-grad flex h-11 w-11 items-center justify-center rounded-2xl text-white">
