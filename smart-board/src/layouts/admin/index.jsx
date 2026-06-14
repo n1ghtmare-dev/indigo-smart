@@ -4,6 +4,7 @@ import Navbar from "components/navbar";
 import Sidebar from "components/sidebar";
 import Footer from "components/footer/Footer";
 import routes from "routes.js";
+import { LiveEventsProvider } from "contexts/LiveEvents";
 
 export default function Admin(props) {
   const { ...rest } = props;
@@ -57,40 +58,42 @@ export default function Admin(props) {
 
   document.documentElement.dir = "ltr";
   return (
-    <div className="flex h-full w-full">
-      <Sidebar open={open} onClose={() => setOpen(false)} />
-      {/* Overlay for mobile sidebar */}
-      {open && window.innerWidth < 1200 && (
-        <div
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm xl:hidden"
-          onClick={() => setOpen(false)}
-        />
-      )}
-      <div className="h-full w-full">
-        <main
-          className="mx-[12px] h-full flex-none transition-all md:pr-2 xl:ml-[300px]"
-        >
-          <div className="h-full">
-            <Navbar
-              onOpenSidenav={() => setOpen(!open)}
-              brandText={currentRoute}
-              {...rest}
-            />
-            <div className="mx-auto mb-auto h-full min-h-[84vh] p-2 md:pr-2">
-              <Routes>
-                {getRoutes(routes)}
-                <Route
-                  path="/"
-                  element={<Navigate to="/admin/default" replace />}
-                />
-              </Routes>
+    <LiveEventsProvider>
+      <div className="flex h-full w-full">
+        <Sidebar open={open} onClose={() => setOpen(false)} />
+        {/* Overlay for mobile sidebar */}
+        {open && window.innerWidth < 1200 && (
+          <div
+            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm xl:hidden"
+            onClick={() => setOpen(false)}
+          />
+        )}
+        <div className="h-full w-full">
+          <main
+            className="mx-[12px] h-full flex-none transition-all md:pr-2 xl:ml-[300px]"
+          >
+            <div className="h-full">
+              <Navbar
+                onOpenSidenav={() => setOpen(!open)}
+                brandText={currentRoute}
+                {...rest}
+              />
+              <div className="mx-auto mb-auto h-full min-h-[84vh] p-2 md:pr-2">
+                <Routes>
+                  {getRoutes(routes)}
+                  <Route
+                    path="/"
+                    element={<Navigate to="/admin/default" replace />}
+                  />
+                </Routes>
+              </div>
+              <div className="p-3">
+                <Footer />
+              </div>
             </div>
-            <div className="p-3">
-              <Footer />
-            </div>
-          </div>
-        </main>
+          </main>
+        </div>
       </div>
-    </div>
+    </LiveEventsProvider>
   );
 }

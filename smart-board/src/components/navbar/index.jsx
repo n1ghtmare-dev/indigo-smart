@@ -3,21 +3,15 @@ import { FiAlignJustify } from "react-icons/fi";
 import { MdLogout, MdLightMode, MdDarkMode } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { auth } from "config/auth";
-import { API_BASE } from "config/api";
-import { useWebSocket } from "hooks/useWebSocket";
-
-const WS_URL = API_BASE.replace(/^http/, "ws") + "/ws/updates";
+import { useLiveEvents } from "contexts/LiveEvents";
 
 const Navbar = (props) => {
   const { onOpenSidenav, brandText } = props;
   const navigate = useNavigate();
   const [user] = useState(() => auth.getUser());
   const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "dark");
-  const [eventCount, setEventCount] = useState(0);
 
-  const { connected } = useWebSocket(WS_URL, (msg) => {
-    setEventCount((n) => n + 1);
-  });
+  const { connected, eventCount } = useLiveEvents();
 
   useEffect(() => {
     if (theme === "dark") document.body.classList.add("dark");
