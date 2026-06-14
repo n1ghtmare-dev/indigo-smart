@@ -12,19 +12,29 @@
   overflow: hidden;
   font-family: "Saira Condensed", "Oswald", ui-sans-serif, system-ui, sans-serif;
   animation: ao-in 0.45s ease both;
+  /* Постоянное размытие фона — сквозь оверлей виден размытый интерфейс. */
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
 }
 @keyframes ao-in {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
-/* фон */
+/* Полупрозрачная «вуаль» поверх интерфейса. Пульсирует ПРОЗРАЧНОСТЬ —
+   периодически проявляя то, что под оверлеем. */
 .ao-base { position: absolute; inset: 0; transition: background 1.2s ease; }
 .ao-base.hot {
-  background: radial-gradient(circle at 50% 44%, #2c0600 0%, #140000 55%, #000 100%);
+  background: radial-gradient(circle at 50% 44%, rgba(150,16,0,0.52) 0%, rgba(48,0,0,0.42) 58%, rgba(8,0,0,0.32) 100%);
+  animation: ao-veil 1.7s ease-in-out infinite;
 }
 .ao-base.cool {
-  background: radial-gradient(circle at 50% 50%, #03212a 0%, #00121a 60%, #000 100%);
+  background: radial-gradient(circle at 50% 50%, rgba(0,95,112,0.44) 0%, rgba(0,42,72,0.36) 60%, rgba(0,12,26,0.30) 100%);
+  animation: ao-veil 3.6s ease-in-out infinite;
+}
+@keyframes ao-veil {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 0.95; }
 }
 
 /* «дышащее» свечение из центра */
@@ -37,11 +47,11 @@
   pointer-events: none;
 }
 .ao-bloom.hot {
-  background: radial-gradient(circle, rgba(255,64,0,0.55) 0%, rgba(255,120,0,0.22) 32%, transparent 62%);
+  background: radial-gradient(circle, rgba(255,64,0,0.4) 0%, rgba(255,120,0,0.16) 34%, transparent 64%);
   animation: ao-breathe 1.05s ease-in-out infinite;
 }
 .ao-bloom.cool {
-  background: radial-gradient(circle, rgba(0,205,215,0.34) 0%, rgba(40,120,255,0.16) 36%, transparent 66%);
+  background: radial-gradient(circle, rgba(0,205,215,0.26) 0%, rgba(40,120,255,0.12) 38%, transparent 68%);
   animation: ao-breathe 3.6s ease-in-out infinite;
 }
 @keyframes ao-breathe {
