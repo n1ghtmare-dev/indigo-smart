@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useRef, useState, useCallback } from "react";
+import React, { createContext, useContext, useRef, useState, useCallback, useMemo } from "react";
 import { API_BASE } from "config/api";
 import { useWebSocket } from "hooks/useWebSocket";
 
@@ -17,7 +17,13 @@ export const LiveEventsProvider = ({ children }) => {
   const handle = useCallback((msg) => {
     setEventCount((n) => n + 1);
     subscribers.current.forEach((cb) => {
-      try { cb(msg); } catch {}
+      try {
+        cb(msg);
+      } catch (err) {
+        if (process.env.NODE_ENV !== "production") {
+          console.error("[LiveEvents] subscriber threw:", err);
+        }
+      }
     });
   }, []);
 
@@ -28,8 +34,13 @@ export const LiveEventsProvider = ({ children }) => {
     return () => subscribers.current.delete(cb);
   }, []);
 
+  const value = useMemo(
+    () => ({ connected, eventCount, subscribe }),
+    [connected, eventCount, subscribe]
+  );
+
   return (
-    <LiveEventsContext.Provider value={{ connected, eventCount, subscribe }}>
+    <LiveEventsContext.Provider value={value}>
       {children}
     </LiveEventsContext.Provider>
   );
