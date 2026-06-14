@@ -56,14 +56,18 @@ const AlertOverlay = () => {
         setActive(true);
         if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
         if (p === "rising") beep(audioCtx.current, 880, 250);
+        hideTimer.current = setTimeout(() => setActive(false), 20000); // safety net
       } else if (p === "cooling") {
+        clearHideTimer();
         setActive(true);
+        hideTimer.current = setTimeout(() => setActive(false), 20000); // safety net
       } else if (p === "resolved") {
         if (navigator.vibrate) navigator.vibrate(80);
         beep(audioCtx.current, 523, 200);
         clearHideTimer();
         hideTimer.current = setTimeout(() => setActive(false), 2500);
       } else if (p === "error") {
+        clearHideTimer();
         setActive(false);
       }
     });
@@ -94,9 +98,15 @@ const AlertOverlay = () => {
 
   return (
     <div
-      className={`fixed inset-0 z-[70] flex flex-col items-center justify-center bg-gradient-to-b ${bg} backdrop-blur-sm`}
-      style={{ animation: "pulse 1.2s ease-in-out infinite" }}
+      className={`fixed inset-0 z-[70] flex flex-col items-center justify-center bg-gradient-to-b ${bg} backdrop-blur-sm animate-pulse`}
     >
+      <button
+        onClick={() => { clearHideTimer(); setActive(false); }}
+        className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-black/20 text-white/90 hover:bg-black/40"
+        aria-label="Закрыть"
+      >
+        ✕
+      </button>
       {cooling ? (
         <MdCheckCircle className="mb-4 h-24 w-24 text-white" />
       ) : (
