@@ -1,30 +1,40 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { MdWarningAmber, MdCheckCircle, MdAcUnit } from "react-icons/md";
 import { useLiveEvents } from "contexts/LiveEvents";
+import "./AlertOverlay.css";
 
-// Короткий бип через Web Audio (без бинарных ассетов).
-function beep(ctx, freq, durationMs) {
+// Короткий тон через Web Audio (без бинарных ассетов).
+function tone(ctx, freq, durationMs, type = "square", gainVal = 0.05, when = 0) {
   if (!ctx) return;
   try {
+    const t = ctx.currentTime + when;
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
-    osc.type = "square";
-    osc.frequency.value = freq;
-    gain.gain.value = 0.05;
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, t);
+    gain.gain.setValueAtTime(gainVal, t);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + durationMs / 1000);
     osc.connect(gain).connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + durationMs / 1000);
+    osc.start(t);
+    osc.stop(t + durationMs / 1000);
   } catch {}
 }
 
+// Диапазон термометра для кольца-датчика.
+const T_MIN = 20;
+const T_MAX = 38;
+
 const AlertOverlay = () => {
   const { subscribe } = useLiveEvents();
-  const [active, setActive] = useState(false); // показывать оверлей
-  const [phase, setPhase] = useState(null); // rising | rule_fired | cooling | resolved
-  const [temp, setTemp] = useState(null);
-  const [armed, setArmed] = useState(false); // пользователь разрешил звук/вибро
+  const [active, setActive] = useState(false);
+  const [phase, setPhase] = useState(null); // rising | rule_fired | cooling | resolved | error
+  const [temp, setTemp] = useState(null); // целевое значение
+  const [shown, setShown] = useState(null); // плавно анимируемое значение
+  const [armed, setArmed] = useState(false);
   const audioCtx = useRef(null);
   const hideTimer = useRef(null);
+  const rafRef = useRef(null);
+  const shownRef = useRef(null);
 
   const clearHideTimer = () => {
     if (hideTimer.current) {
@@ -33,7 +43,6 @@ const AlertOverlay = () => {
     }
   };
 
-  // «Армирование» по первому касанию: создаёт AudioContext (autoplay-политика).
   const arm = () => {
     try {
       const Ctx = window.AudioContext || window.webkitAudioContext;
@@ -44,6 +53,28 @@ const AlertOverlay = () => {
     setArmed(true);
   };
 
+  // Плавный «счётчик»: анимируем shown → temp.
+  useEffect(() => {
+    if (temp == null) return;
+    cancelAnimationFrame(rafRef.current);
+    const from = shownRef.current == null ? temp : shownRef.current;
+    const to = temp;
+    const dur = 550;
+    let start = null;
+    const tick = (ts) => {
+      if (start == null) start = ts;
+      const p = Math.min(1, (ts - start) / dur);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const v = from + (to - from) * eased;
+      shownRef.current = v;
+      setShown(v);
+      if (p < 1) rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [temp]);
+
   useEffect(() => {
     const unsub = subscribe((msg) => {
       if (msg.type !== "scenario_step") return;
@@ -51,21 +82,32 @@ const AlertOverlay = () => {
       setPhase(p);
       if (msg.value != null) setTemp(msg.value);
 
-      if (p === "rising" || p === "rule_fired") {
+      if (p === "rising") {
         clearHideTimer();
         setActive(true);
-        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-        if (p === "rising") beep(audioCtx.current, 880, 250);
-        hideTimer.current = setTimeout(() => setActive(false), 20000); // safety net
+        if (navigator.vibrate) navigator.vibrate([90, 50, 90]);
+        // нарастающий тревожный тон
+        const f = 660 + (msg.value || 24) * 12;
+        tone(audioCtx.current, f, 220, "sawtooth", 0.05);
+        hideTimer.current = setTimeout(() => setActive(false), 25000);
+      } else if (p === "rule_fired") {
+        clearHideTimer();
+        setActive(true);
+        if (navigator.vibrate) navigator.vibrate([300, 80, 300]);
+        tone(audioCtx.current, 1200, 140, "square", 0.05);
+        tone(audioCtx.current, 1500, 160, "square", 0.05, 0.16);
+        hideTimer.current = setTimeout(() => setActive(false), 25000);
       } else if (p === "cooling") {
         clearHideTimer();
         setActive(true);
-        hideTimer.current = setTimeout(() => setActive(false), 20000); // safety net
+        hideTimer.current = setTimeout(() => setActive(false), 25000);
       } else if (p === "resolved") {
-        if (navigator.vibrate) navigator.vibrate(80);
-        beep(audioCtx.current, 523, 200);
+        if (navigator.vibrate) navigator.vibrate(60);
+        // мягкий «разрешающий» аккорд
+        tone(audioCtx.current, 523, 380, "sine", 0.06);
+        tone(audioCtx.current, 784, 460, "sine", 0.05, 0.05);
         clearHideTimer();
-        hideTimer.current = setTimeout(() => setActive(false), 2500);
+        hideTimer.current = setTimeout(() => setActive(false), 3200);
       } else if (p === "error") {
         clearHideTimer();
         setActive(false);
@@ -74,10 +116,24 @@ const AlertOverlay = () => {
     return () => {
       unsub();
       clearHideTimer();
+      cancelAnimationFrame(rafRef.current);
     };
   }, [subscribe]);
 
-  // Кнопка «армирования» — пока пользователь не нажал.
+  // Частицы (угли/снег) — позиции фиксируем один раз.
+  const particles = useMemo(
+    () =>
+      Array.from({ length: 26 }, (_, i) => ({
+        id: i,
+        left: Math.round(Math.random() * 100),
+        size: 5 + Math.round(Math.random() * 16),
+        delay: (Math.random() * 3.2).toFixed(2),
+        dur: (2.4 + Math.random() * 2.8).toFixed(2),
+        drift: Math.round(Math.random() * 80 - 40),
+      })),
+    []
+  );
+
   if (!armed) {
     return (
       <button
@@ -92,40 +148,97 @@ const AlertOverlay = () => {
   if (!active) return null;
 
   const cooling = phase === "cooling" || phase === "resolved";
-  const bg = cooling
-    ? "from-emerald-600/90 to-emerald-900/95"
-    : "from-red-600/90 to-red-900/95";
+  const mode = cooling ? "cool" : "hot";
+
+  // Кольцо-датчик: доля заполнения по температуре.
+  const value = shown == null ? temp || T_MIN : shown;
+  const frac = Math.max(0, Math.min(1, (value - T_MIN) / (T_MAX - T_MIN)));
+  const R = 88;
+  const C = 2 * Math.PI * R;
+  const ringColor = cooling ? "#28e0d2" : frac > 0.7 ? "#ff2d00" : "#ff8a00";
+
+  const title = cooling
+    ? phase === "resolved"
+      ? "Угроза устранена"
+      : "Климат-контроль активирован"
+    : "Критический перегрев";
+  const sub = cooling ? "Система охлаждает помещение" : "Автоматика реагирует…";
 
   return (
-    <div
-      className={`fixed inset-0 z-[70] flex flex-col items-center justify-center bg-gradient-to-b ${bg} backdrop-blur-sm animate-pulse`}
-    >
+    <div className="ao-root">
+      <div className={`ao-base ${mode}`} />
+      <div className={`ao-bloom ${mode}`} />
+      {!cooling && <div className="ao-siren" />}
+      <div className={`ao-vignette ${mode}`} />
+
+      <div className="ao-particles" aria-hidden="true">
+        {particles.map((p) => (
+          <span
+            key={p.id}
+            className={`ao-p ${cooling ? "frost" : "ember"}`}
+            style={{
+              left: `${p.left}%`,
+              width: `${p.size}px`,
+              height: `${p.size}px`,
+              animationDelay: `${p.delay}s`,
+              animationDuration: `${p.dur}s`,
+              "--drift": `${p.drift}px`,
+            }}
+          />
+        ))}
+      </div>
+
       <button
-        onClick={() => { clearHideTimer(); setActive(false); }}
-        className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-black/20 text-white/90 hover:bg-black/40"
+        className="ao-close"
+        onClick={() => {
+          clearHideTimer();
+          setActive(false);
+        }}
         aria-label="Закрыть"
       >
         ✕
       </button>
-      {cooling ? (
-        <MdCheckCircle className="mb-4 h-24 w-24 text-white" />
-      ) : (
-        <MdWarningAmber className="mb-4 h-24 w-24 animate-bounce text-white" />
-      )}
-      <h1 className="px-6 text-center text-3xl font-extrabold text-white md:text-5xl">
-        {cooling ? "Кондиционер включён автоматически" : "Перегрев в помещении!"}
-      </h1>
-      {temp != null && (
-        <div className="mt-6 flex items-center gap-3 text-white">
-          {cooling && <MdAcUnit className="h-10 w-10" />}
-          <span className="text-6xl font-black tabular-nums md:text-7xl">
-            {Number(temp).toFixed(0)}°
-          </span>
+
+      <div className="ao-center">
+        <div className="ao-gaugewrap">
+          <svg className="ao-ring" viewBox="0 0 200 200">
+            <circle className="ao-ring-track" cx="100" cy="100" r={R} strokeWidth="9" />
+            <circle
+              className="ao-ring-bar"
+              cx="100"
+              cy="100"
+              r={R}
+              strokeWidth="9"
+              stroke={ringColor}
+              strokeDasharray={C}
+              strokeDashoffset={C * (1 - frac)}
+              style={{ filter: `drop-shadow(0 0 10px ${ringColor})` }}
+            />
+          </svg>
+          <div className="ao-gaugeinner">
+            {cooling ? (
+              <MdAcUnit className={`ao-icon ${mode}`} />
+            ) : (
+              <MdWarningAmber className={`ao-icon ${mode}`} />
+            )}
+            <div className={`ao-num ${mode}`}>
+              {Math.round(value)}
+              <span className="ao-deg">°C</span>
+            </div>
+            <div className="ao-chip">
+              {cooling ? "температура падает" : "температура растёт"}
+            </div>
+          </div>
         </div>
-      )}
-      <p className="mt-4 text-sm font-medium text-white/80">
-        {cooling ? "Система устранила проблему" : "Система реагирует…"}
-      </p>
+
+        <h1 className={`ao-title ${mode} ${phase === "resolved" ? "ao-pop" : ""}`}>
+          {phase === "resolved" && (
+            <MdCheckCircle style={{ display: "inline", marginRight: 10, verticalAlign: "-4px" }} />
+          )}
+          {title}
+        </h1>
+        <p className="ao-sub">{sub}</p>
+      </div>
     </div>
   );
 };
