@@ -15,13 +15,13 @@ const PHASE_LABEL = {
 
 const Scenarios = () => {
   const { subscribe } = useLiveEvents();
-  const [running, setRunning] = useState(false);
   const [phase, setPhase] = useState(null);
+  const running = phase !== null && phase !== "resolved" && phase !== "error";
 
   useEffect(() => {
     apiFetch("/scenario/state")
       .then((r) => r.json())
-      .then((s) => { setRunning(!!s.running); setPhase(s.phase); })
+      .then((s) => { setPhase(s.phase); })
       .catch(() => {});
   }, []);
 
@@ -29,18 +29,20 @@ const Scenarios = () => {
     const unsub = subscribe((msg) => {
       if (msg.type !== "scenario_step") return;
       setPhase(msg.phase);
-      setRunning(msg.phase !== "resolved" && msg.phase !== "error");
     });
     return unsub;
   }, [subscribe]);
 
   const launch = async () => {
-    setRunning(true);
     setPhase("start");
-    const r = await apiFetch("/scenario/overheat/start", { method: "POST" });
-    if (!r.ok) {
-      setRunning(false);
-      if (r.status === 409) alert("Сценарий уже выполняется");
+    try {
+      const r = await apiFetch("/scenario/overheat/start", { method: "POST" });
+      if (!r.ok) {
+        setPhase(null);
+        if (r.status === 409) alert("Сценарий уже выполняется");
+      }
+    } catch {
+      setPhase(null);
     }
   };
 
