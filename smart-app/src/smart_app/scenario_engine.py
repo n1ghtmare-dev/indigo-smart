@@ -2,7 +2,12 @@
 
 Детерминированно разыгрывает каскад «перегрев»: пишет реальные показания
 температуры (рост → падение), на пороге включает кондиционер и логирует
-срабатывание, на каждом шаге транслирует событие через WebSocket.
+срабатывание. На каждом шаге обновляет публичное состояние (его опрашивает
+фронт через /scenario/state) И транслирует событие по WebSocket.
+
+Почему и поллинг, и WebSocket: в проде nginx не апгрейдит WebSocket для
+/api/ws/updates (отдаёт статику), поэтому надёжный канал доставки на фронт —
+HTTP-поллинг состояния. WebSocket оставлен как бонус для сред, где он работает.
 Не зависит от 20-сек поллинга automation_engine и рандома симулятора.
 """
 import logging
@@ -26,7 +31,12 @@ STEP_DELAY = 3.0                            # сек между шагами
 THRESHOLD = 30.0                            # порог «жары»
 
 _lock = threading.Lock()
-_state = {"running": False, "scenario": None, "phase": None}
+# seq — монотонный счётчик шагов: фронт по его изменению понимает, что пришёл
+# новый шаг (даже если значение температуры повторилось).
+_state = {
+    "running": False, "scenario": None, "phase": None,
+    "value": None, "room_id": None, "seq": 0,
+}
 
 
 def get_state() -> dict:
@@ -36,12 +46,8 @@ def get_state() -> dict:
 
 def _reset_state():
     with _lock:
-        _state.update(running=False, scenario=None, phase=None)
-
-
-def _set_phase(phase: str):
-    with _lock:
-        _state["phase"] = phase
+        _state.update(running=False, scenario=None, phase=None,
+                      value=None, room_id=None, seq=0)
 
 
 def _find_target(db):
@@ -65,18 +71,35 @@ def _find_target(db):
     return sensors[0], acs[0]
 
 
-def _broadcast(phase, sensor, ac, value):
+def _step(phase, sensor, ac, value, running=None):
+    """Опубликовать шаг сценария: обновить состояние (для поллинга) + WS-broadcast."""
+    room_id = sensor.room_id if sensor else None
+    with _lock:
+        _state["phase"] = phase
+        _state["value"] = value
+        _state["room_id"] = room_id
+        if running is not None:
+            _state["running"] = running
+        _state["seq"] += 1
     manager.broadcast_sync({
         "type": "scenario_step",
         "scenario": "overheat",
         "phase": phase,
-        "room_id": sensor.room_id,
-        "sensor_device_id": sensor.id,
-        "ac_device_id": ac.id,
+        "room_id": room_id,
+        "sensor_device_id": sensor.id if sensor else None,
+        "ac_device_id": ac.id if ac else None,
         "value": value,
         "threshold": THRESHOLD,
         "ts": datetime.utcnow().isoformat(),
     })
+
+
+def _finish(phase):
+    """Терминальное состояние (resolved/error): фронт по нему завершает анимацию."""
+    with _lock:
+        _state["phase"] = phase
+        _state["running"] = False
+        _state["seq"] += 1
 
 
 def _run_overheat(actor_user_id: Optional[int],
@@ -92,20 +115,18 @@ def _run_overheat(actor_user_id: Optional[int],
         sensor, ac = _find_target(db)
         if not sensor or not ac:
             log.warning("Сценарий: нет датчика температуры или кондиционера")
-            _set_phase("error")
+            _finish("error")
             return
 
         # Фаза 1 — рост температуры
-        _set_phase("rising")
         for v in RISING_VALUES:
             db.add(SensorReading(device_id=sensor.id, reading_type="temperature",
                                  value=v, recorded_at=datetime.utcnow()))
             db.commit()
-            _broadcast("rising", sensor, ac, v)
+            _step("rising", sensor, ac, v)
             sleep(STEP_DELAY)
 
         # Фаза 2 — дом реагирует: включить кондиционер + журнал
-        _set_phase("rule_fired")
         db.add(DeviceState(device_id=ac.id, state_type="ON/OFF",
                            state_value="1", changed_by=actor_user_id))
         rule = (db.query(AutomationRule)
@@ -119,27 +140,25 @@ def _run_overheat(actor_user_id: Optional[int],
                 message="Кондиционер включён автоматически (сценарий «Перегрев»)",
             ))
         db.commit()
-        _broadcast("rule_fired", sensor, ac, max(RISING_VALUES))
+        _step("rule_fired", sensor, ac, max(RISING_VALUES))
         sleep(STEP_DELAY)
 
         # Фаза 3 — охлаждение
-        _set_phase("cooling")
         for v in COOLING_VALUES:
             db.add(SensorReading(device_id=sensor.id, reading_type="temperature",
                                  value=v, recorded_at=datetime.utcnow()))
             db.commit()
-            _broadcast("cooling", sensor, ac, v)
+            _step("cooling", sensor, ac, v)
             sleep(STEP_DELAY)
 
-        _set_phase("resolved")
-        _broadcast("resolved", sensor, ac, COOLING_VALUES[-1])
+        _step("resolved", sensor, ac, COOLING_VALUES[-1], running=False)
     except Exception:
         log.exception("Сценарий «Перегрев» упал")
         db.rollback()
+        _finish("error")
     finally:
         if _own_session:
             db.close()
-        _reset_state()
 
 
 def start_overheat(actor_user_id: Optional[int], runner: Optional[Callable] = None) -> bool:
@@ -147,7 +166,9 @@ def start_overheat(actor_user_id: Optional[int], runner: Optional[Callable] = No
     with _lock:
         if _state["running"]:
             return False
-        _state.update(running=True, scenario="overheat", phase="start")
+        _state.update(running=True, scenario="overheat", phase="start",
+                      value=None, room_id=None)
+        _state["seq"] += 1
     target = runner or _run_overheat
     threading.Thread(target=target, args=(actor_user_id,), daemon=True).start()
     return True

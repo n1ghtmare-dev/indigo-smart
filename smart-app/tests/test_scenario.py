@@ -66,7 +66,33 @@ def test_get_state_idle_by_default():
     import scenario_engine as se
     se._reset_state()  # тестовый помощник
     st = se.get_state()
-    assert st == {"running": False, "scenario": None, "phase": None}
+    assert st["running"] is False
+    assert st["scenario"] is None
+    assert st["phase"] is None
+    assert st["seq"] == 0
+
+
+def test_state_carries_value_and_seq_during_run(db_session):
+    """Поллинг-канал: состояние несёт текущую температуру, room_id и растущий seq."""
+    import scenario_engine as se
+    from models import Room, DeviceType, Device
+    room = Room(name="Гостиная", description="t"); db_session.add(room); db_session.commit()
+    dts = DeviceType(name="Датчик температуры", is_sensor=True)
+    dta = DeviceType(name="Кондиционер", is_sensor=False)
+    db_session.add_all([dts, dta]); db_session.commit()
+    s = Device(name="t", room_id=room.id, device_type_id=dts.id)
+    a = Device(name="ac", room_id=room.id, device_type_id=dta.id)
+    db_session.add_all([s, a]); db_session.commit()
+
+    se._reset_state()
+    se._run_overheat(actor_user_id=None, db_factory=lambda: db_session, sleep=lambda x: None)
+
+    st = se.get_state()
+    assert st["phase"] == "resolved"
+    assert st["running"] is False
+    assert st["seq"] > 0
+    assert st["room_id"] == room.id
+    assert st["value"] == se.COOLING_VALUES[-1]
 
 
 def _auth_header(client):
