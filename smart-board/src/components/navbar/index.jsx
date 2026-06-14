@@ -39,24 +39,24 @@ const Navbar = (props) => {
         backdropFilter: "blur(18px)",
       }}
     >
-      <div className="flex items-center gap-3">
+      <div className="flex min-w-0 flex-1 items-center gap-3">
         <span
-          className="flex cursor-pointer items-center justify-center rounded-lg p-1.5 text-white/70 transition hover:bg-white/[0.08] hover:text-white xl:hidden"
+          className="flex shrink-0 cursor-pointer items-center justify-center rounded-lg p-1.5 text-white/70 transition hover:bg-white/[0.08] hover:text-white xl:hidden"
           onClick={onOpenSidenav}
         >
           <FiAlignJustify className="h-5 w-5" />
         </span>
-        <div className="flex flex-col leading-tight">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-600">
+        <div className="flex min-w-0 flex-col leading-tight">
+          <span className="truncate text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-600">
             IndigoSmart · {user?.role}
           </span>
-          <h1 className="text-[24px] font-extrabold tracking-tight text-white">
+          <h1 className="truncate text-lg font-extrabold tracking-tight text-white sm:text-2xl">
             {brandText}
           </h1>
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex shrink-0 items-center gap-2">
         <div className="hidden items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 py-2 md:flex">
           <span
             className={`h-2 w-2 rounded-full ${connected ? "animate-pulse bg-green-400" : "bg-gray-500"}`}
@@ -78,10 +78,10 @@ const Navbar = (props) => {
         </button>
         <button
           onClick={logout}
-          className="flex h-9 items-center gap-1.5 rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 text-xs font-semibold text-white hover:bg-white/[0.08]"
+          className="flex h-9 items-center gap-1.5 rounded-xl border border-white/[0.08] bg-white/[0.03] px-2.5 text-xs font-semibold text-white hover:bg-white/[0.08] sm:px-3"
           title="Выйти"
         >
-          <MdLogout /> Выход
+          <MdLogout /> <span className="hidden sm:inline">Выход</span>
         </button>
         <div
           className="flex h-9 w-9 items-center justify-center rounded-xl font-bold text-white"

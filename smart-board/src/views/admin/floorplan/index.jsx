@@ -256,21 +256,21 @@ const FloorPlan = () => {
 
   return (
     <div className="pt-4">
-      <div className="mb-6 flex items-end justify-between">
-        <div>
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div className="min-w-0">
           <span className="pill pill-cyan">
             {devices.length} устройств · {rooms.length} комнат
           </span>
-          <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-white">
+          <h2 className="mt-3 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
             План <span className="text-grad">помещений</span>
           </h2>
           <p className="mt-1 text-sm text-gray-600">
             {editMode
               ? "Режим редактирования: тащи устройства мышкой между комнат, тащи угол комнаты чтобы изменить размер, клик по названию — переименовать."
-              : "Клик по устройству — включить/выключить. Нажми «Редактировать» чтобы менять план."}
+              : "Нажмите на устройство, чтобы включить или выключить."}
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="hidden shrink-0 gap-2 lg:flex">
           {editMode && (
             <button
               onClick={() => setAdding(true)}
@@ -360,7 +360,102 @@ const FloorPlan = () => {
         </Card>
       )}
 
-      <Card extra="!p-5">
+      {/* Мобильный вид: комнаты как карточки с устройствами-чипами */}
+      <div className="space-y-4 lg:hidden">
+        {rooms.length === 0 && (
+          <p className="text-sm text-gray-500">Комнат пока нет.</p>
+        )}
+        {rooms.map((room) => {
+          const roomDevices = devices.filter((d) => d.room_id === room.id);
+          const alert = alertRoom && alertRoom.roomId === room.id;
+          return (
+            <div
+              key={room.id}
+              className="overflow-hidden rounded-2xl border border-white/[0.08] p-4"
+              style={{
+                background:
+                  "linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015))",
+                ...(alert
+                  ? {
+                      boxShadow: alertRoom.cooling
+                        ? "0 0 0 2px rgba(16,185,129,0.9), 0 0 26px rgba(16,185,129,0.5)"
+                        : "0 0 0 2px rgba(239,68,68,0.9), 0 0 26px rgba(239,68,68,0.6)",
+                      transition: "box-shadow 0.4s ease",
+                    }
+                  : {}),
+              }}
+            >
+              <div className="mb-3 flex items-center justify-between">
+                <h3 className="text-base font-bold tracking-tight text-white">
+                  {room.name}
+                </h3>
+                <span className="rounded-full bg-white/[0.06] px-2.5 py-1 text-[11px] font-medium text-gray-400">
+                  {roomDevices.length} устр.
+                </span>
+              </div>
+              {roomDevices.length === 0 ? (
+                <p className="text-xs text-gray-600">Нет устройств</p>
+              ) : (
+                <div className="grid grid-cols-2 gap-2.5">
+                  {roomDevices.map((d) => {
+                    const Icon = ICONS[d.type] || MdSensors;
+                    const isOn = d.status === "on";
+                    return (
+                      <button
+                        key={d.id}
+                        onClick={() => toggle(d)}
+                        disabled={d.is_sensor}
+                        className={`flex items-center gap-2.5 rounded-xl border p-2.5 text-left transition ${
+                          d.is_sensor
+                            ? "border-cyan-400/25 bg-cyan-400/[0.07]"
+                            : isOn
+                            ? "border-yellow-300/50 bg-yellow-400/[0.14]"
+                            : "border-white/10 bg-white/[0.03] active:bg-white/[0.07]"
+                        }`}
+                      >
+                        <span
+                          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${
+                            d.is_sensor
+                              ? "bg-cyan-400/15 text-cyan-300"
+                              : isOn
+                              ? "bg-yellow-400/25 text-yellow-200"
+                              : "bg-white/[0.05] text-gray-500"
+                          }`}
+                          style={
+                            isOn && !d.is_sensor
+                              ? { boxShadow: "0 0 18px rgba(255,215,0,0.4)" }
+                              : {}
+                          }
+                        >
+                          <Icon className="h-5 w-5" />
+                        </span>
+                        <span className="min-w-0">
+                          <span className="block truncate text-[13px] font-semibold text-white">
+                            {d.name}
+                          </span>
+                          <span
+                            className={`block text-[11px] ${
+                              d.is_sensor
+                                ? "text-cyan-300/80"
+                                : isOn
+                                ? "text-yellow-200/80"
+                                : "text-gray-500"
+                            }`}
+                          >
+                            {d.is_sensor ? "датчик" : isOn ? "включено" : "выключено"}
+                          </span>
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      <Card extra="!p-5 hidden lg:block">
         <div
           ref={canvasRef}
           className="relative w-full overflow-hidden rounded-2xl border border-white/[0.06]"
