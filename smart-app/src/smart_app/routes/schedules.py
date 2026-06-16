@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from db import get_db
 from models import Schedule, User
-from security import require_user_or_admin
+from security import get_optional_user
 
 router = APIRouter(prefix="/schedules", tags=["schedules"])
 
@@ -40,8 +40,8 @@ def list_schedules(db: Session = Depends(get_db)):
 
 @router.post("")
 def create_schedule(data: ScheduleIn, db: Session = Depends(get_db),
-                     user: User = Depends(require_user_or_admin)):
-    s = Schedule(**data.model_dump(), created_by=user.id)
+                     user: Optional[User] = Depends(get_optional_user)):
+    s = Schedule(**data.model_dump(), created_by=user.id if user else None)
     db.add(s)
     db.commit()
     db.refresh(s)
@@ -50,7 +50,7 @@ def create_schedule(data: ScheduleIn, db: Session = Depends(get_db),
 
 @router.delete("/{schedule_id}")
 def delete_schedule(schedule_id: int, db: Session = Depends(get_db),
-                     user: User = Depends(require_user_or_admin)):
+                     user: Optional[User] = Depends(get_optional_user)):
     s = db.query(Schedule).filter(Schedule.id == schedule_id).first()
     if not s:
         raise HTTPException(404, "Schedule not found")

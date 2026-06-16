@@ -5,7 +5,7 @@ from typing import Optional
 
 from db import get_db
 from models import Device, Room, DeviceState, SensorReading, DeviceType, User
-from security import require_user_or_admin
+from security import require_user_or_admin, get_optional_user
 
 router = APIRouter()
 
@@ -117,7 +117,7 @@ def update_device_state(
     device_id: int,
     state: StateUpdate,
     db: Session = Depends(get_db),
-    user: User = Depends(require_user_or_admin),
+    user: Optional[User] = Depends(get_optional_user),
 ):
     device = db.query(Device).filter(Device.id == device_id).first()
     if not device:
@@ -126,7 +126,7 @@ def update_device_state(
         device_id=device_id,
         state_type=state.state_type,
         state_value=state.state_value,
-        changed_by=user.id,
+        changed_by=user.id if user else None,
     )
     db.add(new_state)
     db.commit()

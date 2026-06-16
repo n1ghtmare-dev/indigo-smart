@@ -51,8 +51,8 @@ def list_scenes(db: Session = Depends(get_db)):
 
 
 @router.post("")
-def create_scene(data: SceneIn, db: Session = Depends(get_db), user: User = Depends(require_user_or_admin)):
-    scene = Scene(name=data.name, icon=data.icon, created_by=user.id)
+def create_scene(data: SceneIn, db: Session = Depends(get_db), user: Optional[User] = Depends(get_optional_user)):
+    scene = Scene(name=data.name, icon=data.icon, created_by=user.id if user else None)
     db.add(scene)
     db.flush()
     for i, act in enumerate(data.actions):
@@ -68,7 +68,7 @@ def create_scene(data: SceneIn, db: Session = Depends(get_db), user: User = Depe
 
 @router.delete("/{scene_id}")
 def delete_scene(scene_id: int, db: Session = Depends(get_db),
-                  user: User = Depends(require_user_or_admin)):
+                  user: Optional[User] = Depends(get_optional_user)):
     scene = db.query(Scene).filter(Scene.id == scene_id).first()
     if not scene:
         raise HTTPException(404, "Scene not found")
@@ -79,7 +79,7 @@ def delete_scene(scene_id: int, db: Session = Depends(get_db),
 
 @router.post("/{scene_id}/run")
 def run_scene(scene_id: int, db: Session = Depends(get_db),
-               user: User = Depends(require_user_or_admin)):
+               user: Optional[User] = Depends(get_optional_user)):
     scene = db.query(Scene).filter(Scene.id == scene_id).first()
     if not scene:
         raise HTTPException(404, "Scene not found")
@@ -89,7 +89,7 @@ def run_scene(scene_id: int, db: Session = Depends(get_db),
             device_id=action.device_id,
             state_type=action.state_type,
             state_value=action.state_value,
-            changed_by=user.id,
+            changed_by=user.id if user else None,
         ))
         applied += 1
     db.commit()
