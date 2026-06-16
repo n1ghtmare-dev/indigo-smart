@@ -9,6 +9,7 @@ const Scenes = () => {
   const [creating, setCreating] = useState(false);
   const [name, setName] = useState("");
   const [actions, setActions] = useState([{ device_id: "", state_value: "1" }]);
+  const [toast, setToast] = useState(null); // { ok, text }
 
   const refresh = () => {
     apiFetch("/scenes").then((r) => r.json()).then(setScenes);
@@ -19,9 +20,23 @@ const Scenes = () => {
 
   useEffect(refresh, []);
 
-  const run = async (id) => {
-    await apiFetch(`/scenes/${id}/run`, { method: "POST" });
-    refresh();
+  const run = async (id, sceneName) => {
+    try {
+      const r = await apiFetch(`/scenes/${id}/run`, { method: "POST" });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) {
+        setToast({ ok: false, text: `Не удалось запустить (код ${r.status})` });
+      } else {
+        setToast({
+          ok: true,
+          text: `«${sceneName}» выполнен · ${data.actions_applied ?? 0} действий`,
+        });
+        refresh();
+      }
+    } catch {
+      setToast({ ok: false, text: "Нет связи с сервером" });
+    }
+    setTimeout(() => setToast(null), 3500);
   };
 
   const remove = async (id) => {
@@ -48,17 +63,29 @@ const Scenes = () => {
 
   return (
     <div className="pt-4">
-      <div className="mb-6 flex items-end justify-between">
-        <div>
+      {toast && (
+        <div
+          className={`fixed bottom-5 left-1/2 z-[80] -translate-x-1/2 rounded-xl border px-4 py-2.5 text-sm font-semibold shadow-lg backdrop-blur ${
+            toast.ok
+              ? "border-emerald-400/30 bg-emerald-500/15 text-emerald-200"
+              : "border-red-400/30 bg-red-500/15 text-red-200"
+          }`}
+        >
+          {toast.ok ? "✓ " : "⚠ "}
+          {toast.text}
+        </div>
+      )}
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div className="min-w-0">
           <span className="pill pill-cyan">{scenes.length} сценариев</span>
-          <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-white">
+          <h2 className="mt-3 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
             Сценарии <span className="text-grad">умного дома</span>
           </h2>
           <p className="mt-1 text-sm text-gray-600">
             Одно нажатие — несколько действий. «Ушёл из дома», «Доброе утро».
           </p>
         </div>
-        <button onClick={() => setCreating(!creating)} className="btn-primary">
+        <button onClick={() => setCreating(!creating)} className="btn-primary shrink-0 self-start sm:self-auto">
           <MdAdd className="inline" /> {creating ? "Отмена" : "Создать сценарий"}
         </button>
       </div>
@@ -135,7 +162,7 @@ const Scenes = () => {
               </div>
             </div>
             <div className="mt-4 flex gap-2">
-              <button onClick={() => run(s.id)} className="btn-primary flex-1">
+              <button onClick={() => run(s.id, s.name)} className="btn-primary flex-1">
                 <MdPlayArrow className="inline" /> Запустить
               </button>
               <button
