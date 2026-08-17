@@ -6,17 +6,22 @@ on:
     paths:
       - 'landing/**'
       - 'landing2/**'
+      - 'landing-root/**'
       - '.github/workflows/deploy-landing.yml'
   workflow_dispatch: {}
 
-# Оба лендинга живут подпутями внутри корня indigosmart.ru.
-# Каждый новый подпуть нужно добавить И сюда, И в --exclude в deploy.yml,
-# иначе rsync --delete основного сайта его удалит.
+# Весь сайт indigosmart.ru отдаётся FastAPI-бэкендом (uvicorn:8000) через
+# catch-all в main.py: файл из docroot отдаётся как есть, для каталога — index.html.
+# nginx лишь проксирует всё на :8000. Поэтому:
+#   - хаб живёт в docroot/index.html (страница-выбор шаблонов),
+#   - лендинги — в docroot/<slug>/, доступны по /<slug>/index.html,
+#   - «голый» /<slug>/ отдаёт хаб (это ок — хаб ведёт на index.html лендингов).
+# Бэкенд обязан работать, иначе сайт вернёт 502. Он сохранён в `pm2 save`.
 env:
   SITE_ROOT: /var/www/indigosmart/data/www/indigosmart.ru
 
 jobs:
-  deploy:
+  landings:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -28,49 +33,9 @@ jobs:
           - dir: landing2
             slug: landing2
             marker: Marck+Script
-
     name: ${{ matrix.slug }}
     steps:
       - uses: actions/checkout@v4
-
-      # Оба лендинга — статика. Сборка запускается только если появится package.json
-      - name: Detect build
-        id: detect
-        run: |
-          if [ -f "${{ matrix.dir }}/package.json" ]; then
-            echo "needs_build=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "needs_build=false" >> "$GITHUB_OUTPUT"
-            echo "src=${{ matrix.dir }}/" >> "$GITHUB_OUTPUT"
-          fi
-
-      - uses: actions/setup-node@v4
-        if: steps.detect.outputs.needs_build == 'true'
-        with:
-          node-version: '22'
-
-      - name: Build
-        if: steps.detect.outputs.needs_build == 'true'
-        working-directory: ${{ matrix.dir }}
-        env:
-          CI: false
-          PUBLIC_URL: /${{ matrix.slug }}
-          BASE_URL: /${{ matrix.slug }}/
-        run: |
-          npm ci
-          npm run build
-
-      - name: Resolve build dir
-        if: steps.detect.outputs.needs_build == 'true'
-        id: resolve
-        run: |
-          for d in dist build out; do
-            if [ -d "${{ matrix.dir }}/$d" ]; then
-              echo "src=${{ matrix.dir }}/$d/" >> "$GITHUB_OUTPUT"; exit 0
-            fi
-          done
-          echo "ERROR: не найден каталог сборки (dist/ build/ out/) в ${{ matrix.dir }}/"
-          exit 1
 
       - name: Setup SSH
         env:
@@ -103,32 +68,60 @@ jobs:
             ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
             'mkdir -p ${{ env.SITE_ROOT }}/${{ matrix.slug }}'
 
-      - name: Rsync
-        env:
-          SRC: ${{ steps.resolve.outputs.src || steps.detect.outputs.src }}
+      - name: Rsync landing
         run: |
-          echo "Deploying $SRC -> ${{ env.SITE_ROOT }}/${{ matrix.slug }}/"
           rsync -rlDzv --delete \
-            --exclude='node_modules/' \
-            --exclude='.git/' \
-            --exclude='.playwright-mcp/' \
-            --exclude='claude.md' \
-            --exclude='CLAUDE.md' \
+            --exclude='.git/' --exclude='.playwright-mcp/' \
+            --exclude='claude.md' --exclude='CLAUDE.md' \
             --no-perms --no-owner --no-group \
             -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -o ConnectTimeout=20" \
-            "$SRC" \
+            ${{ matrix.dir }}/ \
             ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ env.SITE_ROOT }}/${{ matrix.slug }}/
 
-      # Проверяем не только код 200, но и что отдаётся именно наша страница:
-      # при SPA-fallback в nginx по этому пути вернулся бы дашборд IndigoSmart
+      # Лендинг живёт по /<slug>/index.html (голый каталог отдаёт хаб).
       - name: Smoke test
         run: |
-          url="https://indigosmart.ru/${{ matrix.slug }}/"
-          body=$(curl -sfL -m 15 "$url") || { echo "FAILED: $url недоступен"; exit 1; }
+          url="https://indigosmart.ru/${{ matrix.slug }}/index.html"
+          body=$(curl -sfL -m 15 "$url") || { echo "FAILED: $url недоступен (бэкенд лежит?)"; exit 1; }
           if ! printf '%s' "$body" | grep -q '${{ matrix.marker }}'; then
-            echo "FAILED: по адресу $url отдаётся не та страница."
-            echo "Не найден маркер '${{ matrix.marker }}'. Похоже на SPA-fallback в nginx —"
-            echo "нужен блок: location /${{ matrix.slug }}/ { try_files \$uri \$uri/ =404; }"
+            echo "FAILED: по $url не найден маркер '${{ matrix.marker }}' — отдалась не та страница."
             exit 1
           fi
-          echo "OK: $url отдаёт свою страницу"
+          echo "OK: $url"
+
+  # Страница-хаб в корне домена (docroot/index.html). Без --delete, чтобы не
+  # снести React-статику, лендинги и бэкап рядом.
+  hub:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup SSH
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          set -e
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p "$SSH_PORT" "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+
+      - name: Rsync hub -> docroot root (no delete)
+        run: |
+          rsync -rlDzv \
+            --no-perms --no-owner --no-group \
+            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -o ConnectTimeout=20" \
+            landing-root/ \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ env.SITE_ROOT }}/
+
+      - name: Smoke test
+        run: |
+          body=$(curl -sfL -m 15 "https://indigosmart.ru/") || { echo "FAILED: корень недоступен (бэкенд лежит?)"; exit 1; }
+          printf '%s' "$body" | grep -q 'Варианты лендинга' || { echo "FAILED: на / отдаётся не хаб"; exit 1; }
+          if printf '%s' "$body" | grep -q 'create-react-app'; then
+            echo "FAILED: на / всё ещё React-дашборд"; exit 1
+          fi
+          echo "OK: хаб на https://indigosmart.ru/"

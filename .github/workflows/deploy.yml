@@ -1,13 +1,12 @@
 name: Deploy
 
+# АВТОДЕПЛОЙ ОТКЛЮЧЁН. Домен indigosmart.ru перепрофилирован под хостинг
+# лендингов-заготовок (см. deploy-landing.yml). React-дашборд заглушён:
+# на сервере docroot/index.html заменён на страницу-хаб, оригинал сохранён
+# как index-react.html.bak. Запуск по push вернул бы дашборд и рестартил бэкенд,
+# поэтому осталась только ручная кнопка. Чтобы вернуть дашборд: восстановить
+# index.html из бэкапа и вернуть сюда триггер push.
 on:
-  push:
-    branches: [main]
-    # Пуш, который затрагивает только лендинг, не должен пересобирать
-    # IndigoSmart и рестартить API. Смешанный пуш — деплоит как обычно.
-    paths-ignore:
-      - 'landing/**'
-      - '.github/workflows/deploy-landing.yml'
   workflow_dispatch: {}
 
 env:
