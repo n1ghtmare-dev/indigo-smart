@@ -3,6 +3,11 @@ name: Deploy
 on:
   push:
     branches: [main]
+    # Пуш, который затрагивает только лендинг, не должен пересобирать
+    # IndigoSmart и рестартить API. Смешанный пуш — деплоит как обычно.
+    paths-ignore:
+      - 'landing/**'
+      - '.github/workflows/deploy-landing.yml'
   workflow_dispatch: {}
 
 env:
@@ -75,6 +80,8 @@ jobs:
       - name: Rsync frontend build
         run: |
           rsync -rlDzv --delete \
+            --exclude='/landing/' \
+            --exclude='/landing2/' \
             --no-perms --no-owner --no-group \
             -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -o ConnectTimeout=20" \
             smart-board/build/ \

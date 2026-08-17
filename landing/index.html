@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Школа-студия красоты Ксении Аракелян — Королёв</title>
+<meta name="description" content="Перманентный макияж, наращивание и ламинирование ресниц, оформление бровей, визаж. Обучение мастеров. Королёв, ул. 50-летия ВЛКСМ, 4Г. 4,9 из 5 на Яндекс.Картах.">
+<meta property="og:title" content="Школа-студия красоты Ксении Аракелян">
+<meta property="og:description" content="Перманентный макияж, ресницы, брови и обучение мастеров. Королёв.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#070B08">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oranienbaum&family=Golos+Text:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="img/hero-portrait.webp" fetchpriority="high">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a class="skip" href="#services">К услугам</a>
+
+<!-- Атмосфера: зерно и вижнетка поверх всей страницы -->
+<div class="grain" aria-hidden="true"></div>
+<div class="vig" aria-hidden="true"></div>
+<div class="ruler" aria-hidden="true"><i></i></div>
+
+<header class="bar" id="bar">
+  <div class="bar__inner">
+    <a class="bar__mark" href="#top" aria-label="Ксения Аракелян, наверх">
+      <span class="bar__initials">КА</span>
+    </a>
+
+    <nav class="bar__nav" aria-label="Разделы страницы">
+      <a href="#services">Услуги</a>
+      <a href="#works">Работы</a>
+      <a href="#process">Как проходит</a>
+      <a href="#school">Обучение</a>
+      <a href="#faq">Вопросы</a>
+      <a href="#contacts">Контакты</a>
+    </nav>
+
+    <a class="btn btn--gold btn--sm bar__cta" href="https://wa.me/79156536153">Записаться</a>
+
+    <button class="burger" id="burger" type="button" aria-expanded="false" aria-controls="menu">
+      <span class="burger__box" aria-hidden="true"><i></i><i></i></span>
+      <span class="burger__text">Меню</span>
+    </button>
+  </div>
+</header>
+
+<div class="menu" id="menu" hidden>
+  <nav class="menu__nav" aria-label="Разделы страницы">
+    <a href="#services">Услуги</a>
+    <a href="#works">Работы</a>
+    <a href="#process">Как проходит</a>
+    <a href="#school">Обучение</a>
+    <a href="#faq">Вопросы</a>
+    <a href="#reviews">Отзывы</a>
+    <a href="#contacts">Контакты</a>
+  </nav>
+  <div class="menu__foot">
+    <a class="btn btn--gold" href="https://wa.me/79156536153">Записаться в WhatsApp</a>
+    <a class="menu__tel" href="tel:+79156536153">+7 915 653-61-53</a>
+  </div>
+</div>
+
+<main id="top">
+
+  <!-- ══ Первый экран ═══════════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="wrap hero__grid">
+
+      <div class="hero__text">
+        <p class="eyebrow rise" style="--d:.05s">Школа-студия красоты · Королёв</p>
+
+        <h1 class="hero__title">
+          <span class="ln"><span style="--d:.18s">Ксения</span></span>
+          <span class="ln"><span class="shine" id="shine" style="--d:.32s">Аракелян</span></span>
+        </h1>
+
+        <p class="hero__quote rise" style="--d:.6s">
+          «Перманентный макияж, ресницы и брови. И обучение мастеров —
+          у того же мастера, который принимает»
+        </p>
+
+        <dl class="stats rise" style="--d:.74s">
+          <div class="stat">
+            <dd class="stat__num">4,9</dd>
+            <dt class="stat__label">из 5 на Яндекс.Картах</dt>
+          </div>
+          <div class="stat">
+            <dd class="stat__num">45</dd>
+            <dt class="stat__label">отзывов, 72 оценки</dt>
+          </div>
+          <div class="stat">
+            <dd class="stat__num">100<span>%</span></dd>
+            <dt class="stat__label">положительных о работе с ресницами</dt>
+          </div>
+        </dl>
+      </div>
+
+      <!-- Круглая маска, орбита с точками и «луна» вместо кнопки -->
+      <div class="orb rise" style="--d:.4s">
+        <div class="orb__ring" aria-hidden="true">
+          <i style="--a:.05"></i><i style="--a:.21"></i><i style="--a:.4"></i>
+          <i style="--a:.59"></i><i style="--a:.8"></i><i style="--a:.92"></i>
+        </div>
+        <div class="orb__disc">
+          <img src="img/hero-portrait.webp" alt="Портрет" width="1300" height="1300" fetchpriority="high" decoding="async">
+        </div>
+        <a class="moon" href="https://wa.me/79156536153">
+          <span>Записаться<br>на приём</span>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Полоса-образ. ЗАМЕНИТЬ на собственное фото студии -->
+  <div class="band reveal" aria-hidden="true">
+    <img src="img/band.webp" alt="" width="2250" height="900" loading="lazy" decoding="async">
+  </div>
+
+  <!-- ══ Услуги ═════════════════════════════════════════════════════ -->
+  <section class="section" id="services">
+    <div class="wrap">
+      <h2 class="head reveal"><span class="head__dot" aria-hidden="true"></span>Услуги</h2>
+
+      <ul class="list">
+        <li class="reveal">
+          <a class="list__row" href="https://wa.me/79156536153?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%E2%80%94%20%D0%BF%D0%B5%D1%80%D0%BC%D0%B0%D0%BD%D0%B5%D0%BD%D1%82%D0%BD%D1%8B%D0%B9%20%D0%BC%D0%B0%D0%BA%D0%B8%D1%8F%D0%B6.">
+            <h3 class="list__name">Перманентный макияж</h3>
+            <p class="list__detail">Брови, губы и межресничный контур. Пудровое напыление — мягкий вариант для тех, кому нужен эффект лёгкого макияжа, а не рисунка.</p>
+            <span class="list__go">Записаться <i aria-hidden="true">→</i></span>
+          </a>
+        </li>
+        <li class="reveal">
+          <a class="list__row" href="https://wa.me/79156536153?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%E2%80%94%20%D1%80%D0%B5%D1%81%D0%BD%D0%B8%D1%86%D1%8B.">
+            <h3 class="list__name">Ресницы</h3>
+            <p class="list__detail">Наращивание, ламинирование и уход. Изгиб, толщину и объём подбираем под форму глаза, а не по картинке из интернета.</p>
+            <span class="list__go">Записаться <i aria-hidden="true">→</i></span>
+          </a>
+        </li>
+        <li class="reveal">
+          <a class="list__row" href="https://wa.me/79156536153?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%E2%80%94%20%D0%B1%D1%80%D0%BE%D0%B2%D0%B8.">
+            <h3 class="list__name">Брови</h3>
+            <p class="list__detail">Оформление, окрашивание и коррекция формы. Работа с отросшими и неудачно выщипанными бровями — отдельная история, её обсуждаем на месте.</p>
+            <span class="list__go">Записаться <i aria-hidden="true">→</i></span>
+          </a>
+        </li>
+        <li class="reveal">
+          <a class="list__row" href="https://wa.me/79156536153?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%E2%80%94%20%D0%B2%D0%B8%D0%B7%D0%B0%D0%B6.">
+            <h3 class="list__name">Визаж</h3>
+            <p class="list__detail">Макияж дневной, вечерний и событийный. Если событие важное — лучше сделать пробный образ заранее.</p>
+            <span class="list__go">Записаться <i aria-hidden="true">→</i></span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- ЗАПОЛНИТЬ: когда будут цены — добавить в строку перед .list__go:
+           <p class="list__price">от 4 500 ₽</p> -->
+
+      <p class="kicker reveal">Что делаем в студии</p>
+      <ul class="chips reveal">
+        <li>Татуаж бровей</li>
+        <li>Пудровое напыление</li>
+        <li>Татуаж губ</li>
+        <li>Межресничный контур</li>
+        <li>Наращивание ресниц</li>
+        <li>Ламинирование ресниц</li>
+        <li>Окрашивание ресниц</li>
+        <li>Окрашивание бровей</li>
+        <li>Коррекция формы бровей</li>
+        <li>Визаж</li>
+      </ul>
+
+      <p class="note reveal">
+        Стоимость и длительность зависят от техники и исходного состояния бровей
+        или ресниц — назовём точно при записи, до начала работы.
+      </p>
+    </div>
+  </section>
+
+  <!-- ══ Работы ═════════════════════════════════════════════════════ -->
+  <!-- ЗАМЕНИТЬ: все фото ниже временные, нужны работы студии -->
+  <section class="section section--deep" id="works">
+    <div class="wrap">
+      <h2 class="head reveal"><span class="head__dot" aria-hidden="true"></span>Работы</h2>
+      <div class="gallery">
+        <figure class="shot reveal">
+          <span class="shot__frame"><img src="img/work-brows.webp" alt="Брови после пудрового напыления" width="1000" height="1250" loading="lazy" decoding="async"></span>
+          <figcaption>Брови · пудровое напыление</figcaption>
+        </figure>
+        <figure class="shot shot--drop reveal">
+          <span class="shot__frame"><img src="img/work-lashes.webp" alt="Наращённые ресницы" width="1080" height="1350" loading="lazy" decoding="async"></span>
+          <figcaption>Наращивание ресниц</figcaption>
+        </figure>
+        <figure class="shot reveal">
+          <span class="shot__frame"><img src="img/work-lips.webp" alt="Губы после перманентного макияжа" width="1200" height="1500" loading="lazy" decoding="async"></span>
+          <figcaption>Перманентный макияж губ</figcaption>
+        </figure>
+        <figure class="shot reveal">
+          <span class="shot__frame"><img src="img/work-brows-2.webp" alt="Форма и цвет брови" width="860" height="1075" loading="lazy" decoding="async"></span>
+          <figcaption>Брови · форма и цвет</figcaption>
+        </figure>
+        <figure class="shot shot--drop reveal">
+          <span class="shot__frame"><img src="img/work-lashes-2.webp" alt="Ресницы после ламинирования" width="1080" height="1350" loading="lazy" decoding="async"></span>
+          <figcaption>Ламинирование ресниц</figcaption>
+        </figure>
+        <figure class="shot reveal">
+          <span class="shot__frame"><img src="img/work-lips-2.webp" alt="Губы, натуральный оттенок" width="1200" height="1500" loading="lazy" decoding="async"></span>
+          <figcaption>Губы · натуральный оттенок</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ Как проходит — кремовая панель ═════════════════════════════ -->
+  <section class="section" id="process">
+    <div class="wrap">
+      <div class="panel panel--cream reveal">
+        <h2 class="head head--onCream"><span class="head__dot" aria-hidden="true"></span>Как проходит</h2>
+        <p class="lede">
+          Порядок одинаковый для перманентного макияжа и для оформления бровей.
+          Ниже — что происходит на приёме, чтобы вы пришли без сюрпризов.
+        </p>
+
+        <ol class="steps">
+          <li class="step">
+            <span class="step__num">01</span>
+            <h3 class="step__title">Эскиз и согласование</h3>
+            <p>Обсуждаем форму и оттенок, примеряем на лицо. К работе не переходим,
+               пока эскиз не устроит вас — на этом этапе всё ещё можно стереть и
+               начать заново.</p>
+          </li>
+          <li class="step">
+            <span class="step__num">02</span>
+            <h3 class="step__title">Подготовка</h3>
+            <p>Обработка кожи, обезболивание — по необходимости и по самочувствию.
+               О низком болевом пороге, аллергиях и принимаемых препаратах скажите
+               заранее, это меняет план работы.</p>
+          </li>
+          <li class="step">
+            <span class="step__num">03</span>
+            <h3 class="step__title">Работа</h3>
+            <p>Сама процедура. Длительность зависит от техники и объёма — точное
+               время назовём при записи, чтобы вы спланировали день.</p>
+          </li>
+          <li class="step">
+            <span class="step__num">04</span>
+            <h3 class="step__title">Заживление и коррекция</h3>
+            <p>На руки — памятка по уходу. Итог виден не сразу: цвет и форма
+               проявляются после заживления. Коррекцию, как правило, делают через
+               месяц-полтора, сроки уточнит мастер.</p>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ Обучение ═══════════════════════════════════════════════════ -->
+  <section class="section section--deep" id="school">
+    <div class="wrap">
+      <h2 class="head reveal"><span class="head__dot" aria-hidden="true"></span>Обучение</h2>
+
+      <div class="split">
+        <figure class="split__img reveal">
+          <img src="img/mood-deep.webp" alt="" width="1080" height="1350" loading="lazy" decoding="async">
+        </figure>
+        <div class="split__text reveal">
+          <p class="lede">
+            Студия работает как школа. Занятия ведёт практикующий мастер, а не
+            отдельный лектор, и проходят они там же, где идёт приём — на тех же
+            материалах и оборудовании, с которыми вы будете работать сами.
+          </p>
+          <p class="note">
+            Длительность, стоимость и состав каждого курса — по запросу: расскажем,
+            сколько занятий, сколько отработки на моделях и что входит в набор.
+          </p>
+          <a class="btn btn--gold" href="https://wa.me/79156536153?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D1%83%D0%B7%D0%BD%D0%B0%D1%82%D1%8C%20%D0%BF%D1%80%D0%BE%20%D0%BE%D0%B1%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D0%B5.">Спросить про курс</a>
+        </div>
+      </div>
+
+      <div class="cards">
+        <article class="card reveal">
+          <img class="card__img" src="img/course-pmu.webp" alt="" width="1080" height="720" loading="lazy" decoding="async">
+          <div class="card__body">
+            <p class="card__kicker">Направление</p>
+            <h3 class="card__title">Перманентный макияж</h3>
+            <p>Подбор пигмента и оттенка, техника, глубина, заживление и
+               коррекция. Разбор случаев, когда работать нельзя.</p>
+          </div>
+        </article>
+        <article class="card reveal">
+          <img class="card__img" src="img/course-lashes.webp" alt="" width="1080" height="720" loading="lazy" decoding="async">
+          <div class="card__body">
+            <p class="card__kicker">Направление</p>
+            <h3 class="card__title">Наращивание ресниц</h3>
+            <p>Изгибы и толщины, объёмы, постановка руки и скорость. Съём,
+               коррекция и что делать с чужой неудачной работой.</p>
+          </div>
+        </article>
+        <article class="card reveal">
+          <img class="card__img" src="img/course-brow.webp" alt="" width="1200" height="800" loading="lazy" decoding="async">
+          <div class="card__body">
+            <p class="card__kicker">Направление</p>
+            <h3 class="card__title">Brow-мастер</h3>
+            <p>Форма под черты лица, окрашивание, коррекция. Работа со сложными
+               случаями: отросшие, асимметричные, повреждённые брови.</p>
+          </div>
+        </article>
+      </div>
+
+      <!-- ЗАПОЛНИТЬ: длительность, стоимость, размер группы, что входит
+           (документ, набор материалов, отработка на моделях, поддержка после) -->
+    </div>
+  </section>
+
+  <!-- ══ Вопросы ════════════════════════════════════════════════════ -->
+  <section class="section" id="faq">
+    <div class="wrap">
+      <h2 class="head reveal"><span class="head__dot" aria-hidden="true"></span>Вопросы</h2>
+
+      <div class="faq">
+        <details class="qa reveal">
+          <summary>Сколько держится перманентный макияж?<i aria-hidden="true"></i></summary>
+          <p>Зависит от техники, типа кожи, ухода и образа жизни — солнце и
+             частые пилинги сокращают срок. Пигмент выцветает постепенно, а не
+             исчезает разом. Прогноз именно для вас мастер даст после осмотра
+             кожи.</p>
+        </details>
+        <details class="qa reveal">
+          <summary>Это больно?<i aria-hidden="true"></i></summary>
+          <p>Работа идёт с обезболиванием, но чувствительность у всех разная.
+             Если болевой порог низкий — скажите до начала, это учитывается.</p>
+        </details>
+        <details class="qa reveal">
+          <summary>Как подготовиться к процедуре?<i aria-hidden="true"></i></summary>
+          <p>Обычные рекомендации: за сутки не пить алкоголь и много кофе, не
+             загорать, не делать пилинги и чистки накануне. Если принимаете
+             лекарства, влияющие на свёртываемость, обязательно скажите — план
+             может измениться. Точные указания дадим при записи.</p>
+        </details>
+        <details class="qa reveal">
+          <summary>Что происходит после — заживление?<i aria-hidden="true"></i></summary>
+          <p>Первые дни возможны отёк, шелушение и корочки — их нельзя мочить,
+             тереть и снимать. Цвет в это время выглядит темнее итогового. Итог
+             оценивают после полного заживления, тогда же решают про коррекцию.</p>
+        </details>
+        <details class="qa reveal">
+          <summary>Кому нельзя делать перманентный макияж?<i aria-hidden="true"></i></summary>
+          <p>Противопоказания есть, и они не формальность: беременность и
+             кормление, сахарный диабет, склонность к келоидным рубцам,
+             заболевания крови и свёртываемости, острые воспаления, приём
+             отдельных препаратов. Полный список и вашу ситуацию разбираем до
+             записи — при сомнениях нужна консультация врача.</p>
+        </details>
+        <details class="qa reveal">
+          <summary>Где вы находитесь и как записаться?<i aria-hidden="true"></i></summary>
+          <p>Королёв, ул. 50-летия ВЛКСМ, 4Г. Ежедневно с 09:00 до 21:00.
+             Записаться проще всего в WhatsApp или по телефону
+             <a href="tel:+79156536153">+7 915 653-61-53</a>.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ Отзывы ═════════════════════════════════════════════════════ -->
+  <section class="section section--deep" id="reviews">
+    <div class="wrap">
+      <h2 class="head reveal"><span class="head__dot" aria-hidden="true"></span>Отзывы</h2>
+
+      <div class="voices">
+        <figure class="voices__orb reveal" aria-hidden="true">
+          <img src="img/mood-dark.webp" alt="" width="1000" height="1000" loading="lazy" decoding="async">
+        </figure>
+
+        <div class="quotes">
+          <blockquote class="quote reveal">
+            <p>Ресницы носятся долго и главное выпадают равномерно, незаметно.</p>
+            <footer>Ольга К. <span>Яндекс.Карты</span></footer>
+          </blockquote>
+          <blockquote class="quote reveal">
+            <p>Ксения прекрасный мастер! Сделала татуаж меж ресничек — всё на высшем уровне.</p>
+            <footer>Светлана <span>Яндекс.Карты</span></footer>
+          </blockquote>
+          <blockquote class="quote reveal">
+            <p>Профессионал своего дела и прекрасный человек.</p>
+            <footer>Ольга Б. <span>Яндекс.Карты</span></footer>
+          </blockquote>
+          <a class="link reveal" href="https://yandex.ru/maps/-/CTg65IlB">Читать все 45 отзывов на Яндекс.Картах</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ Призыв — золотая панель ════════════════════════════════════ -->
+  <section class="section" id="book">
+    <div class="wrap">
+      <div class="panel panel--gold reveal">
+        <div>
+          <p class="panel__kicker">Запись</p>
+          <h2 class="panel__title">Напишите — подберём время и обсудим форму</h2>
+          <p class="panel__note">Ежедневно 09:00–21:00 · Королёв, ул. 50-летия ВЛКСМ, 4Г</p>
+        </div>
+        <div class="panel__actions">
+          <a class="btn btn--ink" href="https://wa.me/79156536153">Написать в WhatsApp</a>
+          <a class="btn btn--outlineInk" href="tel:+79156536153">+7 915 653-61-53</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ Контакты ═══════════════════════════════════════════════════ -->
+  <section class="section section--deep" id="contacts">
+    <div class="wrap">
+      <h2 class="head reveal"><span class="head__dot" aria-hidden="true"></span>Контакты</h2>
+
+      <dl class="facts">
+        <div class="facts__item reveal">
+          <dt>Адрес</dt>
+          <dd>Королёв, ул. 50-летия ВЛКСМ, 4Г</dd>
+        </div>
+        <div class="facts__item reveal">
+          <dt>Время работы</dt>
+          <dd>Ежедневно, 09:00–21:00</dd>
+        </div>
+        <div class="facts__item reveal">
+          <dt>Телефон</dt>
+          <dd><a href="tel:+79156536153">+7 915 653-61-53</a></dd>
+        </div>
+        <div class="facts__item reveal">
+          <dt>Написать</dt>
+          <dd>
+            <a href="https://wa.me/79156536153">WhatsApp</a> ·
+            <a href="https://vk.com/brovivkoroleve">ВКонтакте</a>
+          </dd>
+        </div>
+      </dl>
+
+      <a class="btn btn--ghost reveal" href="https://yandex.ru/maps/-/CTg65IlB">Открыть на карте</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__inner">
+    <p>Школа-студия красоты Ксении Аракелян · Королёв</p>
+    <p class="foot__dim">Не является публичной офертой. Есть противопоказания — уточняйте при записи.</p>
+  </div>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BeautySalon",
+  "name": "Школа-студия красоты Ксении Аракелян",
+  "telephone": "+7-915-653-61-53",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "ул. 50-летия ВЛКСМ, 4Г",
+    "addressLocality": "Королёв",
+    "addressRegion": "Московская область",
+    "addressCountry": "RU"
+  },
+  "openingHours": "Mo-Su 09:00-21:00",
+  "sameAs": ["https://vk.com/brovivkoroleve"]
+}
+</script>
+<script src="script.js" defer></script>
+</body>
+</html>

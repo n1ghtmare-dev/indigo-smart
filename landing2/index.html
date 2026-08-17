@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Школа-студия красоты Ксении Аракелян — обучение и услуги в Королёве</title>
+<meta name="description" content="Школа-студия красоты Ксении Аракелян в Королёве: обучение бровистов, лешмейкеров и мастеров перманентного макияжа с нуля. Практика на моделях, сертификат, поддержка после курса. Рейтинг 4.9 на Яндекс.Картах.">
+<meta name="theme-color" content="#0E2119">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230E2119'/><circle cx='32' cy='32' r='22' fill='none' stroke='%23C9A227' stroke-width='2'/><text x='32' y='42' font-family='Georgia,serif' font-size='28' fill='%23E8CE8A' text-anchor='middle'>К</text></svg>">
+
+<!--
+  ┌────────────────────────────────────────────────────────────────┐
+  │  ЧТО ПРОВЕРИТЬ / ПОДСТАВИТЬ СВОИ ДАННЫЕ                        │
+  │  1. images/logo.png — положите свой логотип (см. блок .brand)  │
+  │  2. Длительность и цены курсов — помечены словом УТОЧНИТЬ      │
+  │  3. Отзывы — помечены «ЗАМЕНИТЬ НА РЕАЛЬНЫЕ»                   │
+  │  4. Ссылка на Telegram — сейчас по номеру, лучше @username     │
+  │  5. Фото — временные, замените своими в папке images/          │
+  └────────────────────────────────────────────────────────────────┘
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&family=Marck+Script&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ══════════════════ ШАПКА ══════════════════ -->
+<header class="header" id="header">
+  <div class="container header__inner">
+
+    <a href="#hero" class="brand">
+      <!-- Чтобы поставить свой логотип: раскомментируйте <img> и удалите <svg> ниже
+      <img src="images/logo.png" alt="Школа-студия Ксении Аракелян" class="brand__img">
+      -->
+      <svg class="brand__mark" viewBox="0 0 120 120" aria-hidden="true">
+        <defs>
+          <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%"  stop-color="#F5E7BE"/>
+            <stop offset="45%" stop-color="#C9A227"/>
+            <stop offset="100%" stop-color="#E8CE8A"/>
+          </linearGradient>
+        </defs>
+        <circle cx="60" cy="60" r="45" fill="none" stroke="url(#g1)" stroke-width="2"/>
+        <!-- лавровая ветвь слева -->
+        <g stroke="url(#g1)" stroke-width="1.6" fill="none" opacity=".95">
+          <path d="M15 88 C 10 60, 20 32, 42 18"/>
+          <g fill="url(#g1)" stroke="none">
+            <ellipse cx="16" cy="78" rx="7" ry="3.4" transform="rotate(-58 16 78)"/>
+            <ellipse cx="26" cy="79" rx="7" ry="3.4" transform="rotate(-14 26 79)"/>
+            <ellipse cx="14" cy="64" rx="7" ry="3.4" transform="rotate(-70 14 64)"/>
+            <ellipse cx="25" cy="63" rx="7" ry="3.4" transform="rotate(-22 25 63)"/>
+            <ellipse cx="18" cy="49" rx="7" ry="3.4" transform="rotate(-78 18 49)"/>
+            <ellipse cx="29" cy="47" rx="7" ry="3.4" transform="rotate(-30 29 47)"/>
+            <ellipse cx="26" cy="35" rx="7" ry="3.4" transform="rotate(-62 26 35)"/>
+            <ellipse cx="36" cy="32" rx="7" ry="3.4" transform="rotate(-20 36 32)"/>
+            <ellipse cx="36" cy="21" rx="6" ry="3" transform="rotate(-48 36 21)"/>
+          </g>
+        </g>
+        <!-- крыло справа -->
+        <g fill="url(#g1)" opacity=".95">
+          <path d="M78 34 C 92 40, 104 54, 105 72 C 100 62, 94 55, 88 51 C 94 62, 97 74, 95 86 C 91 74, 85 64, 78 58 C 82 70, 82 82, 78 92 C 76 78, 71 66, 64 58 C 70 50, 74 42, 78 34 Z"/>
+        </g>
+        <text x="60" y="54" class="brand__letter">К</text>
+        <text x="60" y="94" class="brand__letter">А</text>
+        <path d="M42 62 H78" stroke="url(#g1)" stroke-width="1.2"/>
+        <path d="M42 74 H78" stroke="url(#g1)" stroke-width="1.2"/>
+      </svg>
+
+      <span class="brand__text">
+        <span class="brand__name">Ксения Аракелян</span>
+        <span class="brand__sub">школа-студия красоты</span>
+      </span>
+    </a>
+
+    <nav class="nav" id="nav">
+      <a href="#courses"  class="nav__link">Обучение</a>
+      <a href="#process"  class="nav__link">Как проходит</a>
+      <a href="#services" class="nav__link">Услуги</a>
+      <a href="#works"    class="nav__link">Работы</a>
+      <a href="#reviews"  class="nav__link">Отзывы</a>
+      <a href="#contacts" class="nav__link">Контакты</a>
+
+      <!-- видно только в мобильном меню -->
+      <a href="tel:+79156536153" class="nav__phone">+7 (915) 653-61-53</a>
+      <a href="https://wa.me/79156536153?text=Здравствуйте!%20Хочу%20записаться" target="_blank" rel="noopener" class="btn btn--gold nav__cta">Написать в WhatsApp</a>
+    </nav>
+
+    <div class="header__actions">
+      <a href="tel:+79156536153" class="header__phone">+7 (915) 653-61-53</a>
+      <a href="https://wa.me/79156536153?text=Здравствуйте!%20Хочу%20узнать%20про%20обучение" target="_blank" rel="noopener" class="btn btn--gold btn--sm">Записаться</a>
+      <button class="burger" id="burger" aria-label="Меню" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+
+  </div>
+</header>
+
+<!-- затемнение под мобильным меню -->
+<div class="nav-backdrop" id="navBackdrop"></div>
+
+<!-- ══════════════════ ПЕРВЫЙ ЭКРАН ══════════════════ -->
+<section class="hero" id="hero">
+  <div class="hero__glow"></div>
+  <div class="container hero__inner">
+
+    <div class="hero__content">
+      <p class="hero__eyebrow"><span class="dot"></span> Школа-студия красоты · Королёв</p>
+
+      <div class="hero__slides">
+        <div class="hero__slide is-active" data-slide="0">
+          <h1 class="hero__title">Обучение</h1>
+          <p class="hero__lead">Профессия бровиста, лешмейкера и мастера перманентного макияжа — с нуля. Максимум практики на живых моделях, а не на манекенах.</p>
+        </div>
+        <div class="hero__slide" data-slide="1">
+          <h1 class="hero__title">Практика</h1>
+          <p class="hero__lead">Вы отрабатываете каждый этап под контролем мастера с опытом и выходите с курса с готовым портфолио первых работ.</p>
+        </div>
+        <div class="hero__slide" data-slide="2">
+          <h1 class="hero__title">Студия</h1>
+          <p class="hero__lead">Брови, ресницы, перманентный макияж и уход за лицом. Рейтинг 4.9 на Яндекс.Картах и клиенты, которые возвращаются.</p>
+        </div>
+      </div>
+
+      <div class="hero__cta">
+        <a href="https://wa.me/79156536153?text=Здравствуйте!%20Хочу%20узнать%20про%20обучение" target="_blank" rel="noopener" class="circle-btn">
+          <span class="circle-btn__ring">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="circle-btn__label">Записаться на курс</span>
+        </a>
+        <a href="#services" class="link-underline">Посмотреть услуги</a>
+      </div>
+
+      <ul class="hero__stats">
+        <li><b>4.9</b><span>рейтинг на Яндексе</span></li>
+        <li><b>72</b><span>оценки клиентов</span></li>
+        <li><b>до 22:00</b><span>работаем ежедневно</span></li>
+      </ul>
+    </div>
+
+    <div class="hero__visual">
+      <div class="hero__circle"></div>
+      <div class="hero__frame">
+        <img src="images/hero.jpg"       alt="Работа мастера школы-студии" class="hero__img is-active" data-slide="0">
+        <img src="images/training-1.jpg" alt="Практика учениц на моделях"  class="hero__img" data-slide="1">
+        <img src="images/interior-1.jpg" alt="Интерьер студии"             class="hero__img" data-slide="2">
+      </div>
+      <div class="hero__badge">
+        <span class="hero__badge-star">★</span>
+        <b>4.9</b>
+        <span>Яндекс.Карты</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="container hero__slider">
+    <button class="hero__num is-active" data-goto="0">01</button>
+    <div class="hero__track"><span class="hero__bar" style="--i:0"></span></div>
+    <button class="hero__num" data-goto="2">03</button>
+  </div>
+</section>
+
+<!-- ══════════════════ О ШКОЛЕ ══════════════════ -->
+<section class="section about" id="about">
+  <div class="container about__inner">
+
+    <div class="about__media reveal">
+      <div class="about__img-wrap">
+        <img src="images/master.jpg" alt="Мастер школы-студии Ксении Аракелян">
+      </div>
+      <div class="about__note">
+        <span class="about__note-num">4.9</span>
+        <span class="about__note-txt">рейтинг на Яндекс.Картах<br>по 72 оценкам клиентов</span>
+      </div>
+    </div>
+
+    <div class="about__text reveal">
+      <span class="pill">О школе-студии</span>
+      <h2 class="h2">Учим так, чтобы вы <em>работали</em>, а не просто получили бумажку</h2>
+      <p>Школа-студия красоты Ксении Аракелян в Королёве — это одновременно действующий салон и учебная площадка. Пока вы учитесь, рядом идёт реальный приём клиентов: вы сразу видите, как выглядит работа мастера не в теории, а в кабинете.</p>
+      <p>Группы маленькие, поэтому времени хватает каждой ученице. После курса вы не остаётесь одна: чат поддержки, разбор ваших первых самостоятельных работ и подсказки по материалам — это входит в обучение.</p>
+
+      <ul class="about__list">
+        <li><span class="tick">✦</span> Практика на живых моделях с первого дня</li>
+        <li><span class="tick">✦</span> Сертификат по окончании курса</li>
+        <li><span class="tick">✦</span> Помощь с закупкой первых материалов</li>
+        <li><span class="tick">✦</span> Поддержка мастера после обучения</li>
+      </ul>
+
+      <a href="https://wa.me/79156536153?text=Здравствуйте!%20Расскажите%20подробнее%20о%20школе" target="_blank" rel="noopener" class="btn btn--outline">Задать вопрос мастеру</a>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"><span></span><i>✦</i><span></span></div>
+
+<!-- ══════════════════ КУРСЫ ══════════════════ -->
+<section class="section courses" id="courses">
+  <div class="container">
+
+    <div class="section-head reveal">
+      <span class="pill">Обучение</span>
+      <h2 class="h2 center">Курсы школы-студии</h2>
+      <p class="section-sub">Каждый курс — это теория, отработка на модели и разбор ваших ошибок до того, как вы возьмёте первого клиента.</p>
+    </div>
+
+    <div class="courses__grid">
+
+      <article class="course reveal">
+        <div class="course__media"><img src="images/course-brows.jpg" alt="Курс по бровям"></div>
+        <div class="course__body">
+          <h3 class="course__title">Брови</h3>
+          <p class="course__desc">Архитектура, коррекция, окрашивание хной и краской, долговременная укладка и ламинирование.</p>
+          <ul class="course__meta">
+            <li><span>Длительность</span><b>2 дня</b></li> <!-- УТОЧНИТЬ -->
+            <li><span>Формат</span><b>Индивидуально или мини-группа</b></li>
+            <li><span>Стоимость</span><b>по запросу</b></li> <!-- УТОЧНИТЬ -->
+          </ul>
+          <a href="https://wa.me/79156536153?text=Здравствуйте!%20Интересует%20курс%20по%20бровям" target="_blank" rel="noopener" class="course__link">Узнать программу <i>→</i></a>
+        </div>
+      </article>
+
+      <article class="course reveal">
+        <div class="course__media"><img src="images/course-lashes.jpg" alt="Курс по ресницам"></div>
+        <div class="course__body">
+          <h3 class="course__title">Ресницы</h3>
+          <p class="course__desc">Наращивание от классики до объёмов, подбор изгиба и длины, ботокс и уход за ресницами.</p>
+          <ul class="course__meta">
+            <li><span>Длительность</span><b>3 дня</b></li> <!-- УТОЧНИТЬ -->
+            <li><span>Формат</span><b>Индивидуально или мини-группа</b></li>
+            <li><span>Стоимость</span><b>по запросу</b></li> <!-- УТОЧНИТЬ -->
+          </ul>
+          <a href="https://wa.me/79156536153?text=Здравствуйте!%20Интересует%20курс%20по%20ресницам" target="_blank" rel="noopener" class="course__link">Узнать программу <i>→</i></a>
+        </div>
+      </article>
+
+      <article class="course reveal">
+        <div class="course__media"><img src="images/course-pm.jpg" alt="Курс по перманентному макияжу"></div>
+        <div class="course__body">
+          <h3 class="course__title">Перманентный макияж</h3>
+          <p class="course__desc">Брови и губы: колористика, техника, работа с аппаратом, заживление и коррекция результата.</p>
+          <ul class="course__meta">
+            <li><span>Длительность</span><b>5 дней</b></li> <!-- УТОЧНИТЬ -->
+            <li><span>Формат</span><b>Индивидуально</b></li>
+            <li><span>Стоимость</span><b>по запросу</b></li> <!-- УТОЧНИТЬ -->
+          </ul>
+          <a href="https://wa.me/79156536153?text=Здравствуйте!%20Интересует%20курс%20по%20перманентному%20макияжу" target="_blank" rel="noopener" class="course__link">Узнать программу <i>→</i></a>
+        </div>
+      </article>
+
+      <article class="course reveal">
+        <div class="course__media"><img src="images/course-care.jpg" alt="Комплексный курс мастера"></div>
+        <div class="course__body">
+          <span class="course__tag">Выгоднее всего</span>
+          <h3 class="course__title">Комплекс «Мастер»</h3>
+          <p class="course__desc">Брови + ресницы + уход за лицом в одном курсе. Для тех, кто хочет войти в профессию сразу с широким прайсом.</p>
+          <ul class="course__meta">
+            <li><span>Длительность</span><b>10 дней</b></li> <!-- УТОЧНИТЬ -->
+            <li><span>Формат</span><b>Индивидуально</b></li>
+            <li><span>Стоимость</span><b>по запросу</b></li> <!-- УТОЧНИТЬ -->
+          </ul>
+          <a href="https://wa.me/79156536153?text=Здравствуйте!%20Интересует%20комплексный%20курс" target="_blank" rel="noopener" class="course__link">Узнать программу <i>→</i></a>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ КАК ПРОХОДИТ ОБУЧЕНИЕ ══════════════════ -->
+<section class="section process" id="process">
+  <div class="container">
+
+    <div class="section-head reveal">
+      <span class="pill">Как проходит</span>
+      <h2 class="h2 center">Три шага до первого клиента</h2>
+    </div>
+
+    <div class="process__grid">
+      <article class="step reveal">
+        <span class="step__num">01</span>
+        <h3 class="step__title">Заявка и знакомство</h3>
+        <p>Пишете в WhatsApp или Telegram. Обсуждаем, чего вы хотите от профессии, подбираем курс и удобные даты. Никаких «пакетов», которые вам не нужны.</p>
+      </article>
+      <article class="step reveal">
+        <span class="step__num">02</span>
+        <h3 class="step__title">Теория и практика</h3>
+        <p>Разбираем материалы, санитарные нормы и технику, а дальше — руки в работе. Модель, инструмент, контроль мастера на каждом этапе.</p>
+      </article>
+      <article class="step reveal">
+        <span class="step__num">03</span>
+        <h3 class="step__title">Сертификат и поддержка</h3>
+        <p>Вы получаете сертификат, список проверенных поставщиков и остаётесь на связи с мастером: разбираем ваши первые самостоятельные работы.</p>
+      </article>
+    </div>
+
+    <div class="process__cta reveal">
+      <p>Не уверены, какой курс подойдёт именно вам?</p>
+      <a href="https://wa.me/79156536153?text=Здравствуйте!%20Помогите%20выбрать%20курс" target="_blank" rel="noopener" class="btn btn--gold">Помогите выбрать курс</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════ УСЛУГИ СТУДИИ ══════════════════ -->
+<section class="section services" id="services">
+  <div class="services__bg" style="background-image:url('images/interior-wide.jpg')"></div>
+  <div class="container services__inner">
+
+    <div class="section-head reveal">
+      <span class="pill">Услуги студии</span>
+      <h2 class="h2 center">Прайс студии в Королёве</h2>
+      <p class="section-sub">Цены действуют на приём в студии. Точную стоимость по услугам без указанной цены уточняйте в мессенджере — она зависит от объёма работы.</p>
+    </div>
+
+    <div class="price reveal">
+      <div class="price__col">
+        <h3 class="price__cat">Брови</h3>
+        <ul class="price__list">
+          <li><span class="price__name">Оформление и окрашивание бровей (хна / краска)</span><span class="price__val">1 200 ₽</span></li>
+          <li><span class="price__name">Мужское оформление бровей</span><span class="price__val">1 000 ₽</span></li>
+          <li><span class="price__name">Ламинирование, долговременная укладка</span><span class="price__val">2 200 ₽</span></li>
+        </ul>
+
+        <h3 class="price__cat">Ресницы</h3>
+        <ul class="price__list">
+          <li><span class="price__name">Наращивание ресниц</span><span class="price__val price__val--ask">по запросу</span></li>
+          <li><span class="price__name">Ботокс ресниц</span><span class="price__val price__val--ask">по запросу</span></li>
+        </ul>
+      </div>
+
+      <div class="price__col">
+        <h3 class="price__cat">Перманентный макияж</h3>
+        <ul class="price__list">
+          <li><span class="price__name">Перманентный макияж бровей</span><span class="price__val price__val--ask">по запросу</span></li>
+          <li><span class="price__name">Перманентный макияж губ</span><span class="price__val price__val--ask">по запросу</span></li>
+          <li><span class="price__name">Удаление перманентного макияжа</span><span class="price__val price__val--ask">по запросу</span></li>
+        </ul>
+
+        <h3 class="price__cat">Лицо</h3>
+        <ul class="price__list">
+          <li><span class="price__name">Уход за лицом</span><span class="price__val price__val--ask">по запросу</span></li>
+          <li><span class="price__name">Консультация косметолога</span><span class="price__val price__val--ask">по запросу</span></li>
+        </ul>
+
+        <a href="https://wa.me/79156536153?text=Здравствуйте!%20Хочу%20записаться%20на%20процедуру" target="_blank" rel="noopener" class="btn btn--gold price__btn">Записаться на процедуру</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════ РАБОТЫ ══════════════════ -->
+<section class="section works" id="works">
+  <div class="container">
+
+    <div class="section-head reveal">
+      <span class="pill">Портфолио</span>
+      <h2 class="h2 center">Работы студии и учениц</h2>
+      <p class="section-sub">Нажмите на фото, чтобы рассмотреть детали.</p>
+    </div>
+
+    <div class="works__grid reveal">
+      <figure class="work work--tall"><img src="images/work-1.jpg" alt="Наращивание ресниц" loading="lazy"><figcaption>Наращивание ресниц</figcaption></figure>
+      <figure class="work"><img src="images/work-3.jpg" alt="Перманентный макияж бровей" loading="lazy"><figcaption>Перманентный макияж бровей</figcaption></figure>
+      <figure class="work"><img src="images/work-4.jpg" alt="Подготовка к процедуре" loading="lazy"><figcaption>Подготовка к процедуре</figcaption></figure>
+      <figure class="work work--wide"><img src="images/work-2.jpg" alt="Этапы работы с бровями" loading="lazy"><figcaption>Этапы работы с бровями</figcaption></figure>
+      <figure class="work"><img src="images/work-5.jpg" alt="Ресницы крупным планом" loading="lazy"><figcaption>Объём ресниц</figcaption></figure>
+      <figure class="work"><img src="images/work-6.jpg" alt="Работа мастера" loading="lazy"><figcaption>Работа мастера</figcaption></figure>
+      <figure class="work work--wide"><img src="images/interior-2.jpg" alt="Интерьер студии" loading="lazy"><figcaption>Наша студия</figcaption></figure>
+      <figure class="work work--wide"><img src="images/training-1.jpg" alt="Практика учениц на моделях" loading="lazy"><figcaption>Практика на моделях</figcaption></figure>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════ ОТЗЫВЫ ══════════════════ -->
+<!-- ЗАМЕНИТЬ НА РЕАЛЬНЫЕ отзывы с Яндекс.Карт — тексты ниже демонстрационные -->
+<section class="section reviews" id="reviews">
+  <div class="container">
+
+    <div class="section-head reveal">
+      <span class="pill">Отзывы</span>
+      <h2 class="h2 center">Что говорят клиенты и ученицы</h2>
+      <p class="section-sub">
+        <span class="rating"><span class="rating__stars">★★★★★</span> <b>4.9</b> из 5 · 72 оценки на Яндекс.Картах</span>
+      </p>
+    </div>
+
+    <div class="reviews__grid">
+      <article class="review reveal">
+        <div class="review__stars">★★★★★</div>
+        <p>«Пришла на курс по бровям без опыта вообще. За два дня разобрали всё по полочкам, много практики на моделях. Через неделю после курса взяла первого своего клиента.»</p>
+        <footer><b>Анна</b><span>ученица курса «Брови»</span></footer>
+      </article>
+      <article class="review reveal">
+        <div class="review__stars">★★★★★</div>
+        <p>«Хожу на брови уже больше года. Всегда аккуратно, чисто и ровно то, что обсуждали. Ни разу не было ощущения, что мне навязывают лишнюю услугу.»</p>
+        <footer><b>Марина</b><span>клиентка студии</span></footer>
+      </article>
+      <article class="review reveal">
+        <div class="review__stars">★★★★★</div>
+        <p>«Отдельное спасибо за поддержку после обучения. Я писала с вопросами и по материалам, и по сложным клиентам — всегда отвечали и разбирали мои работы.»</p>
+        <footer><b>Екатерина</b><span>ученица курса «Ресницы»</span></footer>
+      </article>
+    </div>
+
+    <div class="reviews__more reveal">
+      <a href="https://yandex.ru/maps/-/CTgfJDnz" target="_blank" rel="noopener" class="link-underline">Читать все отзывы на Яндекс.Картах →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════ FAQ ══════════════════ -->
+<section class="section faq" id="faq">
+  <div class="container container--narrow">
+
+    <div class="section-head reveal">
+      <span class="pill">Вопросы</span>
+      <h2 class="h2 center">Отвечаем на частые вопросы</h2>
+    </div>
+
+    <div class="faq__list reveal">
+      <details class="faq__item">
+        <summary>Нужен ли опыт, чтобы пойти на курс?</summary>
+        <div class="faq__body"><p>Нет. Курсы рассчитаны на обучение с нуля: мы начинаем с материалов, санитарии и строения волоса, а дальше переходим к технике. Если опыт есть — программу адаптируем под ваш уровень и не тратим время на то, что вы уже умеете.</p></div>
+      </details>
+      <details class="faq__item">
+        <summary>Где взять модель для практики?</summary>
+        <div class="faq__body"><p>Помогаем с поиском моделей. Вы можете привести свою — подругу или родственницу, — а если не получается, подберём модель со стороны студии.</p></div>
+      </details>
+      <details class="faq__item">
+        <summary>Материалы нужно покупать самой?</summary>
+        <div class="faq__body"><p>Все расходные материалы на время обучения предоставляет студия. После курса вы получаете список проверенных поставщиков и помощь с первой закупкой, чтобы не переплачивать за ненужное.</p></div>
+      </details>
+      <details class="faq__item">
+        <summary>Выдаёте ли вы сертификат?</summary>
+        <div class="faq__body"><p>Да, по окончании курса вы получаете сертификат школы-студии. Он подтверждает пройденную программу и количество отработанных практических часов.</p></div>
+      </details>
+      <details class="faq__item">
+        <summary>Что будет, если после курса что-то не получится?</summary>
+        <div class="faq__body"><p>Поддержка после обучения входит в стоимость: пишете мастеру, присылаете фото своих работ, получаете разбор и рекомендации. Это не «курс закончился — до свидания».</p></div>
+      </details>
+      <details class="faq__item">
+        <summary>Как записаться на процедуру, а не на обучение?</summary>
+        <div class="faq__body"><p>Так же — напишите в WhatsApp или Telegram либо позвоните по номеру +7 (915) 653-61-53. Студия работает ежедневно до 22:00, адрес: Королёв, ул. 50-летия ВЛКСМ, 4Г.</p></div>
+      </details>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════ CTA + КОНТАКТЫ ══════════════════ -->
+<section class="section contacts" id="contacts">
+  <div class="container">
+
+    <div class="cta reveal">
+      <div class="cta__glow"></div>
+      <span class="pill">Свободные даты</span>
+      <h2 class="h2 center">Запишитесь на курс или процедуру</h2>
+      <p class="section-sub">Ответим в мессенджере, подберём удобное время и расскажем программу без общих слов.</p>
+      <div class="cta__buttons">
+        <a href="https://wa.me/79156536153?text=Здравствуйте!%20Хочу%20записаться" target="_blank" rel="noopener" class="btn btn--gold">Написать в WhatsApp</a>
+        <!-- Лучше заменить на @username вашего Telegram -->
+        <a href="https://t.me/+79156536153" target="_blank" rel="noopener" class="btn btn--outline">Написать в Telegram</a>
+      </div>
+    </div>
+
+    <div class="contacts__grid">
+      <div class="contacts__info reveal">
+        <h3 class="contacts__title">Школа-студия красоты<br>Ксении Аракелян</h3>
+
+        <ul class="contacts__list">
+          <li>
+            <span class="contacts__label">Адрес</span>
+            <a href="https://yandex.ru/maps/-/CTgfJDnz" target="_blank" rel="noopener">Королёв, ул. 50-летия ВЛКСМ, 4Г</a>
+          </li>
+          <li>
+            <span class="contacts__label">Телефон</span>
+            <a href="tel:+79156536153">+7 (915) 653-61-53</a>
+          </li>
+          <li>
+            <span class="contacts__label">Режим работы</span>
+            <span>Ежедневно, до 22:00</span>
+          </li>
+          <li>
+            <span class="contacts__label">Оплата</span>
+            <span>Карта, перевод, QR-код, наличные</span>
+          </li>
+        </ul>
+
+        <div class="contacts__socials">
+          <a href="https://wa.me/79156536153" target="_blank" rel="noopener" class="social" aria-label="WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm5.8 14.2c-.2.7-1.2 1.3-2 1.4-.5.1-1.2.2-3.5-.7-2.9-1.2-4.8-4.2-5-4.4-.1-.2-1.1-1.5-1.1-2.9 0-1.4.7-2 1-2.3.2-.3.6-.4.8-.4h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .6l-.4.5c-.1.2-.3.3-.1.6.2.3.7 1.2 1.6 2 1.1 1 2 1.3 2.3 1.4.2.1.4.1.6-.1l.8-1c.2-.2.3-.2.6-.1l2 1c.3.1.4.2.5.3.1.2.1.7-.2 1.4Z"/></svg>
+          </a>
+          <a href="https://t.me/+79156536153" target="_blank" rel="noopener" class="social" aria-label="Telegram">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21.7 3.4 2.9 10.6c-1 .4-1 1.8.1 2.1l4.7 1.5 1.8 5.5c.3.9 1.4 1.1 2 .4l2.6-2.7 4.6 3.4c.7.5 1.7.1 1.9-.8l3.1-14.6c.2-1-.7-1.8-1.6-1.4ZM9.6 14.2l8.2-5.6-6.7 6.6-.3 3.2-1.2-4.2Z"/></svg>
+          </a>
+          <a href="https://yandex.ru/maps/-/CTgfJDnz" target="_blank" rel="noopener" class="social" aria-label="Яндекс.Карты">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="contacts__map reveal">
+        <iframe
+          src="https://yandex.ru/map-widget/v1/?text=Королёв%2C%20улица%2050-летия%20ВЛКСМ%2C%204Г&z=17"
+          width="100%" height="100%" frameborder="0" allowfullscreen="true" loading="lazy"
+          title="Карта: Королёв, ул. 50-летия ВЛКСМ, 4Г"></iframe>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════ ПОДВАЛ ══════════════════ -->
+<footer class="footer">
+  <div class="container footer__inner">
+    <div class="footer__brand">
+      <svg class="brand__mark brand__mark--lg" viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="60" cy="60" r="45" fill="none" stroke="url(#g1)" stroke-width="2"/>
+        <text x="60" y="54" class="brand__letter">К</text>
+        <text x="60" y="94" class="brand__letter">А</text>
+        <path d="M42 62 H78" stroke="url(#g1)" stroke-width="1.2"/>
+        <path d="M42 74 H78" stroke="url(#g1)" stroke-width="1.2"/>
+        <text x="60" y="71" class="brand__script">школа студия</text>
+      </svg>
+      <p class="footer__tagline">Школа-студия красоты<br>Ксении Аракелян · Королёв</p>
+    </div>
+
+    <nav class="footer__nav">
+      <a href="#courses">Обучение</a>
+      <a href="#services">Услуги</a>
+      <a href="#works">Работы</a>
+      <a href="#reviews">Отзывы</a>
+      <a href="#faq">Вопросы</a>
+      <a href="#contacts">Контакты</a>
+    </nav>
+
+    <div class="footer__contact">
+      <a href="tel:+79156536153" class="footer__phone">+7 (915) 653-61-53</a>
+      <span>Королёв, ул. 50-летия ВЛКСМ, 4Г</span>
+      <span>Ежедневно до 22:00</span>
+    </div>
+  </div>
+
+  <div class="container footer__bottom">
+    <span>© <span id="year">2026</span> Школа-студия красоты Ксении Аракелян</span>
+    <span>Не является публичной офертой</span>
+  </div>
+</footer>
+
+<!-- Плавающие кнопки -->
+<div class="fab">
+  <a href="https://wa.me/79156536153?text=Здравствуйте!" target="_blank" rel="noopener" class="fab__btn fab__btn--wa" aria-label="Написать в WhatsApp">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm5.8 14.2c-.2.7-1.2 1.3-2 1.4-.5.1-1.2.2-3.5-.7-2.9-1.2-4.8-4.2-5-4.4-.1-.2-1.1-1.5-1.1-2.9 0-1.4.7-2 1-2.3.2-.3.6-.4.8-.4h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .6l-.4.5c-.1.2-.3.3-.1.6.2.3.7 1.2 1.6 2 1.1 1 2 1.3 2.3 1.4.2.1.4.1.6-.1l.8-1c.2-.2.3-.2.6-.1l2 1c.3.1.4.2.5.3.1.2.1.7-.2 1.4Z"/></svg>
+  </a>
+  <a href="https://t.me/+79156536153" target="_blank" rel="noopener" class="fab__btn fab__btn--tg" aria-label="Написать в Telegram">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21.7 3.4 2.9 10.6c-1 .4-1 1.8.1 2.1l4.7 1.5 1.8 5.5c.3.9 1.4 1.1 2 .4l2.6-2.7 4.6 3.4c.7.5 1.7.1 1.9-.8l3.1-14.6c.2-1-.7-1.8-1.6-1.4ZM9.6 14.2l8.2-5.6-6.7 6.6-.3 3.2-1.2-4.2Z"/></svg>
+  </a>
+</div>
+
+<!-- Лайтбокс для работ -->
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <button class="lightbox__close" aria-label="Закрыть">×</button>
+  <img src="" alt="">
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
