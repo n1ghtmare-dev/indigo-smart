@@ -81,6 +81,7 @@ jobs:
           rsync -rlDzv --delete \
             --exclude='/landing/' \
             --exclude='/landing2/' \
+            --exclude='/landing3/' \
             --no-perms --no-owner --no-group \
             -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -o ConnectTimeout=20" \
             smart-board/build/ \
