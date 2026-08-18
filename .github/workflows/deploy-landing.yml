@@ -120,7 +120,7 @@ jobs:
       - name: Smoke test
         run: |
           body=$(curl -sfL -m 15 "https://indigosmart.ru/") || { echo "FAILED: корень недоступен (бэкенд лежит?)"; exit 1; }
-          printf '%s' "$body" | grep -q 'Варианты лендинга' || { echo "FAILED: на / отдаётся не хаб"; exit 1; }
+          printf '%s' "$body" | grep -q 'Панель проектов' || { echo "FAILED: на / отдаётся не панель проектов"; exit 1; }
           if printf '%s' "$body" | grep -q 'create-react-app'; then
             echo "FAILED: на / всё ещё React-дашборд"; exit 1
           fi
