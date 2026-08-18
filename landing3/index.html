@@ -4,37 +4,38 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DarFit — женская фитнес-студия в Королёве (Юбилейный)</title>
-<meta name="description" content="DarFit — женская фитнес-студия в Королёве, мкр. Юбилейный. Пилатес, степ-аэробика и силовые, стретчинг, здоровая спина, табата. Малые группы только для женщин. 4,8 из 5 на Яндекс.Картах.">
-<meta name="theme-color" content="#3d5049">
+<meta name="description" content="DarFit — женская фитнес-студия в Королёве, мкр. Юбилейный. Пилатес, степ и силовые, стретчинг, здоровая спина, табата. Малые группы только для женщин. 4,8 из 5 на Яндекс.Картах.">
+<meta name="theme-color" content="#0E0C0C">
 <meta property="og:title" content="DarFit — женская фитнес-студия в Королёве">
 <meta property="og:description" content="Пилатес, стретчинг и силовые в малых группах только для женщин. Юбилейный, Королёв.">
 <meta property="og:type" content="website">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='16' fill='%233d5049'/><text x='32' y='43' font-family='Georgia,serif' font-size='34' fill='%23e7ddcb' text-anchor='middle'>D</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230E0C0C'/><text x='32' y='44' font-family='Arial Black,sans-serif' font-size='30' font-weight='900' fill='%23CE3B2A' text-anchor='middle'>D</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@500;600;700;800;900&family=Inter:wght@400;500;600&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="img/hero.webp" fetchpriority="high">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<a class="skip" href="#programs">К программам</a>
+<a class="skip" href="#programs">К направлениям</a>
 <div class="progress" aria-hidden="true"><i></i></div>
 
-<!-- ══════════════ ШАПКА ══════════════ -->
+<!-- ══ ШАПКА ══ -->
 <header class="bar" id="bar">
   <div class="wrap bar__inner">
     <a class="brand" href="#top" aria-label="DarFit, наверх">
       <span class="brand__word">Dar<span>Fit</span></span>
+      <span class="brand__sub">женская студия</span>
     </a>
     <nav class="bar__nav" aria-label="Разделы">
-      <a href="#programs">Программы</a>
-      <a href="#why">Почему мы</a>
+      <a href="#programs">Направления</a>
+      <a href="#start">Как начать</a>
       <a href="#prices">Цены</a>
-      <a href="#reviews">Отзывы</a>
+      <a href="#schedule">Расписание</a>
       <a href="#contacts">Контакты</a>
     </nav>
-    <a class="btn btn--ghost btn--sm bar__cta" href="https://vk.com/studio_darfit">Записаться</a>
+    <span class="bar__flag">Запись открыта <b aria-hidden="true">◆</b></span>
     <button class="burger" id="burger" type="button" aria-expanded="false" aria-controls="menu">
       <span aria-hidden="true"><i></i><i></i></span><span class="burger__t">Меню</span>
     </button>
@@ -43,219 +44,198 @@
 
 <div class="menu" id="menu" hidden>
   <nav class="menu__nav">
-    <a href="#programs">Программы</a>
-    <a href="#why">Почему мы</a>
-    <a href="#community">Сообщество</a>
+    <a href="#programs">Направления</a>
+    <a href="#start">Как начать</a>
     <a href="#prices">Цены</a>
+    <a href="#schedule">Расписание</a>
     <a href="#reviews">Отзывы</a>
+    <a href="#faq">Вопросы</a>
     <a href="#contacts">Контакты</a>
   </nav>
   <div class="menu__foot">
-    <a class="btn btn--dark" href="https://vk.com/studio_darfit">Записаться во ВКонтакте</a>
+    <a class="btn btn--accent" href="https://vk.com/studio_darfit">Записаться во ВКонтакте</a>
     <a class="menu__tel" href="tel:+79030016204">+7 903 001-62-04</a>
   </div>
 </div>
 
 <main id="top">
 
-  <!-- ══════════════ ГЕРОЙ ══════════════ -->
+  <!-- ══ ГЕРОЙ ══ -->
   <section class="hero">
+    <span class="hero__bleed" aria-hidden="true">DARFIT</span>
     <div class="wrap hero__grid">
+
       <div class="hero__text">
-        <p class="eyebrow rise" style="--d:.05s">Королёв · мкр. Юбилейный · только для женщин</p>
-
-        <h1 class="hero__title">
-          <span class="ln"><span style="--d:.16s">Женская студия,</span></span>
-          <span class="ln"><span style="--d:.28s">где хочется</span></span>
-          <span class="ln"><span style="--d:.40s">остаться
-            <span class="icocluster" aria-hidden="true">
-              <i title="пилатес">&#127939;</i><i title="стретчинг">&#129496;</i><i title="силовые">&#128170;</i>
-            </span>
-          </span></span>
+        <p class="script rise" style="--d:.05s">Добро пожаловать в</p>
+        <h1 class="hero__name">
+          <span class="ln"><span style="--d:.16s">DAR</span></span>
+          <span class="ln"><span class="accentword" style="--d:.28s">FIT</span></span>
         </h1>
-
-        <p class="hero__lede rise" style="--d:.66s">
-          Пилатес, стретчинг и силовые в малых группах. Тёплая компания,
-          внимательные тренеры и результат в своём ритме.
+        <p class="hero__role rise" style="--d:.42s">Женская фитнес-студия · Пилатес · Стретчинг · Силовые</p>
+        <p class="hero__lede rise" style="--d:.54s">
+          Занимаемся в малых группах только для женщин. Тёплая компания,
+          внимательные тренеры и результат в своём ритме — в Юбилейном, Королёв.
         </p>
-
-        <form class="capture rise" id="capture" style="--d:.78s">
-          <input type="tel" name="phone" inputmode="tel" placeholder="Ваш телефон" aria-label="Ваш телефон" autocomplete="tel">
-          <button type="submit" class="btn btn--dark">Записаться</button>
-        </form>
-
-        <div class="proof rise" style="--d:.9s">
-          <div class="proof__avatars" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-          <p><strong>4,8 из 5</strong> · 51 отзыв на Яндекс.Картах<br>
-             Женская студия в Юбилейном</p>
+        <div class="hero__act rise" style="--d:.66s">
+          <a class="btn btn--accent" href="https://vk.com/studio_darfit">Записаться</a>
+          <a class="btn btn--line" href="tel:+79030016204">+7 903 001-62-04</a>
         </div>
+        <p class="hero__loc rise" style="--d:.78s"><b aria-hidden="true">◆</b> Королёв, мкр. Юбилейный · до 22:00</p>
       </div>
 
-      <!-- Фото с пинами-аннотациями (как в референсе) -->
-      <figure class="hero__media rise" style="--d:.5s">
-        <div class="hero__photo">
-          <img src="img/hero.webp" alt="Женщина на занятии в студии DarFit" width="1400" height="1750" fetchpriority="high" decoding="async">
-        </div>
-        <span class="pin pin--1"><i></i><b>Только для женщин</b></span>
-        <span class="pin pin--2"><i></i><b>Малые группы до 8</b></span>
-        <span class="pin pin--3"><i></i><b>Тренер рядом каждое занятие</b></span>
+      <figure class="hero__media rise" style="--d:.4s">
+        <img src="img/hero.webp" alt="Девушка на тренировке в студии DarFit" width="1300" height="1733" fetchpriority="high" decoding="async">
+        <span class="hero__tag"><i aria-hidden="true">✦</i> Превращаем тренировку<br>в удовольствие</span>
       </figure>
-    </div>
 
-    <!-- перетекание в следующую секцию: мягкая волна + плавающая карточка -->
-    <div class="hero__wave" aria-hidden="true"></div>
-    <a class="floatcard reveal" href="https://yandex.ru/maps/-/CTg1qB~b">
-      <span class="floatcard__num">4,8</span>
-      <span class="floatcard__txt">рейтинг на Яндекс.Картах<br><b>51 отзыв →</b></span>
-    </a>
+      <dl class="hstats rise" style="--d:.6s">
+        <div><dd>4,8</dd><dt>рейтинг на Яндекс.Картах</dt></div>
+        <div><dd>51</dd><dt>отзыв о студии</dt></div>
+        <div><dd>8<span>+</span></dd><dt>направлений занятий</dt></div>
+        <div><dd>8</dd><dt>человек максимум в группе</dt></div>
+      </dl>
+    </div>
   </section>
 
-  <!-- ══════════════ ПРОГРАММЫ ══════════════ -->
-  <section class="section section--cream stack" id="programs">
+  <!-- ══ НАПРАВЛЕНИЯ ══ -->
+  <section class="section" id="programs">
     <div class="wrap">
-      <header class="lead reveal">
-        <p class="kicker">Программы</p>
-        <h2 class="h2">Занятия под ваш ритм<br>и вашу задачу</h2>
-      </header>
+      <div class="rowhead reveal">
+        <h2 class="h2">Направления</h2>
+        <a class="rowhead__all" href="#schedule">Всё расписание <span aria-hidden="true">→</span></a>
+      </div>
 
       <div class="progs">
-        <article class="prog reveal">
-          <div class="prog__img"><img src="img/prog-pilates.webp" alt="Пилатес на реформере" width="900" height="1125" loading="lazy" decoding="async"></div>
-          <div class="prog__body">
-            <h3>Пилатес</h3>
-            <p>Мягкая, но глубокая работа с мышцами кора, осанкой и дыханием. Подходит на любом уровне.</p>
-            <span class="prog__price">800 ₽ / занятие</span>
+        <a class="prog reveal" href="https://vk.com/studio_darfit">
+          <div class="prog__img"><img src="img/prog-pilates.webp" alt="Пилатес" width="1000" height="688" loading="lazy" decoding="async"></div>
+          <div class="prog__row"><span class="prog__num">01</span>
+            <div><h3>Пилатес</h3><p>Кор, осанка, дыхание — мягко и глубоко</p></div>
+            <span class="prog__arr" aria-hidden="true">→</span>
           </div>
-        </article>
-
-        <article class="prog reveal">
-          <div class="prog__img"><img src="img/prog-energy.webp" alt="Степ-аэробика и силовая" width="900" height="1125" loading="lazy" decoding="async"></div>
-          <div class="prog__body">
-            <h3>Степ + силовая</h3>
-            <p>Кардио и тонус в одном занятии: заряд энергии, выносливость и подтянутое тело.</p>
-            <span class="prog__price">800 ₽ / занятие</span>
+        </a>
+        <a class="prog reveal" href="https://vk.com/studio_darfit">
+          <div class="prog__img"><img src="img/prog-strength.webp" alt="Степ и силовая" width="1000" height="688" loading="lazy" decoding="async"></div>
+          <div class="prog__row"><span class="prog__num">02</span>
+            <div><h3>Степ + силовая</h3><p>Кардио и тонус, заряд энергии</p></div>
+            <span class="prog__arr" aria-hidden="true">→</span>
           </div>
-        </article>
-
-        <article class="prog reveal">
-          <div class="prog__img"><img src="img/prog-stretch.webp" alt="Стретчинг" width="900" height="1125" loading="lazy" decoding="async"></div>
-          <div class="prog__body">
-            <h3>Стретчинг</h3>
-            <p>Гибкость, лёгкость и снятие напряжения. Тело становится подвижным, а движения — свободными.</p>
-            <span class="prog__price">уточните расписание</span>
+        </a>
+        <a class="prog reveal" href="https://vk.com/studio_darfit">
+          <div class="prog__img"><img src="img/prog-stretch.webp" alt="Стретчинг" width="1000" height="688" loading="lazy" decoding="async"></div>
+          <div class="prog__row"><span class="prog__num">03</span>
+            <div><h3>Стретчинг</h3><p>Гибкость, лёгкость, снятие зажимов</p></div>
+            <span class="prog__arr" aria-hidden="true">→</span>
           </div>
-        </article>
-
-        <article class="prog reveal">
-          <div class="prog__img"><img src="img/prog-back.webp" alt="Здоровая спина" width="900" height="1125" loading="lazy" decoding="async"></div>
-          <div class="prog__body">
-            <h3>Здоровая спина</h3>
-            <p>Бережная программа для тех, кто много сидит: укрепляем спину и убираем зажимы.</p>
-            <span class="prog__price">уточните расписание</span>
+        </a>
+        <a class="prog reveal" href="https://vk.com/studio_darfit">
+          <div class="prog__img"><img src="img/prog-back.webp" alt="Здоровая спина" width="1000" height="688" loading="lazy" decoding="async"></div>
+          <div class="prog__row"><span class="prog__num">04</span>
+            <div><h3>Здоровая спина</h3><p>Бережно для тех, кто много сидит</p></div>
+            <span class="prog__arr" aria-hidden="true">→</span>
           </div>
-        </article>
-      </div>
-
-      <p class="kicker reveal" style="margin-top:2.5rem">И ещё направления</p>
-      <ul class="chips reveal">
-        <li>Табата</li><li>Персональные тренировки</li><li>Групповые занятия</li>
-        <li>Для беременных</li><li>Детские занятия</li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- ══════════════ ПОЧЕМУ МЫ (тёмная секция, призрачные цифры) ══════════════ -->
-  <section class="section section--forest lift" id="why">
-    <div class="wrap">
-      <header class="lead reveal">
-        <p class="kicker kicker--light">Почему DarFit</p>
-        <h2 class="h2 h2--light">Не просто фитнес —<br>своё место</h2>
-      </header>
-
-      <ol class="reasons">
-        <li class="reason reveal">
-          <span class="reason__num">01</span>
-          <div>
-            <h3>Только женщины</h3>
-            <p>Комфортная атмосфера без лишних взглядов. Сюда приходят заниматься и общаться —
-               и часто остаются надолго.</p>
-          </div>
-        </li>
-        <li class="reason reveal">
-          <span class="reason__num">02</span>
-          <div>
-            <h3>Малые группы</h3>
-            <p>До восьми человек: тренер видит каждую, поправляет технику и ведёт в вашем темпе,
-               а не «на весь зал».</p>
-          </div>
-        </li>
-        <li class="reason reveal">
-          <span class="reason__num">03</span>
-          <div>
-            <h3>Программа под вас</h3>
-            <p>Беременность, восстановление, спина, первый шаг в спорт — подберём формат под ваше
-               состояние и цель.</p>
-          </div>
-        </li>
-      </ol>
-    </div>
-  </section>
-
-  <!-- ══════════════ СООБЩЕСТВО (фото-панель заходит на стык) ══════════════ -->
-  <section class="section section--cream community" id="community">
-    <div class="wrap community__grid">
-      <figure class="community__media reveal">
-        <img src="img/community.webp" alt="Женщины в студии DarFit" width="1500" height="1125" loading="lazy" decoding="async">
-      </figure>
-      <div class="community__text reveal">
-        <p class="kicker">Сообщество</p>
-        <blockquote class="pull">
-          «Место, где девушки не только&nbsp;занимаются, но и&nbsp;общаются»
-        </blockquote>
-        <p class="community__p">
-          У нас знакомятся, поддерживают друг друга и возвращаются не только за формой,
-          но и за настроением. Тёплая компания — часть тренировки.
-        </p>
-        <a class="btn btn--dark" href="https://vk.com/studio_darfit">Познакомиться в VK</a>
+        </a>
       </div>
     </div>
   </section>
 
-  <!-- бегущая строка как переход между секциями -->
-  <div class="ticker" aria-hidden="true">
-    <div class="ticker__row">
-      <span>Пилатес</span><span>•</span><span>Стретчинг</span><span>•</span><span>Степ&nbsp;+&nbsp;силовая</span><span>•</span><span>Табата</span><span>•</span><span>Здоровая&nbsp;спина</span><span>•</span><span>Для&nbsp;беременных</span><span>•</span>
-      <span>Пилатес</span><span>•</span><span>Стретчинг</span><span>•</span><span>Степ&nbsp;+&nbsp;силовая</span><span>•</span><span>Табата</span><span>•</span><span>Здоровая&nbsp;спина</span><span>•</span><span>Для&nbsp;беременных</span><span>•</span>
+  <!-- ══ ТРИ КОЛОНКИ: О СТУДИИ · КАК НАЧАТЬ · ЦИТАТА ══ -->
+  <section class="section triband" id="start">
+    <div class="wrap triband__grid">
+
+      <!-- О студии + форматы -->
+      <div class="col reveal">
+        <h2 class="h3 accent">О студии</h2>
+        <dl class="mini">
+          <div><dt>Формат</dt><dd>Малые женские группы до 8 человек</dd></div>
+          <div><dt>Подход</dt><dd>Тренер видит каждую и ведёт в вашем темпе</dd></div>
+          <div><dt>Для кого</dt><dd>Новичкам, после перерыва, при беременности</dd></div>
+        </dl>
+        <h3 class="h3 accent" style="margin-top:1.8rem">Форматы</h3>
+        <ul class="chips">
+          <li>Пилатес</li><li>Стретчинг</li><li>Степ</li><li>Силовая</li><li>Табата</li>
+          <li>Здоровая спина</li><li>Для беременных</li><li>Детские</li><li>Персональные</li><li>Групповые</li>
+        </ul>
+      </div>
+
+      <!-- Как начать: нумерованный процесс -->
+      <div class="col reveal">
+        <h2 class="h3 accent">Как начать</h2>
+        <ol class="steps">
+          <li class="step">
+            <span class="step__ic" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg>
+            </span>
+            <span class="step__n">01</span>
+            <div><h4>Знакомство</h4><p>Напишите или позвоните — ответим на вопросы и подскажем формат.</p></div>
+          </li>
+          <li class="step">
+            <span class="step__ic" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v18M5 8l7-5 7 5"/></svg>
+            </span>
+            <span class="step__n">02</span>
+            <div><h4>Пробное занятие</h4><p>Приходите на одно занятие и пробуете студию без обязательств.</p></div>
+          </li>
+          <li class="step">
+            <span class="step__ic" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg>
+            </span>
+            <span class="step__n">03</span>
+            <div><h4>Абонемент</h4><p>Выбираем удобный вариант посещений под ваш график и цель.</p></div>
+          </li>
+          <li class="step">
+            <span class="step__ic" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>
+            </span>
+            <span class="step__n">04</span>
+            <div><h4>Расписание</h4><p>Занимаетесь в удобное время в тёплой женской компании.</p></div>
+          </li>
+          <li class="step">
+            <span class="step__ic" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <span class="step__n">05</span>
+            <div><h4>Результат</h4><p>Тело в тонусе, спина здоровая, настроение — на подъёме.</p></div>
+          </li>
+        </ol>
+      </div>
+
+      <!-- Цитата -->
+      <div class="col quotecol reveal">
+        <span class="quotecol__mark" aria-hidden="true">”</span>
+        <blockquote>Место, где девушки не только занимаются, но и&nbsp;общаются</blockquote>
+        <span class="sign">DarFit</span>
+        <p class="quotecol__cta">Давайте заниматься<br>вместе <b aria-hidden="true">◆</b></p>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <!-- ══════════════ ЦЕНЫ ══════════════ -->
-  <section class="section section--sage" id="prices">
+  <!-- ══ ЦЕНЫ ══ -->
+  <section class="section" id="prices">
     <div class="wrap">
-      <header class="lead reveal">
-        <p class="kicker">Цены</p>
-        <h2 class="h2">Начните с одного занятия</h2>
-      </header>
-
+      <div class="rowhead reveal"><h2 class="h2">Цены</h2>
+        <span class="rowhead__all">Начните с одного занятия</span></div>
       <div class="tiers">
         <article class="tier reveal">
+          <span class="tier__n">01</span>
           <h3>Разовое занятие</h3>
           <p class="tier__price">800&nbsp;₽</p>
           <p class="tier__note">Пилатес или степ + силовая. Попробуйте формат и студию.</p>
-          <a class="btn btn--dark" href="https://vk.com/studio_darfit">Записаться</a>
+          <a class="btn btn--line" href="https://vk.com/studio_darfit">Записаться</a>
         </article>
         <article class="tier tier--hi reveal">
           <span class="tier__badge">Выгоднее</span>
+          <span class="tier__n">02</span>
           <h3>Абонемент</h3>
           <p class="tier__price">от&nbsp;3&nbsp;200&nbsp;₽<span>/мес</span></p>
-          <p class="tier__note">Регулярные занятия по выгодной цене. Форматы и число посещений — на выбор.</p>
-          <a class="btn btn--dark" href="https://vk.com/studio_darfit">Узнать условия</a>
+          <p class="tier__note">Регулярные занятия по выгодной цене. Число посещений — на выбор.</p>
+          <a class="btn btn--accent" href="https://vk.com/studio_darfit">Узнать условия</a>
         </article>
         <article class="tier reveal">
+          <span class="tier__n">03</span>
           <h3>Персонально</h3>
           <p class="tier__price">по&nbsp;запросу</p>
           <p class="tier__note">Индивидуальная программа и внимание тренера только к вам.</p>
-          <a class="btn btn--dark" href="https://vk.com/studio_darfit">Обсудить</a>
+          <a class="btn btn--line" href="https://vk.com/studio_darfit">Обсудить</a>
         </article>
       </div>
       <!-- ЗАПОЛНИТЬ: подтвердить актуальные цены абонементов и персональных -->
@@ -263,8 +243,26 @@
     </div>
   </section>
 
-  <!-- ══════════════ ОТЗЫВЫ ══════════════ -->
-  <section class="section section--cream" id="reviews">
+  <!-- ══ РАСПИСАНИЕ ══ -->
+  <section class="section section--panel" id="schedule">
+    <div class="wrap">
+      <div class="rowhead reveal"><h2 class="h2">Расписание</h2>
+        <span class="rowhead__all">Пример недели</span></div>
+      <!-- ЗАПОЛНИТЬ: заменить на актуальное расписание студии -->
+      <div class="sched reveal">
+        <div class="sched__day"><span class="sched__d">Пн · Ср · Пт</span>
+          <ul><li><b>09:30</b> Пилатес</li><li><b>11:00</b> Здоровая спина</li><li><b>19:00</b> Степ + силовая</li><li><b>20:15</b> Стретчинг</li></ul></div>
+        <div class="sched__day"><span class="sched__d">Вт · Чт</span>
+          <ul><li><b>10:00</b> Стретчинг</li><li><b>18:30</b> Табата</li><li><b>19:45</b> Пилатес</li></ul></div>
+        <div class="sched__day"><span class="sched__d">Сб</span>
+          <ul><li><b>10:00</b> Групповая</li><li><b>11:30</b> Для беременных</li><li><b>13:00</b> Детские</li></ul></div>
+      </div>
+      <p class="note reveal">Расписание показано для примера — актуальное уточняйте при записи или во ВКонтакте.</p>
+    </div>
+  </section>
+
+  <!-- ══ ОТЗЫВЫ ══ -->
+  <section class="section" id="reviews">
     <div class="wrap reviews__grid">
       <div class="reviews__score reveal">
         <p class="score__num">4,8</p>
@@ -273,49 +271,68 @@
         <a class="link" href="https://yandex.ru/maps/-/CTg1qB~b">Читать все отзывы →</a>
       </div>
       <div class="reviews__body reveal">
-        <p class="kicker">Что отмечают чаще всего</p>
-        <!-- ЗАМЕНИТЬ: при желании — на конкретные цитаты с Яндекс.Карт.
-             Ниже — обобщённые темы отзывов, без выдуманных авторов. -->
+        <p class="kicker accent">Что отмечают чаще всего</p>
+        <!-- ЗАМЕНИТЬ при желании на конкретные цитаты с Яндекс.Карт.
+             Ниже — обобщённые темы, без выдуманных авторов. -->
         <ul class="notes">
           <li>Внимательные тренеры, которые видят каждую в группе.</li>
           <li>Маленькие женские группы и спокойная, дружелюбная атмосфера.</li>
+          <li>Индивидуальный подход — программу подбирают под состояние.</li>
           <li>Возвращаются и за результатом, и за общением.</li>
         </ul>
       </div>
     </div>
   </section>
 
-  <!-- ══════════════ CTA (карточка заходит на подвал) ══════════════ -->
-  <section class="cta-wrap" id="book">
+  <!-- ══ ВОПРОСЫ ══ -->
+  <section class="section section--panel" id="faq">
     <div class="wrap">
-      <div class="cta reveal">
-        <div class="cta__text">
-          <h2 class="cta__title">Первое занятие —<br>лучший способ решить</h2>
-          <p class="cta__note">Юбилейный, ул. М.К. Тихонравова, 35к2 · до 22:00</p>
-        </div>
-        <div class="cta__act">
-          <a class="btn btn--cream" href="https://vk.com/studio_darfit">Записаться</a>
-          <a class="btn btn--line" href="tel:+79030016204">+7 903 001-62-04</a>
-        </div>
+      <div class="rowhead reveal"><h2 class="h2">Вопросы</h2></div>
+      <div class="faq">
+        <details class="qa reveal"><summary>Я новичок — мне подойдёт?<i aria-hidden="true"></i></summary>
+          <p>Да. Группы маленькие, тренер объяснит технику и даст нагрузку по силам. Начать можно с пилатеса или здоровой спины.</p></details>
+        <details class="qa reveal"><summary>Есть ли пробное занятие?<i aria-hidden="true"></i></summary>
+          <p>Можно прийти на разовое занятие за 800 ₽, познакомиться со студией и форматом, а потом решить про абонемент.</p></details>
+        <details class="qa reveal"><summary>Что взять с собой?<i aria-hidden="true"></i></summary>
+          <p>Удобную форму, сменную обувь и воду. Коврики и инвентарь — в студии. Подробности подскажем при записи.</p></details>
+        <details class="qa reveal"><summary>Можно заниматься при беременности?<i aria-hidden="true"></i></summary>
+          <p>Да, есть отдельный формат для беременных. Перед началом стоит согласовать занятия с вашим врачом.</p></details>
+        <details class="qa reveal"><summary>Как записаться?<i aria-hidden="true"></i></summary>
+          <p>Напишите во ВКонтакте или позвоните: <a href="tel:+79030016204">+7 903 001-62-04</a>. Поможем выбрать направление и время.</p></details>
       </div>
     </div>
   </section>
 
-  <!-- ══════════════ КОНТАКТЫ ══════════════ -->
-  <section class="section section--forest" id="contacts">
-    <div class="wrap">
-      <header class="lead reveal">
-        <p class="kicker kicker--light">Контакты</p>
-        <h2 class="h2 h2--light">Приходите в гости</h2>
-      </header>
-      <dl class="facts">
-        <div class="reveal"><dt>Адрес</dt><dd>Королёв, мкр. Юбилейный,<br>ул. М.К. Тихонравова, 35 к2</dd></div>
-        <!-- ЗАПОЛНИТЬ: уточнить точный график (дни недели) -->
-        <div class="reveal"><dt>Время работы</dt><dd>Ежедневно · до 22:00</dd></div>
-        <div class="reveal"><dt>Телефон</dt><dd><a href="tel:+79030016204">+7 903 001-62-04</a></dd></div>
-        <div class="reveal"><dt>Соцсети</dt><dd><a href="https://vk.com/studio_darfit">ВКонтакте</a></dd></div>
-      </dl>
-      <a class="btn btn--cream reveal" href="https://yandex.ru/maps/-/CTg1qB~b">Открыть на карте</a>
+  <!-- ══ КОНТАКТЫ ══ -->
+  <section class="section contact" id="contacts">
+    <span class="hero__bleed hero__bleed--btm" aria-hidden="true">DARFIT</span>
+    <div class="wrap contact__grid">
+      <div class="contact__text reveal">
+        <h2 class="contact__title">Запишитесь<br>на первое<br><span class="accentword">занятие</span></h2>
+        <p class="contact__lede">Открыты для новых участниц. Приходите — подберём направление и удобное время.</p>
+        <ul class="clist">
+          <li><span class="clist__ic" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5c0 9 6 15 15 15l-2-4-4-1-2-3-3-2-1-4z"/></svg></span>
+            <a href="tel:+79030016204">+7 903 001-62-04</a></li>
+          <li><span class="clist__ic" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg></span>
+            <a href="https://vk.com/studio_darfit">vk.com/studio_darfit</a></li>
+          <li><span class="clist__ic" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
+            <span>Королёв, мкр. Юбилейный, ул. М.К. Тихонравова, 35к2</span></li>
+          <li><span class="clist__ic" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l4 2"/></svg></span>
+            <!-- ЗАПОЛНИТЬ: уточнить точный график по дням -->
+            <span>Ежедневно · до 22:00</span></li>
+        </ul>
+        <div class="contact__act">
+          <a class="btn btn--accent" href="https://vk.com/studio_darfit">Записаться во ВКонтакте</a>
+          <a class="btn btn--line" href="https://yandex.ru/maps/-/CTg1qB~b">Открыть на карте</a>
+        </div>
+      </div>
+      <figure class="contact__media reveal">
+        <img src="img/studio.webp" alt="Интерьер студии DarFit" width="1600" height="900" loading="lazy" decoding="async">
+      </figure>
     </div>
   </section>
 </main>
@@ -323,20 +340,17 @@
 <footer class="foot">
   <div class="wrap foot__inner">
     <span class="brand__word brand__word--sm">Dar<span>Fit</span></span>
-    <p class="foot__dim">Женская фитнес-студия · Королёв, Юбилейный<br>
-      Не является публичной офертой. Есть противопоказания — проконсультируйтесь с врачом.</p>
+    <p class="foot__dim">Женская фитнес-студия · Королёв, Юбилейный · Не является публичной офертой.
+      Есть противопоказания — проконсультируйтесь с врачом.</p>
   </div>
 </footer>
 
 <script type="application/ld+json">
-{
-  "@context":"https://schema.org","@type":"HealthClub",
-  "name":"DarFit","description":"Женская фитнес-студия: пилатес, стретчинг, силовые, здоровая спина.",
-  "telephone":"+7-903-001-62-04",
-  "address":{"@type":"PostalAddress","streetAddress":"ул. М.К. Тихонравова, 35 к2","addressLocality":"Королёв","addressRegion":"Московская область","addressCountry":"RU"},
-  "openingHours":"Mo-Su 09:00-22:00",
-  "sameAs":["https://vk.com/studio_darfit"]
-}
+{"@context":"https://schema.org","@type":"HealthClub","name":"DarFit",
+"description":"Женская фитнес-студия: пилатес, стретчинг, силовые, здоровая спина.",
+"telephone":"+7-903-001-62-04",
+"address":{"@type":"PostalAddress","streetAddress":"ул. М.К. Тихонравова, 35 к2","addressLocality":"Королёв","addressRegion":"Московская область","addressCountry":"RU"},
+"openingHours":"Mo-Su 09:00-22:00","sameAs":["https://vk.com/studio_darfit"]}
 </script>
 <script src="script.js" defer></script>
 </body>
