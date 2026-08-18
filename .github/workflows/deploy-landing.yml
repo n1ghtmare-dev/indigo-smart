@@ -26,6 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      max-parallel: 1   # деплой по одному: сервер иногда роняет пачку одновременных SSH
       matrix:
         include:
           - dir: landing
@@ -96,6 +97,7 @@ jobs:
   # Страница-хаб в корне домена (docroot/index.html). Без --delete, чтобы не
   # снести React-статику, лендинги и бэкап рядом.
   hub:
+    needs: landings
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
