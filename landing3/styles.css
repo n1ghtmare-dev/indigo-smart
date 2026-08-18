@@ -263,11 +263,12 @@ body.is-locked{overflow:hidden}
 @media(max-width:760px){.reviews__grid{grid-template-columns:1fr}}
 
 /* атмосферный баннер */
-.imgband{position:relative;overflow:hidden;min-height:clamp(16rem,34vw,26rem);display:flex;align-items:center}
-.imgband img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.imgband{position:relative;overflow:hidden;min-height:clamp(20rem,40vw,32rem);display:flex;align-items:center}
+.imgband img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.05);animation:kenburns 22s ease-in-out infinite alternate}
 .imgband::after{content:"";position:absolute;inset:0;background:
-  linear-gradient(90deg,rgba(10,8,18,.92),rgba(10,8,18,.35) 60%,rgba(10,8,18,.7)),
-  radial-gradient(50% 80% at 20% 50%, var(--glow-soft), transparent 70%)}
+  linear-gradient(90deg,rgba(9,7,16,.95) 0%,rgba(9,7,16,.62) 32%,rgba(9,7,16,.12) 60%,rgba(9,7,16,.5) 100%),
+  linear-gradient(180deg,var(--void),transparent 16%,transparent 84%,var(--void)),
+  radial-gradient(55% 85% at 76% 42%, var(--glow-soft), transparent 72%)}
 .imgband__in{position:relative;z-index:1}
 .imgband__k{font-family:var(--archivo);font-size:.72rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-2);margin-bottom:.7rem}
 .imgband__t{font-family:var(--archivo);font-weight:800;font-size:clamp(1.5rem,3.2vw,2.6rem);line-height:1.1}
@@ -312,6 +313,7 @@ body.is-locked{overflow:hidden}
 
 /* анимации */
 @keyframes rise{to{transform:translateY(0)}}
+@keyframes kenburns{from{transform:scale(1.05)}to{transform:scale(1.12) translateY(-1.5%)}}
 @keyframes ringpulse{0%,100%{box-shadow:0 0 90px 6px var(--glow),inset 0 0 70px 4px rgba(139,92,246,.35)}
   50%{box-shadow:0 0 120px 10px var(--glow),inset 0 0 90px 6px rgba(139,92,246,.45)}}
 .rise{opacity:0;transform:translateY(18px);animation:riseIn .9s var(--ease) var(--d,0s) forwards}
@@ -322,5 +324,6 @@ body.is-locked{overflow:hidden}
   .rise{opacity:1;transform:none;animation:none}
   .reveal{opacity:1;transform:none}
   .hero__ring{animation:none}
+  .imgband img{animation:none;transform:none}
   *,*::before,*::after{transition-duration:.01ms!important}
 }
