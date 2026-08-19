@@ -7,6 +7,7 @@ on:
       - 'landing/**'
       - 'landing2/**'
       - 'landing3/**'
+      - 'landing4/**'
       - 'landing-root/**'
       - '.github/workflows/deploy-landing.yml'
   workflow_dispatch: {}
@@ -38,6 +39,9 @@ jobs:
           - dir: landing3
             slug: landing3
             marker: DarFit
+          - dir: landing4
+            slug: landing4
+            marker: New home
     name: ${{ matrix.slug }}
     steps:
       - uses: actions/checkout@v4
