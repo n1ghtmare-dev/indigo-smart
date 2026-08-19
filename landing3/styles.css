@@ -274,7 +274,7 @@ body.is-locked{overflow:hidden}
 .imgband__t{font-family:var(--archivo);font-weight:800;font-size:clamp(1.5rem,3.2vw,2.6rem);line-height:1.1}
 
 /* вопросы */
-.faq{max-width:60rem}
+.faq{max-width:none}
 .qa{border-top:1px solid var(--line)}
 .qa:last-child{border-bottom:1px solid var(--line)}
 .qa summary{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;padding:1.3rem 0;cursor:pointer;list-style:none;font-family:var(--archivo);font-weight:700;font-size:clamp(1.05rem,2vw,1.35rem)}
