@@ -1,171 +1,331 @@
 <!doctype html>
 <html lang="ru">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#f4f3ef" />
-    <meta name="description" content="New home — агентство недвижимости в Щёлково. Покупка, продажа, ипотека и юридическое сопровождение сделок." />
-    <title>New home — агентство недвижимости</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <script>if (window.location.search.includes('capture=1')) document.body.classList.add('capture-mode');</script>
-    <a class="skip-link" href="#content">Перейти к содержанию</a>
-    <header class="site-header">
-      <div class="header-inner">
-        <a class="brand" href="#top" aria-label="New home — на главную">
-          <img src="assets/new-home-logo.jpg" alt="New home" />
-        </a>
-        <nav aria-label="Главное меню">
-          <a href="#services">Услуги</a>
-          <a href="#directions">Направления</a>
-          <a href="#process">Как работаем</a>
-          <a href="#faq">Вопросы</a>
-        </nav>
-        <a class="btn btn--small" href="#contact">Консультация <span>↗</span></a>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0A0D0B">
+<title>New home — агентство недвижимости в Щёлково</title>
+<meta name="description" content="New home — агентство недвижимости в Щёлково. Покупка, продажа, ипотека и юридическое сопровождение сделок. Рейтинг 5,0 на Яндекс Картах.">
+<meta property="og:title" content="New home — агентство недвижимости">
+<meta property="og:description" content="Покупка, продажа, ипотека и сопровождение сделок. Щёлково, Москва и область.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230A0D0B'/><text x='32' y='44' font-family='Georgia,serif' font-size='34' fill='%2335C26B' text-anchor='middle'>N</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="assets/m-hero.webp" fetchpriority="high">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#directions">К направлениям</a>
+<div class="progress" aria-hidden="true"><i></i></div>
+
+<span class="vlabel vlabel--l" aria-hidden="true">New home · недвижимость с 2016</span>
+<span class="vlabel vlabel--r" aria-hidden="true">Щёлково · Москва · область</span>
+
+<!-- ШАПКА -->
+<header class="bar" id="bar">
+  <div class="wrap bar__in">
+    <a class="brand" href="#top" aria-label="New home, наверх">
+      <span class="brand__mark">◆</span>
+      <span class="brand__txt">New&nbsp;home<b>агентство недвижимости</b></span>
+    </a>
+    <nav class="nav" aria-label="Разделы">
+      <a href="#services">Услуги</a>
+      <a href="#directions">Направления</a>
+      <a href="#why">Почему мы</a>
+      <a href="#process">Как работаем</a>
+      <a href="#faq">Вопросы</a>
+    </nav>
+    <a class="btn btn--sm bar__cta" href="#contact">Консультация <span aria-hidden="true">↗</span></a>
+    <button class="burger" id="burger" type="button" aria-expanded="false" aria-controls="menu">
+      <span aria-hidden="true"><i></i><i></i></span><b class="burger__t">Меню</b>
+    </button>
+  </div>
+</header>
+
+<div class="menu" id="menu" hidden>
+  <nav class="menu__nav">
+    <a href="#services">Услуги</a>
+    <a href="#directions">Направления</a>
+    <a href="#why">Почему мы</a>
+    <a href="#process">Как работаем</a>
+    <a href="#faq">Вопросы</a>
+    <a href="#contact">Контакты</a>
+  </nav>
+  <div class="menu__foot">
+    <a class="btn" href="tel:+79166443556">+7 (916) 644-35-56</a>
+    <a class="btn btn--ghost" href="https://wa.me/79166443556">Написать в WhatsApp</a>
+  </div>
+</div>
+
+<main id="top">
+
+  <!-- ГЕРОЙ -->
+  <section class="hero">
+    <div class="wrap hero__grid">
+      <div class="hero__copy">
+        <p class="eyebrow rise" style="--d:.05s"><i>●</i> Агентство недвижимости · Щёлково</p>
+        <h1 class="hero__title">
+          <span class="rise" style="--d:.15s">Ваш новый</span>
+          <span class="rise" style="--d:.26s">дом начинается</span>
+          <span class="rise serif-em" style="--d:.37s">здесь<span class="dot">.</span></span>
+        </h1>
+        <p class="hero__lead rise" style="--d:.55s">
+          Помогаем покупать, продавать и инвестировать в недвижимость —
+          спокойно, безопасно и на понятных условиях.
+        </p>
+        <div class="hero__act rise" style="--d:.66s">
+          <a class="btn btn--fill" href="#contact">Подобрать объект <span aria-hidden="true">↗</span></a>
+          <a class="btn btn--ghost" href="tel:+79166443556">+7 (916) 644-35-56</a>
+        </div>
+        <dl class="hero__stats rise" style="--d:.78s">
+          <div><dt>5,0</dt><dd>рейтинг · Яндекс Карты</dd></div>
+          <div><dt>168</dt><dd>оценок клиентов</dd></div>
+          <div><dt>1500<span>+</span></dt><dd>решённых вопросов</dd></div>
+        </dl>
       </div>
-    </header>
 
-    <main id="content" class="page" tabindex="-1">
-      <section class="hero container" id="top">
-        <div class="hero-copy reveal">
-          <p class="kicker"><i></i> Агентство недвижимости · Щёлково</p>
-          <h1>Ваш новый дом<br />начинается <em>здесь.</em></h1>
-          <p class="lead">Помогаем покупать, продавать и инвестировать в недвижимость спокойно, безопасно и выгодно.</p>
-          <div class="selection-bar">
-            <span>Квартиры · Дома · Участки</span>
-            <a href="#contact">Подобрать объект ↗</a>
+      <figure class="hero__media">
+        <span class="hero__halo" aria-hidden="true"></span>
+        <img src="assets/m-hero.webp" alt="Современный дом в сумерках со светящимися окнами" width="1300" height="1560" fetchpriority="high" decoding="async" data-parallax="-24">
+        <span class="floatchip floatchip--rate" data-parallax="18">
+          <b>5,0</b><i>★★★★★</i><small>168 оценок</small>
+        </span>
+        <span class="floatchip floatchip--tag" data-parallax="30">● Проверенные объекты</span>
+      </figure>
+    </div>
+
+    <!-- дуга-связка + витрина направлений (выходит на стык секций) -->
+    <div class="wrap hero__rail">
+      <svg class="hero__arc" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true"><path d="M0 118 C 320 20, 880 20, 1200 118" fill="none" stroke="url(#g)" stroke-width="1"/><defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="rgba(255,255,255,0)"/><stop offset=".5" stop-color="rgba(53,194,107,.6)"/><stop offset="1" stop-color="rgba(255,255,255,0)"/></linearGradient></defs></svg>
+      <ul class="showcase">
+        <li class="reveal"><a href="#directions"><img src="assets/m-flats.webp" alt="Квартиры" width="820" height="1093" loading="lazy"><span><small>01</small>Квартиры</span></a></li>
+        <li class="reveal" style="--d:.08s"><a href="#directions"><img src="assets/m-houses.webp" alt="Дома и дачи" width="820" height="1093" loading="lazy"><span><small>02</small>Дома и дачи</span></a></li>
+        <li class="reveal" style="--d:.16s"><a href="#directions"><img src="assets/m-land.webp" alt="Участки" width="820" height="1093" loading="lazy"><span><small>03</small>Участки</span></a></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- УСЛУГИ -->
+  <section class="section" id="services">
+    <span class="vlabel vlabel--sec" aria-hidden="true">01 — Услуги</span>
+    <div class="wrap">
+      <header class="head reveal">
+        <p class="kicker">01 — Услуги</p>
+        <h2 class="h2">Решения для<br>вашего <em>дома</em></h2>
+        <p class="head__note">Берём на себя каждый этап сделки — от первого вопроса до ключей в руках.</p>
+      </header>
+      <ol class="services">
+        <li class="srv reveal">
+          <span class="srv__n">01</span>
+          <div class="srv__b"><p class="srv__k">Продажа</p><h3>Найдём покупателя</h3>
+            <p>Оценим объект, подготовим презентацию, проведём показы и переговоры.</p></div>
+          <a class="srv__go" href="#contact" aria-label="Продажа">↗</a>
+        </li>
+        <li class="srv srv--hi reveal" style="--d:.08s">
+          <span class="srv__n">02</span>
+          <div class="srv__b"><p class="srv__k">Ипотека</p><h3>Поможем с одобрением</h3>
+            <p>Подберём программу, подготовим документы и сопроводим заявку в банк.</p></div>
+          <a class="srv__go" href="#contact" aria-label="Ипотека">↗</a>
+        </li>
+        <li class="srv reveal" style="--d:.16s">
+          <span class="srv__n">03</span>
+          <div class="srv__b"><p class="srv__k">Безопасность</p><h3>Проверим сделку</h3>
+            <p>Проведём юридическую экспертизу объекта и подготовим все документы.</p></div>
+          <a class="srv__go" href="#contact" aria-label="Сопровождение">↗</a>
+        </li>
+      </ol>
+    </div>
+    <div class="ticker" aria-hidden="true"><div class="ticker__row">
+      <span>Покупка</span><b>✦</b><span>Продажа</span><b>✦</b><span>Ипотека</span><b>✦</b><span>Сопровождение сделки</span><b>✦</b>
+      <span>Покупка</span><b>✦</b><span>Продажа</span><b>✦</b><span>Ипотека</span><b>✦</b><span>Сопровождение сделки</span><b>✦</b>
+    </div></div>
+  </section>
+
+  <!-- НАПРАВЛЕНИЯ — вкладки -->
+  <section class="section section--panel tabs" id="directions">
+    <span class="vlabel vlabel--sec" aria-hidden="true">02 — Направления</span>
+    <div class="wrap">
+      <header class="head reveal">
+        <p class="kicker">02 — Направления</p>
+        <h2 class="h2">Недвижимость для<br>разных <em>сценариев</em></h2>
+        <p class="head__note">Работаем с жильём для жизни, инвестиций и переезда.</p>
+      </header>
+
+      <div class="tabnav reveal" role="tablist" aria-label="Направления">
+        <button class="tab is-active" role="tab" aria-selected="true" data-tab="flats">Квартиры</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="houses">Дома и дачи</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="land">Участки</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="exchange">Обмен</button>
+      </div>
+
+      <div class="panels">
+        <article class="panel is-active" data-panel="flats">
+          <div class="panel__copy">
+            <p class="panel__k">01 · Город</p>
+            <h3>Ключи к новому</h3>
+            <p>Подберём квартиру на первичном или вторичном рынке Москвы и области — под ваш бюджет и район.</p>
+            <a class="btn btn--ghost" href="#contact">Подобрать квартиру <span aria-hidden="true">↗</span></a>
           </div>
-          <div class="hero-actions">
-            <a class="btn" href="#contact">Обсудить задачу <span>↗</span></a>
-            <a class="link" href="#directions">Смотреть направления <span>↓</span></a>
+          <figure class="panel__media"><img src="assets/m-flats.webp" alt="Квартира с панорамным видом" width="820" height="1093" loading="lazy" data-parallax="-16"></figure>
+          <div class="panel__detail">
+            <span class="panel__num">01</span>
+            <p>Новостройки и вторичка. Проверяем документы, помогаем с ипотекой и торгом.</p>
           </div>
-        </div>
-        <div class="hero-media reveal delay-1">
-          <img src="assets/new-home-hero.webp" alt="Современный загородный дом" />
-          <span class="media-badge">● Проверенные объекты</span>
-          <span class="media-caption">New home · недвижимость с заботой</span>
-        </div>
-        <div class="hero-stats" aria-label="Показатели агентства">
-          <div><strong>5,0</strong><span>рейтинг на Яндекс Картах</span></div>
-          <div><strong>168</strong><span>оценок клиентов</span></div>
-          <div><strong>1500+</strong><span>решённых жилищных вопросов</span></div>
-        </div>
-      </section>
+        </article>
 
-      <div class="ticker" aria-hidden="true"><div>ПОКУПКА <b>✦</b> ПРОДАЖА <b>✦</b> ИПОТЕКА <b>✦</b> ЮРИДИЧЕСКОЕ СОПРОВОЖДЕНИЕ <b>✦</b> ПОКУПКА <b>✦</b> ПРОДАЖА <b>✦</b></div></div>
-
-      <section class="section container" id="services">
-        <div class="section-heading reveal">
-          <div><p class="kicker"><i></i> 01 · Услуги</p><h2>Решения для<br />вашего <em>дома.</em></h2></div>
-          <aside class="section-aside"><p>Берём на себя каждый этап сделки — от первого вопроса до ключей в руках.</p><div><strong>1500+</strong><span>клиентов уже решили<br />жилищный вопрос</span></div><a class="link" href="#contact">Обсудить задачу ↗</a></aside>
-        </div>
-        <div class="cards cards--3">
-          <article class="service-card reveal"><span>01</span><div><small>ПРОДАЖА</small><h3>Найдём покупателя</h3><p>Оценим объект, подготовим презентацию, проведём показы и переговоры.</p></div><a href="#contact" aria-label="Узнать о продаже квартиры">↗</a></article>
-          <article class="service-card service-card--accent reveal delay-1"><span>02</span><div><small>ИПОТЕКА</small><h3>Поможем с одобрением</h3><p>Подберём программу, подготовим документы и сопроводим заявку.</p></div><a href="#contact" aria-label="Узнать об ипотеке">↗</a></article>
-          <article class="service-card reveal delay-2"><span>03</span><div><small>БЕЗОПАСНОСТЬ</small><h3>Проверим сделку</h3><p>Проведём юридическую экспертизу объекта и подготовим документы.</p></div><a href="#contact" aria-label="Узнать о сопровождении сделки">↗</a></article>
-        </div>
-      </section>
-
-      <section class="section section--muted" id="directions">
-        <div class="container">
-          <div class="section-label reveal"><p class="kicker"><i></i> 02 · Направления</p><a class="link" href="#contact">Получить консультацию ↗</a></div>
-          <div class="feature-list">
-            <article class="feature-card reveal">
-              <div class="feature-media"><img src="assets/new-home-interior.webp" alt="Светлый современный интерьер" /><span>КВАРТИРЫ · НОВОСТРОЙКИ · ВТОРИЧКА</span></div>
-              <div class="feature-copy"><small>01 · Квартиры</small><h3>Ключи<br />к новому</h3><p>Подберём жильё на первичном или вторичном рынке Москвы и области.</p><a class="circle-link" href="#contact" aria-label="Подобрать квартиру">↗</a></div>
-            </article>
-            <article class="feature-card feature-card--reverse reveal">
-              <div class="feature-media"><img src="assets/new-home-hero.webp" alt="Современный загородный дом" /><span>ДОМА · ДАЧИ · УЧАСТКИ</span></div>
-              <div class="feature-copy"><small>02 · Загородная недвижимость</small><h3>Место<br />для жизни</h3><p>Найдём дом, дачу, таунхаус или участок под ваши планы.</p><a class="circle-link" href="#contact" aria-label="Подобрать загородный объект">↗</a></div>
-            </article>
+        <article class="panel" data-panel="houses" hidden>
+          <div class="panel__copy">
+            <p class="panel__k">02 · Семья</p>
+            <h3>Место для жизни</h3>
+            <p>Найдём дом, дачу или таунхаус под ваши планы — с землёй, коммуникациями и удобной логистикой.</p>
+            <a class="btn btn--ghost" href="#contact">Подобрать дом <span aria-hidden="true">↗</span></a>
           </div>
-        </div>
-      </section>
-
-      <section class="section container">
-        <div class="section-heading reveal">
-          <div><p class="kicker"><i></i> 03 · Объекты</p><h2>Для разных<br /><em>сценариев жизни.</em></h2></div>
-          <p>Работаем с недвижимостью для жизни, инвестиций и переезда.</p>
-        </div>
-        <div class="cards cards--4 object-grid">
-          <a class="object-card reveal" href="#contact"><small>01 · ГОРОД</small><span class="object-icon">⌂</span><strong>Квартиры</strong><p>Новостройки и вторичный рынок.</p><b>Подобрать объект ↗</b></a>
-          <a class="object-card reveal delay-1" href="#contact"><small>02 · СЕМЬЯ</small><span class="object-icon">⌂</span><strong>Дома и дачи</strong><p>Коттеджи, таунхаусы и дачные дома.</p><b>Найти дом ↗</b></a>
-          <a class="object-card reveal delay-2" href="#contact"><small>03 · ПЛАНЫ</small><span class="object-icon">◇</span><strong>Участки</strong><p>Земля для строительства и инвестиций.</p><b>Выбрать участок ↗</b></a>
-          <a class="object-card reveal" href="#contact"><small>04 · РЕШЕНИЕ</small><span class="object-icon">⇄</span><strong>Обмен</strong><p>Выстроим цепочку сделок в нужные сроки.</p><b>Обсудить обмен ↗</b></a>
-        </div>
-      </section>
-
-      <section class="audience container reveal">
-        <div class="audience-intro"><p class="audience-eyebrow">Ваше преимущество</p><h2>Больше ясности.<br /><em>Меньше рисков.</em></h2><p>Объясняем условия, проверяем детали и помогаем принять взвешенное решение.</p><ul><li>Один специалист ведёт сделку целиком</li><li>Все условия фиксируем заранее</li><li>Остаёмся на связи после сделки</li></ul><a class="btn btn--light" href="#contact">Получить консультацию <span>↗</span></a></div>
-        <div class="audience-content">
-          <figure class="audience-image"><img src="assets/new-home-audience.webp" alt="Светлая современная гостиная с видом на зелёный двор" /></figure>
-          <div class="audience-list">
-            <a href="#contact"><div><h3>Покупателю</h3><p>Подбор, проверка, ипотека и оформление.</p></div><span aria-hidden="true">↗</span></a>
-            <a href="#contact"><div><h3>Продавцу</h3><p>Оценка, презентация и переговоры.</p></div><span aria-hidden="true">↗</span></a>
-            <a href="#contact"><div><h3>Семье</h3><p>Район, инфраструктура и планы на будущее.</p></div><span aria-hidden="true">↗</span></a>
-            <a href="#contact"><div><h3>Инвестору</h3><p>Оценка потенциала и ликвидности объекта.</p></div><span aria-hidden="true">↗</span></a>
+          <figure class="panel__media"><img src="assets/m-houses.webp" alt="Загородный дом со светом" width="820" height="1093" loading="lazy" data-parallax="-16"></figure>
+          <div class="panel__detail">
+            <span class="panel__num">02</span>
+            <p>Коттеджи, таунхаусы и дачные дома. Оценим состояние и юридическую чистоту.</p>
           </div>
-        </div>
-      </section>
+        </article>
 
-      <section class="section container" id="about">
-        <div class="about-grid">
-          <a class="rating-card reveal" href="https://yandex.com/maps/-/CTg~Z6nY" target="_blank" rel="noreferrer"><div class="rating-top"><strong>5,0</strong><span>из 5</span></div><div class="rating-stars">★★★★★</div><p><b>168 оценок</b><span>и 131 отзыв на Яндекс Картах</span></p><em>Посмотреть отзывы ↗</em></a>
-          <div class="about-card reveal delay-1"><p class="kicker"><i></i> 04 · О нас</p><h2>Недвижимость — это важно. Мы делаем путь <em>спокойным.</em></h2><p>New home — агентство, которому доверяют. Решаем жилищные вопросы честно, внимательно и с полной вовлечённостью.</p><a class="link" href="#contact">Познакомиться ближе ↗</a></div>
-        </div>
-      </section>
-
-      <section class="section section--sage" id="process">
-        <div class="container">
-          <div class="section-heading reveal"><div><p class="kicker"><i></i> 05 · Как работаем</p><h2>От запроса<br /><em>до ключей.</em></h2></div><p>Каждый этап понятен: вы знаете, что происходит и что будет дальше.</p></div>
-          <div class="cards cards--3">
-            <article class="step-card reveal"><div><small>ВСТРЕЧА</small><b>01</b></div><h3>Разбираемся<br />в задаче</h3><p>Обсуждаем пожелания, бюджет, сроки и формируем стратегию.</p></article>
-            <article class="step-card reveal delay-1"><div><small>РАБОТА</small><b>02</b></div><h3>Находим<br />решение</h3><p>Ищем объект или покупателя, ведём переговоры, помогаем с ипотекой.</p></article>
-            <article class="step-card reveal delay-2"><div><small>СДЕЛКА</small><b>03</b></div><h3>Проверяем<br />и оформляем</h3><p>Готовим документы и сопровождаем сделку до передачи ключей.</p></article>
+        <article class="panel" data-panel="land" hidden>
+          <div class="panel__copy">
+            <p class="panel__k">03 · Планы</p>
+            <h3>Земля под мечту</h3>
+            <p>Участки под строительство и инвестиции — с проверкой категории земли, границ и подключений.</p>
+            <a class="btn btn--ghost" href="#contact">Выбрать участок <span aria-hidden="true">↗</span></a>
           </div>
-        </div>
-      </section>
-
-      <section class="section container" id="faq">
-        <div class="faq-grid">
-          <div class="faq-intro reveal"><p class="kicker"><i></i> 06 · Вопросы</p><h2>Важные ответы<br /><em>заранее.</em></h2><a class="review" href="https://yandex.com/maps/-/CTg~Z6nY" target="_blank" rel="noreferrer"><div><strong>5,0</strong><span>★★★★★</span></div><p><b>168 оценок на Яндекс Картах</b><span>Открыть отзывы и убедиться ↗</span></p></a></div>
-          <div class="faq-list reveal delay-1">
-            <details open><summary>Сколько стоят услуги агентства?</summary><p>Стоимость зависит от задачи и формата сделки. На первой консультации заранее согласуем объём работ и условия.</p></details>
-            <details><summary>Поможете получить ипотеку?</summary><p>Да. Подскажем по документам, подготовим заявку и поможем подобрать подходящую программу.</p></details>
-            <details><summary>Проверяете квартиру перед покупкой?</summary><p>Да, проводим юридическую экспертизу объекта и сопровождаем оформление сделки.</p></details>
-            <details><summary>Где вы работаете?</summary><p>В Щёлково, Москве и Московской области — на первичном и вторичном рынках.</p></details>
+          <figure class="panel__media"><img src="assets/m-land.webp" alt="Дом с участком" width="820" height="1093" loading="lazy" data-parallax="-16"></figure>
+          <div class="panel__detail">
+            <span class="panel__num">03</span>
+            <p>ИЖС, СНТ и коммерческая земля. Подскажем по назначению и перспективам.</p>
           </div>
-        </div>
-      </section>
+        </article>
 
-      <section class="section container">
-        <div class="office-grid">
-          <div class="office-intro reveal"><p class="kicker"><i></i> 07 · Офис</p><h2>Можно прийти —<br /><em>всё обсудим.</em></h2></div>
-          <div class="office-card reveal delay-1"><div><small>АДРЕС</small><strong>Щёлково,<br />Комсомольская ул., 11</strong><p>Удобно встретиться лично и спокойно обсудить вашу задачу.</p><a href="https://yandex.com/maps/-/CTg~Z6nY" target="_blank" rel="noreferrer">Построить маршрут ↗</a></div><div><small>СВЯЗЬ</small><strong>+7 (916)<br />644-35-56</strong><p>Позвоните или напишите — подскажем, с чего начать.</p><a href="tel:+79166443556">Позвонить сейчас ↗</a><a href="https://wa.me/79166443556" target="_blank" rel="noreferrer">Написать в WhatsApp ↗</a></div></div>
-        </div>
-      </section>
-
-      <section class="contact" id="contact">
-        <div class="container">
-          <div class="contact-heading">
-            <div><p class="kicker kicker--light"><i></i> 08 · Начать разговор</p><h2>Давайте обсудим<br /><em>вашу задачу.</em></h2></div>
-            <p>Подскажем, с чего начать: покупка, продажа, ипотека или сопровождение сделки. Выберите удобный формат связи.</p>
+        <article class="panel" data-panel="exchange" hidden>
+          <div class="panel__copy">
+            <p class="panel__k">04 · Решение</p>
+            <h3>Обмен без стресса</h3>
+            <p>Выстроим цепочку сделок в нужные сроки: продать одно и купить другое — синхронно и безопасно.</p>
+            <a class="btn btn--ghost" href="#contact">Обсудить обмен <span aria-hidden="true">↗</span></a>
           </div>
-          <div class="contact-actions" aria-label="Способы связи">
-            <a class="contact-action contact-action--primary" href="tel:+79166443556"><small>01 · ПОЗВОНИТЬ</small><strong>+7 (916)<br />644-35-56</strong><span>Позвонить сейчас <b>↗</b></span></a>
-            <a class="contact-action" href="https://wa.me/79166443556" target="_blank" rel="noreferrer"><small>02 · WHATSAPP</small><strong>Написать<br />нам</strong><span>Ответим в рабочее время <b>↗</b></span></a>
-            <a class="contact-action" href="https://yandex.com/maps/-/CTg~Z6nY" target="_blank" rel="noreferrer"><small>03 · ОФИС</small><strong>Щёлково,<br />Комсомольская ул., 11</strong><span>Построить маршрут <b>↗</b></span></a>
+          <figure class="panel__media"><img src="assets/m-premium.webp" alt="Современный дом премиум" width="820" height="1093" loading="lazy" data-parallax="-16"></figure>
+          <div class="panel__detail">
+            <span class="panel__num">04</span>
+            <p>Альтернативные сделки любой сложности — берём координацию на себя.</p>
           </div>
-          <footer><span>Щёлково · Москва и область</span><a href="https://yandex.com/maps/-/CTg~Z6nY" target="_blank" rel="noreferrer">Яндекс Карты ↗</a><span>© 2026 NEW HOME</span></footer>
-        </div>
-      </section>
-    </main>
+        </article>
+      </div>
+    </div>
+  </section>
 
-    <aside class="contact-bar" aria-label="Быстрая связь"><a href="tel:+79166443556">Позвонить</a><a href="https://wa.me/79166443556" target="_blank" rel="noreferrer">WhatsApp</a></aside>
-    <script src="script.js"></script>
-  </body>
+  <!-- ПОЧЕМУ МЫ — большой «выезд» -->
+  <section class="section why" id="why">
+    <span class="vlabel vlabel--sec" aria-hidden="true">03 — Почему мы</span>
+    <div class="wrap why__grid">
+      <figure class="why__media">
+        <span class="why__halo" aria-hidden="true"></span>
+        <img src="assets/m-why.webp" alt="Загородный дом ночью" width="1150" height="1438" loading="lazy" data-parallax="-30">
+      </figure>
+      <div class="why__copy reveal">
+        <p class="kicker">03 — Почему выбирают New home</p>
+        <h2 class="h2">Больше ясности.<br><em>Меньше рисков.</em></h2>
+        <p class="why__lead">Объясняем условия, проверяем детали и помогаем принять взвешенное решение — без спешки и мелкого шрифта.</p>
+        <ul class="why__list">
+          <li><span>01</span>Один специалист ведёт сделку целиком</li>
+          <li><span>02</span>Все условия фиксируем заранее</li>
+          <li><span>03</span>Остаёмся на связи и после сделки</li>
+        </ul>
+        <a class="btn btn--fill" href="https://yandex.com/maps/-/CTg~Z6nY" target="_blank" rel="noreferrer">Смотреть отзывы <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- СТАТИСТИКА -->
+  <section class="stats">
+    <div class="wrap stats__grid">
+      <div class="reveal"><b>5,0</b><span>рейтинг на Яндекс Картах</span></div>
+      <div class="reveal" style="--d:.06s"><b>168</b><span>оценок клиентов</span></div>
+      <div class="reveal" style="--d:.12s"><b>131</b><span>отзыв о работе</span></div>
+      <div class="reveal" style="--d:.18s"><b>1500<i>+</i></b><span>решённых вопросов</span></div>
+    </div>
+  </section>
+
+  <!-- КАК РАБОТАЕМ -->
+  <section class="section" id="process">
+    <span class="vlabel vlabel--sec" aria-hidden="true">04 — Как работаем</span>
+    <div class="wrap">
+      <header class="head reveal">
+        <p class="kicker">04 — Как работаем</p>
+        <h2 class="h2">От запроса<br><em>до ключей</em></h2>
+        <p class="head__note">Каждый этап понятен: вы всегда знаете, что происходит и что будет дальше.</p>
+      </header>
+      <ol class="steps">
+        <li class="step reveal"><span class="step__n">01</span><div><p class="step__k">Встреча</p><h3>Разбираемся в задаче</h3><p>Обсуждаем пожелания, бюджет и сроки, формируем стратегию.</p></div></li>
+        <li class="step reveal" style="--d:.08s"><span class="step__n">02</span><div><p class="step__k">Работа</p><h3>Находим решение</h3><p>Ищем объект или покупателя, ведём переговоры, помогаем с ипотекой.</p></div></li>
+        <li class="step reveal" style="--d:.16s"><span class="step__n">03</span><div><p class="step__k">Сделка</p><h3>Проверяем и оформляем</h3><p>Готовим документы и сопровождаем сделку до передачи ключей.</p></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ВОПРОСЫ -->
+  <section class="section section--panel" id="faq">
+    <span class="vlabel vlabel--sec" aria-hidden="true">05 — Вопросы</span>
+    <div class="wrap faq__grid">
+      <div class="faq__intro reveal">
+        <p class="kicker">05 — Вопросы</p>
+        <h2 class="h2">Важные ответы<br><em>заранее</em></h2>
+        <a class="ratecard" href="https://yandex.com/maps/-/CTg~Z6nY" target="_blank" rel="noreferrer">
+          <b>5,0</b><i>★★★★★</i><span>168 оценок · Яндекс Карты <em>↗</em></span>
+        </a>
+      </div>
+      <div class="faq__list reveal" style="--d:.1s">
+        <details open><summary>Сколько стоят услуги агентства?<i aria-hidden="true"></i></summary><p>Зависит от задачи и формата сделки. На первой консультации заранее согласуем объём работ и условия — без скрытых платежей.</p></details>
+        <details><summary>Поможете получить ипотеку?<i aria-hidden="true"></i></summary><p>Да. Подскажем по документам, подготовим заявку и поможем подобрать подходящую программу в банке.</p></details>
+        <details><summary>Проверяете квартиру перед покупкой?<i aria-hidden="true"></i></summary><p>Да, проводим юридическую экспертизу объекта и сопровождаем оформление сделки до передачи ключей.</p></details>
+        <details><summary>Где вы работаете?<i aria-hidden="true"></i></summary><p>Щёлково, Москва и Московская область — на первичном и вторичном рынках, включая загородную недвижимость.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- КОНТАКТ -->
+  <section class="contact" id="contact">
+    <span class="contact__ghost" aria-hidden="true">NEW HOME</span>
+    <div class="wrap">
+      <header class="contact__head reveal">
+        <p class="kicker">06 — Начать разговор</p>
+        <h2 class="contact__title">Давайте обсудим<br><em>вашу задачу</em></h2>
+        <p class="contact__note">Покупка, продажа, ипотека или сопровождение — подскажем, с чего начать. Выберите удобный формат связи.</p>
+      </header>
+      <div class="contact__cards">
+        <a class="cc cc--hi reveal" href="tel:+79166443556"><small>01 · Позвонить</small><strong>+7 (916)<br>644-35-56</strong><span>Позвонить сейчас <b aria-hidden="true">↗</b></span></a>
+        <a class="cc reveal" style="--d:.08s" href="https://wa.me/79166443556" target="_blank" rel="noreferrer"><small>02 · WhatsApp</small><strong>Написать<br>нам</strong><span>Ответим в рабочее время <b aria-hidden="true">↗</b></span></a>
+        <a class="cc reveal" style="--d:.16s" href="https://yandex.com/maps/-/CTg~Z6nY" target="_blank" rel="noreferrer"><small>03 · Офис</small><strong>Щёлково,<br>Комсомольская, 11</strong><span>Построить маршрут <b aria-hidden="true">↗</b></span></a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__in">
+    <span class="brand__txt brand__txt--f">New&nbsp;home<b>агентство недвижимости</b></span>
+    <p class="foot__dim">Щёлково · Москва и область · © 2026 New home. Не является публичной офертой.</p>
+    <a class="foot__lnk" href="https://yandex.com/maps/-/CTg~Z6nY" target="_blank" rel="noreferrer">Яндекс Карты ↗</a>
+  </div>
+</footer>
+
+<aside class="dock" aria-label="Быстрая связь">
+  <a href="tel:+79166443556">Позвонить</a>
+  <a class="dock--wa" href="https://wa.me/79166443556" target="_blank" rel="noreferrer">WhatsApp</a>
+</aside>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"RealEstateAgent","name":"New home",
+"telephone":"+7-916-644-35-56",
+"address":{"@type":"PostalAddress","streetAddress":"Комсомольская ул., 11","addressLocality":"Щёлково","addressRegion":"Московская область","addressCountry":"RU"},
+"aggregateRating":{"@type":"AggregateRating","ratingValue":"5.0","reviewCount":"131"}}
+</script>
+<script src="script.js"></script>
+</body>
 </html>
