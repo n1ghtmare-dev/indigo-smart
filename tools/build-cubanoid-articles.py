@@ -20,7 +20,7 @@ ARTICLES = [
     ("01", "01-massa-eto-vsyo.md", "Геймдизайн",
      "Одна величина вместо здоровья, ключей и очков"),
     ("02", "02-ot-serykh-kubov-do-zhele.md", "Хроника",
-     "Было и стало: два кадра с разницей в два дня"),
+     "Пять кадров: от красного ящика до желейного куба"),
     ("03", "03-kub-spotykalsya-o-shvy.md", "Физика",
      "Ghost collisions и жадный мердж коллайдеров"),
     ("04", "04-domen-ne-znaet-pro-three-js.md", "Архитектура",
@@ -31,14 +31,20 @@ ARTICLES = [
 
 # Метка IMG:<имя> -> файл в img/ (если None — картинки ещё нет, рисуем заглушку)
 IMAGES = {
-    "01-hero": "game-current.jpg",
+    "01-hero": "step5-current.jpg",
     "01-mass-scale": "01-mass-scale.png",
-    "02-early": "game-early.jpg",
-    "02-current": "game-current.jpg",
+    "02-step1": "step1-flat-cube.jpg",
+    "02-step2": "step2-rounded.jpg",
+    "02-step3": "step3-water-sky.jpg",
+    "02-step4": "step4-cartoon.jpg",
+    "02-step5": "step5-current.jpg",
+    "03-tiles-seams": "step3-water-sky.jpg",
     "03-ghost-collisions": "03-ghost-collisions.png",
     "03-merge-before-after": "03-merge-before-after.png",
+    "04-game": "step5-current.jpg",
     "04-layers": "04-layers.png",
-    "05-jelly-hero": "game-current.jpg",
+    "05-jelly-hero": "step5-current.jpg",
+    "05-early-cube": "step2-rounded.jpg",
 }
 
 
