@@ -36,6 +36,7 @@
     -webkit-font-smoothing:antialiased;
     overflow-x:hidden;
   }
+  [hidden]{display:none !important}
   a{color:inherit;text-decoration:none}
   button{font-family:inherit}
   .grad-text{
@@ -259,6 +260,39 @@
   .card__go i{font-style:normal;display:inline-block}
   .card:hover .card__go i{transform:translateX(4px)}
 
+  /* Раскрытый план внутри вкладки «Планы» */
+  .plan-stage{display:flex;flex-direction:column;gap:.85rem}
+  .plan-bar{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap}
+  .plan-back,.plan-open{
+    display:inline-flex;align-items:center;gap:.4rem;
+    padding:.42rem .85rem;
+    border-radius:999px;
+    background:var(--glass-bg);
+    border:1px solid var(--glass-border);
+    color:var(--accent);
+    font-size:.8rem;font-weight:700;letter-spacing:.02em;
+    white-space:nowrap;
+  }
+  .plan-back:hover,.plan-open:hover{background:var(--glass-bg-hover)}
+  .plan-name{
+    flex:1;min-width:0;
+    color:var(--dim);font-size:.9rem;font-weight:600;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .plan-frame{
+    display:block;width:100%;
+    height:calc(100vh - 12rem);
+    min-height:30rem;
+    border:1px solid var(--glass-border);
+    border-radius:var(--r);
+    background:#090d14;
+    box-shadow:var(--shadow);
+  }
+  @media (max-width:860px){
+    .plan-name{display:none}
+    .plan-frame{height:calc(100vh - 13.5rem);min-height:26rem}
+  }
+
   /* Placeholder views */
   .empty-state{
     padding:clamp(2.2rem,6vw,3.4rem) clamp(1.4rem,4vw,2.4rem);
@@ -357,7 +391,7 @@
         <a class="tile glass" href="#/plans">
           <span class="tile__glyph">◷</span>
           <span class="tile__name">Планы</span>
-          <span class="tile__status">Интерактивная карта продвижения</span>
+          <span class="tile__status">2 карты продвижения</span>
         </a>
         <a class="tile glass" href="#/schemes">
           <span class="tile__glyph">▧</span>
@@ -379,6 +413,7 @@
       <div class="glass recent">
         <h2>Недавнее</h2>
         <ul>
+          <li>Планы — добавлен план продвижения Cubanoid</li>
           <li>Планы — карта продвижения подключена</li>
           <li>landing4 — светлый премиум ✓</li>
           <li>Панель — новый воркспейс</li>
@@ -389,8 +424,17 @@
 
     <section class="view" id="view-plans" data-view="plans">
       <h1 class="page-title">Планы</h1>
-      <p class="page-sub">Карты и планы развития проектов.</p>
+      <p class="page-sub" id="plansSub">Карты и планы развития проектов.</p>
       <div class="cards" id="plansGrid"></div>
+
+      <div class="plan-stage" id="planStage" hidden>
+        <div class="plan-bar">
+          <a class="plan-back" href="#/plans">← Все планы</a>
+          <span class="plan-name" id="planName"></span>
+          <a class="plan-open" id="planOpen" href="#" target="_blank" rel="noopener">Открыть отдельно ↗</a>
+        </div>
+        <iframe class="plan-frame" id="planFrame" title="Интерактивная карта плана"></iframe>
+      </div>
     </section>
 
     <section class="view" id="view-schemes" data-view="schemes">
@@ -449,9 +493,20 @@
 
   const PLANS = [
     {
+      id: "cubanoid",
+      title: "Cubanoid — план продвижения",
+      category: "Игра",
+      path: "/plans/project-promotion-map/index.html?project=cubanoid",
+      label: "/plans/project-promotion-map/ · cubanoid",
+      thumb: "/plans/project-promotion-map/assets/cubanoid-hero.jpg",
+      note: "Два контура на одну воронку: игроки (DTF, itch.io, Reddit) и инженерное портфолио (Habr, GitHub, three.js)."
+    },
+    {
+      id: "cosmograph",
       title: "CosmoGraph 3D — карта продвижения",
       category: "Продвижение",
-      path: "/plans/project-promotion-map/index.html",
+      path: "/plans/project-promotion-map/index.html?project=cosmograph",
+      label: "/plans/project-promotion-map/ · cosmograph",
       thumb: "/plans/project-promotion-map/assets/cosmograph-hero.jpg",
       note: "Интерактивная карта площадок и форматов: Habr, vc.ru, GitHub, Telegram и др."
     }
@@ -459,7 +514,7 @@
 
   const plansGrid = document.getElementById("plansGrid");
   plansGrid.innerHTML = PLANS.map(p =>
-    '<a class="card glass" href="' + p.path + '">' +
+    '<a class="card glass" href="#/plans/' + p.id + '">' +
       '<div class="card__preview">' +
         '<img src="' + p.thumb + '" alt="Превью: ' + p.title + '" loading="lazy" decoding="async">' +
         '<span class="card__cat">' + p.category + '</span>' +
@@ -468,7 +523,7 @@
         '<h2 class="card__name">' + p.title + '</h2>' +
         '<p class="card__note">' + p.note + '</p>' +
         '<div class="card__foot">' +
-          '<span class="card__path">' + p.path.replace(/\/index\.html$/, "/") + '</span>' +
+          '<span class="card__path">' + (p.label || p.path.replace(/\/index\.html$/, "/")) + '</span>' +
           '<span class="card__go">Открыть <i aria-hidden="true">→</i></span>' +
         '</div>' +
       '</div>' +
@@ -480,19 +535,52 @@
   ROUTES.forEach(r => { views[r] = document.getElementById("view-" + r); });
   const navItems = document.querySelectorAll(".nav__item");
 
-  function currentRoute(){
-    const hash = window.location.hash.replace(/^#\//, "").trim();
-    return ROUTES.includes(hash) ? hash : "overview";
+  const plansSub = document.getElementById("plansSub");
+  const planStage = document.getElementById("planStage");
+  const planFrame = document.getElementById("planFrame");
+  const planName = document.getElementById("planName");
+  const planOpen = document.getElementById("planOpen");
+
+  function parseHash(){
+    const [route, planId] = window.location.hash.replace(/^#\//, "").trim().split("/");
+    return {
+      route: ROUTES.includes(route) ? route : "overview",
+      planId: planId || null
+    };
+  }
+
+  function embedSrc(path){
+    return path + (path.includes("?") ? "&" : "?") + "embed=1";
+  }
+
+  function renderPlanStage(planId){
+    const plan = planId ? PLANS.find(p => p.id === planId) : null;
+
+    planStage.hidden = !plan;
+    plansGrid.hidden = Boolean(plan);
+    plansSub.hidden = Boolean(plan);
+
+    if (!plan) {
+      // Пустой src останавливает отрисовку карты, пока план закрыт.
+      if (planFrame.getAttribute("src")) planFrame.removeAttribute("src");
+      return;
+    }
+
+    const src = embedSrc(plan.path);
+    if (planFrame.getAttribute("src") !== src) planFrame.setAttribute("src", src);
+    planName.textContent = plan.title;
+    planOpen.href = plan.path;
   }
 
   function renderRoute(){
-    const route = currentRoute();
+    const { route, planId } = parseHash();
     ROUTES.forEach(r => {
       views[r].classList.toggle("is-active", r === route);
     });
     navItems.forEach(item => {
       item.classList.toggle("is-active", item.dataset.route === route);
     });
+    renderPlanStage(route === "plans" ? planId : null);
   }
 
   window.addEventListener("hashchange", renderRoute);

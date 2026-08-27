@@ -585,3 +585,30 @@ a {
     transition-duration: 0.01ms !important;
   }
 }
+
+.node.gate {
+  min-height: 74px;
+  border-color: rgba(139, 199, 219, 0.3);
+  border-style: dashed;
+  background: var(--surface-soft);
+}
+
+.node.gate:hover,
+.node.gate:focus-visible {
+  border-style: solid;
+}
+
+.node.gate .node-mark {
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+
+/* Встроенный режим: карта открыта внутри вкладки «Планы» рабочего пространства,
+   навигацию даёт хаб, поэтому собственный сайдбар проекта скрыт. */
+body.is-embedded .app-shell {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+body.is-embedded .project-sidebar {
+  display: none;
+}
