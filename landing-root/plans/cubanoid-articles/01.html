@@ -34,6 +34,7 @@ a{color:var(--accent)}
 main{max-width:52rem;margin:0 auto;padding:clamp(1.4rem,4vw,3rem) clamp(1rem,4vw,2rem) 5rem}
 h1{font-size:clamp(1.7rem,4vw,2.4rem);line-height:1.2;letter-spacing:-.02em;margin:0 0 1.4rem}
 h2{font-size:clamp(1.15rem,2.6vw,1.4rem);margin:2.4rem 0 .8rem;letter-spacing:-.01em}
+h3{font-size:1.05rem;margin:1.8rem 0 .6rem;color:var(--muted)}
 p{margin:0 0 1.1rem}
 p.caption{color:var(--faint);font-size:.86rem;margin-top:-.6rem}
 ul,ol{margin:0 0 1.2rem;padding-left:1.3rem}
@@ -81,7 +82,7 @@ figcaption{color:var(--faint);font-size:.85rem;margin-top:.5rem}
 
 <p>Я делаю браузерный 3D-платформер. Игрок катает красный желейный куб по каменным плитам, парящим в небе. У куба нет полоски здоровья, нет инвентаря с ключами и нет счётчика очков.</p>
 <p>Не потому что я минималист и не потому что так задумывал с самого начала. А потому что в какой-то момент посмотрел на черновик спецификации и понял, что мне придётся писать, отлаживать и балансировать три отдельные системы. Одну я осилить был готов. Три — не очень.</p>
-<figure class="shot"><img src="img/current.png" alt="Куб на плитах" loading="lazy"><figcaption>Вот он. Красный, желейный, никакого интерфейса кроме одной цифры в углу.</figcaption></figure>
+<figure class="shot"><img src="img/game-current.jpg" alt="Куб на плитах" loading="lazy"><figcaption>Вот он. Красный, желейный, никакого интерфейса кроме одной цифры в углу.</figcaption></figure>
 <h2>Лень как метод проектирования</h2>
 <p>Черновик выглядел так, как выглядят все черновики: здоровье (сколько ударов держим), ключи (что открывает двери), очки (за что хвалим в конце уровня). Три величины, три элемента интерфейса, три набора правил — и три способа запутать человека в казуальной игре, где уровень проходится за полторы минуты.</p>
 <p>Вместо этого осталась одна величина: <strong>масса</strong>, измеряется в каплях желе.</p>

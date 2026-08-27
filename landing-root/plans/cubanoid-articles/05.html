@@ -34,6 +34,7 @@ a{color:var(--accent)}
 main{max-width:52rem;margin:0 auto;padding:clamp(1.4rem,4vw,3rem) clamp(1rem,4vw,2rem) 5rem}
 h1{font-size:clamp(1.7rem,4vw,2.4rem);line-height:1.2;letter-spacing:-.02em;margin:0 0 1.4rem}
 h2{font-size:clamp(1.15rem,2.6vw,1.4rem);margin:2.4rem 0 .8rem;letter-spacing:-.01em}
+h3{font-size:1.05rem;margin:1.8rem 0 .6rem;color:var(--muted)}
 p{margin:0 0 1.1rem}
 p.caption{color:var(--faint);font-size:.86rem;margin-top:-.6rem}
 ul,ol{margin:0 0 1.2rem;padding-left:1.3rem}
@@ -81,7 +82,7 @@ figcaption{color:var(--faint);font-size:.85rem;margin-top:.5rem}
 
 <p>У меня в браузерном платформере герой — красный желейный куб. Не просто красный кубик, а именно желе: полупрозрачное, глянцевое, с вмятинами, которое сплющивается при приземлении.</p>
 <p>Довести его до этого состояния оказалось историей из четырёх багов подряд, и каждый раз причина была не там, где казалось. Финальный — «на кубе появляются очень чёрные тени» — пришлось искать чтением шейдеров three.js, и виноватыми оказались вообще не тени.</p>
-<figure class="shot"><img src="img/current.png" alt="Куб крупным планом" loading="lazy"><figcaption>Куда пришли: transmission, clearcoat, вмятины и squash &amp; stretch.</figcaption></figure>
+<figure class="shot"><img src="img/game-current.jpg" alt="Куб крупным планом" loading="lazy"><figcaption>Куда пришли: transmission, clearcoat, вмятины и squash &amp; stretch.</figcaption></figure>
 <h2>Баг 1: «куб всё равно прозрачный»</h2>
 <p>Первая версия желе была наивной: <code>transparent: true</code>, <code>opacity: 0.88</code>. Работало так себе, но пока не было ничего лучше — сходило.</p>
 <p>Потом я добавил <code>transmission</code> — физически корректное просвечивание в <code>MeshPhysicalMaterial</code>, с преломлением и окраской света в толще материала. И куб... стал выглядеть хуже. Просто мутным.</p>

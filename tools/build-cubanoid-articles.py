@@ -20,7 +20,7 @@ ARTICLES = [
     ("01", "01-massa-eto-vsyo.md", "Геймдизайн",
      "Одна величина вместо здоровья, ключей и очков"),
     ("02", "02-ot-serykh-kubov-do-zhele.md", "Хроника",
-     "Визуальная эволюция по скриншотам — нужны ваши кадры"),
+     "Было и стало: два кадра с разницей в два дня"),
     ("03", "03-kub-spotykalsya-o-shvy.md", "Физика",
      "Ghost collisions и жадный мердж коллайдеров"),
     ("04", "04-domen-ne-znaet-pro-three-js.md", "Архитектура",
@@ -31,13 +31,14 @@ ARTICLES = [
 
 # Метка IMG:<имя> -> файл в img/ (если None — картинки ещё нет, рисуем заглушку)
 IMAGES = {
-    "01-hero": "current.png",
+    "01-hero": "game-current.jpg",
     "01-mass-scale": "01-mass-scale.png",
+    "02-early": "game-early.jpg",
+    "02-current": "game-current.jpg",
     "03-ghost-collisions": "03-ghost-collisions.png",
     "03-merge-before-after": "03-merge-before-after.png",
     "04-layers": "04-layers.png",
-    "05-jelly-hero": "current.png",
-    "02-current": "current.png",
+    "05-jelly-hero": "game-current.jpg",
 }
 
 
@@ -110,6 +111,11 @@ def render(md):
             out.append(image_block(m.group(1), m.group(2), caption))
             continue
 
+        if line.startswith("### "):
+            out.append("<h3>%s</h3>" % inline(line[4:].strip()))
+            i += 1
+            continue
+
         if line.startswith("## "):
             out.append("<h2>%s</h2>" % inline(line[3:].strip()))
             i += 1
@@ -153,6 +159,12 @@ def render(md):
         while i < len(lines) and lines[i].strip() and not re.match(r"^(#|```|\||[-*] |\d+\. |!\[)", lines[i]):
             buf.append(lines[i].strip())
             i += 1
+        if not buf:
+            # Непонятная строка (например, заголовок уровня, который мы не умеем
+            # разбирать): пропускаем её как есть, иначе цикл никогда не сдвинется.
+            out.append("<p>%s</p>" % inline(lines[i].lstrip("#").strip()))
+            i += 1
+            continue
         para = " ".join(buf)
         if para.startswith("*") and para.endswith("*") and para.count("*") == 2:
             out.append('<p class="caption">%s</p>' % inline(para.strip("*")))
@@ -190,6 +202,7 @@ a{color:var(--accent)}
 main{max-width:52rem;margin:0 auto;padding:clamp(1.4rem,4vw,3rem) clamp(1rem,4vw,2rem) 5rem}
 h1{font-size:clamp(1.7rem,4vw,2.4rem);line-height:1.2;letter-spacing:-.02em;margin:0 0 1.4rem}
 h2{font-size:clamp(1.15rem,2.6vw,1.4rem);margin:2.4rem 0 .8rem;letter-spacing:-.01em}
+h3{font-size:1.05rem;margin:1.8rem 0 .6rem;color:var(--muted)}
 p{margin:0 0 1.1rem}
 p.caption{color:var(--faint);font-size:.86rem;margin-top:-.6rem}
 ul,ol{margin:0 0 1.2rem;padding-left:1.3rem}
@@ -273,7 +286,7 @@ def page(title, body, head_extra="", top=""):
 def main():
     os.makedirs(os.path.join(DST, "img"), exist_ok=True)
     for name in os.listdir(IMG_SRC):
-        if name.endswith(".png"):
+        if name.endswith(".png") or name.endswith(".jpg"):
             shutil.copy2(os.path.join(IMG_SRC, name), os.path.join(DST, "img", name))
     shutil.copy2(VISION, os.path.join(DST, "img", "current.png"))
 
