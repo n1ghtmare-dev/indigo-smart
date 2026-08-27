@@ -171,27 +171,6 @@
   .view{display:none}
   .view.is-active{display:block}
 
-  /* ── Plans view: fullscreen embedded app ── */
-  .view.is-active#view-plans{
-    display:flex;
-    flex-direction:column;
-    height:100vh;
-    margin:calc(-1 * clamp(1.2rem,3vw,2.4rem)) calc(-1 * clamp(1.2rem,3vw,2.4rem)) 0;
-    padding:clamp(12px,1.6vw,20px);
-  }
-  .view#view-plans .page-title,
-  .view#view-plans .page-sub{flex:none}
-  .plans-embed{
-    flex:1;
-    min-height:0;
-    width:100%;
-    border-radius:14px;
-    overflow:hidden;
-    border:1px solid rgba(255,255,255,.14);
-    background:#090d14;
-  }
-  .plans-embed iframe{width:100%;height:100%;border:0;display:block}
-
   h1.page-title{
     font-size:clamp(1.8rem,4vw,2.6rem);
     font-weight:800;
@@ -304,10 +283,6 @@
       -webkit-backdrop-filter:blur(10px);
     }
     .main{width:100%}
-    .view.is-active#view-plans{
-      height:calc(100vh - 68px);
-      margin:calc(-1 * clamp(1.2rem,3vw,2.4rem)) calc(-1 * clamp(1.2rem,3vw,2.4rem)) 0;
-    }
   }
   @media (min-width:861px){
     .drawer,.scrim{display:none}
@@ -414,10 +389,8 @@
 
     <section class="view" id="view-plans" data-view="plans">
       <h1 class="page-title">Планы</h1>
-      <p class="page-sub">Карта продвижения проекта.</p>
-      <div class="plans-embed">
-        <iframe src="/plans/project-promotion-map/index.html" title="Карта продвижения проекта" style="width:100%;height:100%;border:0;display:block" loading="lazy"></iframe>
-      </div>
+      <p class="page-sub">Карты и планы развития проектов.</p>
+      <div class="cards" id="plansGrid"></div>
     </section>
 
     <section class="view" id="view-schemes" data-view="schemes">
@@ -469,6 +442,33 @@
         '<p class="card__note">' + s.note + '</p>' +
         '<div class="card__foot">' +
           '<span class="card__path">' + s.path.replace(/\/index\.html$/, "/") + '</span>' +
+          '<span class="card__go">Открыть <i aria-hidden="true">→</i></span>' +
+        '</div>' +
+      '</div>' +
+    '</a>').join("");
+
+  const PLANS = [
+    {
+      title: "CosmoGraph 3D — карта продвижения",
+      category: "Продвижение",
+      path: "/plans/project-promotion-map/index.html",
+      thumb: "/plans/project-promotion-map/assets/cosmograph-hero.jpg",
+      note: "Интерактивная карта площадок и форматов: Habr, vc.ru, GitHub, Telegram и др."
+    }
+  ];
+
+  const plansGrid = document.getElementById("plansGrid");
+  plansGrid.innerHTML = PLANS.map(p =>
+    '<a class="card glass" href="' + p.path + '">' +
+      '<div class="card__preview">' +
+        '<img src="' + p.thumb + '" alt="Превью: ' + p.title + '" loading="lazy" decoding="async">' +
+        '<span class="card__cat">' + p.category + '</span>' +
+      '</div>' +
+      '<div class="card__body">' +
+        '<h2 class="card__name">' + p.title + '</h2>' +
+        '<p class="card__note">' + p.note + '</p>' +
+        '<div class="card__foot">' +
+          '<span class="card__path">' + p.path.replace(/\/index\.html$/, "/") + '</span>' +
           '<span class="card__go">Открыть <i aria-hidden="true">→</i></span>' +
         '</div>' +
       '</div>' +
