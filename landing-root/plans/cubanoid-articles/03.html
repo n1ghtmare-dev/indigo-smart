@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:,">
+<title>Куб спотыкался на идеально ровном полу. Виноваты были швы между коллайдерами</title>
+<style>
+:root{
+  --page:#090d14; --surface:#111823; --surface-soft:#0c1119; --sidebar:#0d121b;
+  --text:#eef3f8; --muted:#9caaba; --faint:#667486;
+  --line:rgba(185,205,228,.16); --line-strong:rgba(185,205,228,.32);
+  --accent:#8bc7db; --radius:12px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--page);color:var(--text);
+  font:16px/1.68 -apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:.8rem;
+  flex-wrap:wrap;padding:.8rem clamp(1rem,4vw,2rem);
+  background:rgba(13,18,27,.92);border-bottom:1px solid var(--line);
+  backdrop-filter:blur(12px)}
+.pill{display:inline-flex;align-items:center;gap:.4rem;padding:.36rem .8rem;
+  border:1px solid var(--line-strong);border-radius:999px;background:var(--surface);
+  color:var(--accent);font-size:.8rem;font-weight:700;text-decoration:none;
+  white-space:nowrap;cursor:pointer;font-family:inherit}
+.pill:hover{background:var(--surface-soft)}
+.pill--ok{color:#8fd6a8;border-color:rgba(143,214,168,.5)}
+.top__spacer{flex:1}
+.top__tag{color:var(--faint);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase}
+main{max-width:52rem;margin:0 auto;padding:clamp(1.4rem,4vw,3rem) clamp(1rem,4vw,2rem) 5rem}
+h1{font-size:clamp(1.7rem,4vw,2.4rem);line-height:1.2;letter-spacing:-.02em;margin:0 0 1.4rem}
+h2{font-size:clamp(1.15rem,2.6vw,1.4rem);margin:2.4rem 0 .8rem;letter-spacing:-.01em}
+p{margin:0 0 1.1rem}
+p.caption{color:var(--faint);font-size:.86rem;margin-top:-.6rem}
+ul,ol{margin:0 0 1.2rem;padding-left:1.3rem}
+li{margin:.3rem 0}
+strong{color:#fff}
+code{font-family:ui-monospace,Consolas,monospace;font-size:.88em;
+  background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:.1em .35em}
+pre.code{position:relative;overflow-x:auto;margin:0 0 1.3rem;padding:1rem 1.1rem;
+  background:var(--surface-soft);border:1px solid var(--line);border-radius:var(--radius)}
+pre.code code{background:none;border:0;padding:0;font-size:13.5px;line-height:1.6}
+pre.code[data-lang]:not([data-lang=""])::after{content:attr(data-lang);position:absolute;
+  top:.5rem;right:.7rem;color:var(--faint);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase}
+.table-wrap{overflow-x:auto;margin:0 0 1.3rem}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{border:1px solid var(--line);padding:.55rem .7rem;text-align:left;vertical-align:top}
+th{background:var(--surface);font-weight:700}
+figure.shot{margin:0 0 1.4rem}
+figure.shot img{display:block;width:100%;height:auto;border:1px solid var(--line);
+  border-radius:var(--radius);background:var(--surface)}
+figcaption{color:var(--faint);font-size:.85rem;margin-top:.5rem}
+.need-shot{display:flex;flex-direction:column;gap:.5rem;margin:0 0 1.4rem;padding:1.1rem 1.2rem;
+  border:1px dashed var(--line-strong);border-radius:var(--radius);background:var(--surface-soft)}
+.need-shot__tag{align-self:flex-start;font-size:.68rem;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;color:#e0b06a;border:1px solid rgba(224,176,106,.4);
+  border-radius:999px;padding:.2rem .6rem}
+.need-shot b{font-weight:600;color:var(--muted)}
+.need-shot code{font-size:.78rem;color:var(--faint)}
+.cards{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fill,minmax(17rem,1fr));margin:0 0 2rem}
+.card{display:flex;flex-direction:column;gap:.5rem;padding:1.1rem 1.2rem;text-decoration:none;
+  color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+.card:hover{border-color:var(--line-strong);background:var(--surface-soft)}
+.card__no{font-family:ui-monospace,Consolas,monospace;color:var(--accent);font-size:.78rem}
+.card__name{font-weight:700;line-height:1.35}
+.card__note{color:var(--muted);font-size:.86rem}
+.card__meta{color:var(--faint);font-size:.76rem;margin-top:auto;padding-top:.6rem;
+  border-top:1px solid var(--line)}
+.note{padding:1rem 1.2rem;border:1px solid var(--line);border-left:3px solid var(--accent);
+  border-radius:var(--radius);background:var(--surface);color:var(--muted);font-size:.92rem;margin:0 0 1.6rem}
+.note b{color:var(--text)}
+</style>
+</head>
+<body>
+<div class="top"><a class="pill" href="./">← Все статьи</a><button class="pill" type="button" data-copy="raw">Скопировать markdown</button><a class="pill" href="https://habr.com/ru/publication/new/" target="_blank" rel="noopener">Редактор Хабра ↗</a><span class="top__spacer"></span><span class="top__tag">Физика</span></div>
+<main><h1>Куб спотыкался на идеально ровном полу. Виноваты были швы между коллайдерами</h1>
+
+<p>В моей браузерной игре красный желейный куб катается по каменным плитам. Плиты описаны в JSON как отдельные тайлы 1×1×1, и на старте я честно создавал для каждого тайла свой статический коллайдер в физическом движке. Пол получался идеально ровным: соседние боксы стояли встык, грань в грань, без единого зазора.</p>
+<p>И на этом ровном полу куб <strong>спотыкался</strong>. Не всегда, не сильно — но регулярно получал микроскопический толчок вверх и терял скорость.</p>
+<p>Эта статья — про то, что происходило на самом деле, и про алгоритм, который это вылечил. Стек: TypeScript, Rapier (WASM-порт), Three.js.</p>
+<figure class="shot"><img src="img/03-ghost-collisions.png" alt="Шов между коллайдерами" loading="lazy"><figcaption>Пол ровный, а куб получает удар вверх на границе двух коллайдеров.</figcaption></figure>
+<h2>Что это было</h2>
+<p>Это классические <strong>ghost collisions</strong> на внутренних рёбрах — проблема, которая живёт во всех физдвижках, где поверхность собрана из отдельных выпуклых тел.</p>
+<p>Механика такая. Куб у меня не идеальный параллелепипед, а <code>roundCuboid</code> — скруглённый бокс с радиусом скругления 0,08. Когда он скользит по одному коллайдеру и доезжает до его края, движок должен передать контакт следующему коллайдеру. Но это не один непрерывный контакт с одной плоскостью, а <strong>два независимых расчёта контакта</strong> на границе двух тел. На долю кадра куб касается одновременно края первого бокса и ребра второго — и получает импульс, которого на настоящем полу быть не должно.</p>
+<p>Ключевое: <strong>зазора нет</strong>. Грани совпадают идеально. Проблема не в геометрии уровня, а в том, что физдвижок видит не «пол», а «много боксов, стоящих рядом».</p>
+<p>Из этого следует и решение: убрать сами швы там, где это возможно.</p>
+<h2>Жадный мердж: 135 коллайдеров в 30</h2>
+<p>Идея простая — перед загрузкой уровня в физику слить соседние блоки одинакового сечения в один большой бокс. Строка из шести тайлов должна стать одним коллайдером длиной шесть, а не шестью коллайдерами с пятью швами внутри.</p>
+<figure class="shot"><img src="img/03-merge-before-after.png" alt="До и после мерджа" loading="lazy"><figcaption>Слева — 12 коллайдеров и 10 внутренних швов. Справа — 2 коллайдера, швов поперёк движения нет.</figcaption></figure>
+<p>Алгоритм двухпроходный:</p>
+<ol><li>Сливаем блоки в «полосы» вдоль оси X.</li><li>Полученные полосы сливаем вдоль оси Z — так соседние ряды одинаковой формы склеиваются во всё более крупные плиты.</li></ol>
+<p>Условие слияния двух боксов вдоль X: совпадают Y, Z, высота и глубина, а грани по X <strong>соприкасаются</strong> — без зазора и без нахлёста:</p>
+<pre class="code" data-lang="ts"><code>function tryMergeAlongX(a: Box, b: Box): Box | null {
+  if (!approxEq(a.cy, b.cy) || !approxEq(a.cz, b.cz)) return null;
+  if (!approxEq(a.sy, b.sy) || !approxEq(a.sz, b.sz)) return null;
+
+  const aMaxX = a.cx + a.sx / 2;
+  const bMinX = b.cx - b.sx / 2;
+  if (!approxEq(aMaxX, bMinX)) return null;
+
+  const aMinX = a.cx - a.sx / 2;
+  const bMaxX = b.cx + b.sx / 2;
+  return {
+    cx: (aMinX + bMaxX) / 2, cy: a.cy, cz: a.cz,
+    sx: a.sx + b.sx, sy: a.sy, sz: a.sz,
+  };
+}</code></pre>
+<p>Здесь есть тонкость, на которой легко споткнуться: <strong>ширина <code>sx</code> намеренно не сравнивается</strong>. Аккумулятор жадного прохода к этому моменту уже мог вырасти шире исходного тайла — если требовать равенства ширин, полоса перестанет расти после первого же слияния.</p>
+<h2>Баг, который съел половину времени: сортировка</h2>
+<p>Первая версия жадного прохода сортировала боксы просто по координате вдоль оси слияния. Выглядит очевидно правильно. Мердж при этом <strong>почти не срабатывал</strong>: число коллайдеров после прохода почти не отличалось от числа тайлов.</p>
+<p>Причина в том, что уровень — не одна строка. Блоки из разных рядов имеют одинаковый <code>x</code> и в общем порядке идут вперемешку: тайл из ряда <code>z = -1</code>, тайл из ряда <code>z = 0</code>, тайл из ряда <code>z = 1</code>, снова ряд <code>z = -1</code>… Жадный проход сравнивает соседние элементы массива — а соседями оказываются блоки из <strong>разных рядов</strong>, которые сливаться не должны и не сливаются. Аккумулятор сбрасывается на каждом шаге.</p>
+<p>Лечится двухуровневой сортировкой: сначала группируем по всему, что должно совпадать (для оси X это <code>cy</code>, <code>cz</code>, <code>sy</code>, <code>sz</code> — то есть «сечение ряда»), и уже <strong>внутри группы</strong> сортируем по координате вдоль оси слияния:</p>
+<pre class="code" data-lang="ts"><code>const round = (v: number) =&gt; Math.round(v / EPS);
+const groupKey = (b: Box) =&gt; [round(b.cy), round(b.cz), round(b.sy), round(b.sz)] as const;
+
+const sorted = [...boxes].sort((a, b) =&gt; {
+  const ka = groupKey(a), kb = groupKey(b);
+  for (let i = 0; i &lt; ka.length; i++) if (ka[i] !== kb[i]) return ka[i] - kb[i];
+  return coord(a) - coord(b);
+});</code></pre>
+<p>Округление ключа группы до <code>EPS</code> здесь не косметика. Координаты приезжают из JSON и бывают результатом деления, так что два блока одного ряда могут отличаться на 1e-16. Без округления компаратор развёл бы их по разные стороны и разорвал группу ровно там, где её рвать нельзя.</p>
+<h2>Почему EPS = 1e-4</h2>
+<p>Допуск выбран не наугад. Погрешность double на таких величинах — порядка 1e-15, то есть 1e-4 больше неё на одиннадцать порядков и уверенно ловит «почти равные» координаты. При этом минимальный осмысленный зазор между блоками в моём мире — сантиметры, то есть 1e-2 в мировых единицах: допуск на два порядка меньше и <strong>не склеит блоки, между которыми игрок должен пролезть</strong>.</p>
+<h2>Почему не мерджу по Y</h2>
+<p>Третьего прохода нет сознательно. Вертикальные швы — пол одной платформы и потолок другой — не дают skid-артефактов: чтобы поймать ghost collision, кубу надо <strong>пересекать шов движением</strong>, а не стоять на одной поверхности. Плюс в текущих уровнях блоков, совпадающих по X, Z и сечению, но разной высоты, просто не встречается. Усложнять алгоритм ради гипотетического случая не стал.</p>
+<h2>Детерминизм</h2>
+<p>Результат не зависит от порядка тайлов на входе: внутри каждого прохода боксы явно сортируются, а на выходе делается финальная сортировка по всем полям. Это не педантизм — от этого зависит воспроизводимость e2e-тестов и то, что уровень ведёт себя одинаково между запусками.</p>
+<p>На первом уровне это даёт 135 тайлов, слитых в 30 коллайдеров. Блоки нестандартного размера или на дробных позициях ни с чем не сливаются и остаются отдельными коллайдерами. Это нормально: мердж — оптимизация против швов, а не требование к геометрии уровня.</p>
+<h2>Два соседних софтлока</h2>
+<p>Мердж убрал спотыкание, но по дороге вылезли ещё две вещи, которые я чинил в том же цикле.</p>
+<p><strong>Куб заклинивало в щели.</strong> Он въезжал в узкий разрыв между плитами и намертво вставал: трение о боковые стенки держало его, а горизонтальный контроль не хватало, чтобы вытолкнуть. Лечение оказалось грубым и работающим — трение самого куба выставлено в ноль:</p>
+<pre class="code" data-lang="ts"><code>cubeFriction: 0,</code></pre>
+<p>Трение поверхности при этом осталось (0.8 у плитки). Rapier комбинирует трения двух тел как среднее, так что эффективное трение стало 0.4 — куб по-прежнему не скользит как по льду, но и не заклинивается в вертикальной щели.</p>
+<p><strong>Watchdog на случай, если всё-таки застряли.</strong> Чистое доменное правило: если игрок жмёт кнопки, а куб за четыре секунды не сместился больше чем на 0,15 — респаун без штрафа по массе.</p>
+<p>Важная деталь в одну строку: время копится <strong>только при активном вводе</strong>.</p>
+<pre class="code" data-lang="ts"><code>if (distance(pos, state.anchor) &gt; TUNING.watchdogMinMove) {
+  return { state: initialWatchdog(pos), stuck: false };
+}
+if (!inputActive) {
+  return { state, stuck: false };
+}</code></pre>
+<p>Без этой проверки игрок, который просто отошёл от компьютера, через четыре секунды телепортировался бы на чекпоинт. «Стою на месте» и «застрял» — разные состояния, и отличает их наличие ввода.</p>
+<h2>Итог</h2>
+<ul><li>Ровный на вид пол из отдельных коллайдеров — не ровный для физического движка. Швы существуют, даже когда зазоров нет.</li><li>Жадный мердж соседних блоков убирает швы в направлении движения. Тридцать строк логики слияния плюс правильная сортировка.</li><li>Сортировка важнее самого слияния: неверный порядок обхода превращает жадный алгоритм в пустой цикл, и это не падает с ошибкой, а просто тихо не работает.</li></ul>
+<p>В следующей части — про архитектуру: почему доменный слой игры не знает про Three.js и Rapier, и как это позволило гонять правила игры в тестах без браузера.</p>
+<p>Поиграть: <strong>cubanoid.vercel.app</strong> — без установки, прямо в браузере.</p></main>
+<script type="text/plain" id="raw"># Куб спотыкался на идеально ровном полу. Виноваты были швы между коллайдерами
+
+В моей браузерной игре красный желейный куб катается по каменным плитам. Плиты
+описаны в JSON как отдельные тайлы 1×1×1, и на старте я честно создавал для
+каждого тайла свой статический коллайдер в физическом движке. Пол получался
+идеально ровным: соседние боксы стояли встык, грань в грань, без единого зазора.
+
+И на этом ровном полу куб **спотыкался**. Не всегда, не сильно — но регулярно
+получал микроскопический толчок вверх и терял скорость.
+
+Эта статья — про то, что происходило на самом деле, и про алгоритм, который это
+вылечил. Стек: TypeScript, Rapier (WASM-порт), Three.js.
+
+![Шов между коллайдерами](IMG:03-ghost-collisions)
+*Пол ровный, а куб получает удар вверх на границе двух коллайдеров.*
+
+## Что это было
+
+Это классические **ghost collisions** на внутренних рёбрах — проблема, которая
+живёт во всех физдвижках, где поверхность собрана из отдельных выпуклых тел.
+
+Механика такая. Куб у меня не идеальный параллелепипед, а `roundCuboid` —
+скруглённый бокс с радиусом скругления 0,08. Когда он скользит по одному
+коллайдеру и доезжает до его края, движок должен передать контакт следующему
+коллайдеру. Но это не один непрерывный контакт с одной плоскостью, а **два
+независимых расчёта контакта** на границе двух тел. На долю кадра куб касается
+одновременно края первого бокса и ребра второго — и получает импульс, которого
+на настоящем полу быть не должно.
+
+Ключевое: **зазора нет**. Грани совпадают идеально. Проблема не в геометрии
+уровня, а в том, что физдвижок видит не «пол», а «много боксов, стоящих рядом».
+
+Из этого следует и решение: убрать сами швы там, где это возможно.
+
+## Жадный мердж: 135 коллайдеров в 30
+
+Идея простая — перед загрузкой уровня в физику слить соседние блоки одинакового
+сечения в один большой бокс. Строка из шести тайлов должна стать одним
+коллайдером длиной шесть, а не шестью коллайдерами с пятью швами внутри.
+
+![До и после мерджа](IMG:03-merge-before-after)
+*Слева — 12 коллайдеров и 10 внутренних швов. Справа — 2 коллайдера, швов поперёк движения нет.*
+
+Алгоритм двухпроходный:
+
+1. Сливаем блоки в «полосы» вдоль оси X.
+2. Полученные полосы сливаем вдоль оси Z — так соседние ряды одинаковой формы
+   склеиваются во всё более крупные плиты.
+
+Условие слияния двух боксов вдоль X: совпадают Y, Z, высота и глубина, а грани
+по X **соприкасаются** — без зазора и без нахлёста:
+
+```ts
+function tryMergeAlongX(a: Box, b: Box): Box | null {
+  if (!approxEq(a.cy, b.cy) || !approxEq(a.cz, b.cz)) return null;
+  if (!approxEq(a.sy, b.sy) || !approxEq(a.sz, b.sz)) return null;
+
+  const aMaxX = a.cx + a.sx / 2;
+  const bMinX = b.cx - b.sx / 2;
+  if (!approxEq(aMaxX, bMinX)) return null;
+
+  const aMinX = a.cx - a.sx / 2;
+  const bMaxX = b.cx + b.sx / 2;
+  return {
+    cx: (aMinX + bMaxX) / 2, cy: a.cy, cz: a.cz,
+    sx: a.sx + b.sx, sy: a.sy, sz: a.sz,
+  };
+}
+```
+
+Здесь есть тонкость, на которой легко споткнуться: **ширина `sx` намеренно не
+сравнивается**. Аккумулятор жадного прохода к этому моменту уже мог вырасти
+шире исходного тайла — если требовать равенства ширин, полоса перестанет расти
+после первого же слияния.
+
+## Баг, который съел половину времени: сортировка
+
+Первая версия жадного прохода сортировала боксы просто по координате вдоль оси
+слияния. Выглядит очевидно правильно. Мердж при этом **почти не срабатывал**:
+число коллайдеров после прохода почти не отличалось от числа тайлов.
+
+Причина в том, что уровень — не одна строка. Блоки из разных рядов имеют
+одинаковый `x` и в общем порядке идут вперемешку: тайл из ряда `z = -1`, тайл из
+ряда `z = 0`, тайл из ряда `z = 1`, снова ряд `z = -1`… Жадный проход сравнивает
+соседние элементы массива — а соседями оказываются блоки из **разных рядов**,
+которые сливаться не должны и не сливаются. Аккумулятор сбрасывается на каждом
+шаге.
+
+Лечится двухуровневой сортировкой: сначала группируем по всему, что должно
+совпадать (для оси X это `cy`, `cz`, `sy`, `sz` — то есть «сечение ряда»), и уже
+**внутри группы** сортируем по координате вдоль оси слияния:
+
+```ts
+const round = (v: number) =&gt; Math.round(v / EPS);
+const groupKey = (b: Box) =&gt; [round(b.cy), round(b.cz), round(b.sy), round(b.sz)] as const;
+
+const sorted = [...boxes].sort((a, b) =&gt; {
+  const ka = groupKey(a), kb = groupKey(b);
+  for (let i = 0; i &lt; ka.length; i++) if (ka[i] !== kb[i]) return ka[i] - kb[i];
+  return coord(a) - coord(b);
+});
+```
+
+Округление ключа группы до `EPS` здесь не косметика. Координаты приезжают из
+JSON и бывают результатом деления, так что два блока одного ряда могут
+отличаться на 1e-16. Без округления компаратор развёл бы их по разные стороны
+и разорвал группу ровно там, где её рвать нельзя.
+
+## Почему EPS = 1e-4
+
+Допуск выбран не наугад. Погрешность double на таких величинах — порядка 1e-15,
+то есть 1e-4 больше неё на одиннадцать порядков и уверенно ловит «почти
+равные» координаты. При этом минимальный осмысленный зазор между блоками в
+моём мире — сантиметры, то есть 1e-2 в мировых единицах: допуск на два порядка
+меньше и **не склеит блоки, между которыми игрок должен пролезть**.
+
+## Почему не мерджу по Y
+
+Третьего прохода нет сознательно. Вертикальные швы — пол одной платформы и
+потолок другой — не дают skid-артефактов: чтобы поймать ghost collision, кубу
+надо **пересекать шов движением**, а не стоять на одной поверхности. Плюс в
+текущих уровнях блоков, совпадающих по X, Z и сечению, но разной высоты, просто
+не встречается. Усложнять алгоритм ради гипотетического случая не стал.
+
+## Детерминизм
+
+Результат не зависит от порядка тайлов на входе: внутри каждого прохода боксы
+явно сортируются, а на выходе делается финальная сортировка по всем полям.
+Это не педантизм — от этого зависит воспроизводимость e2e-тестов и то, что
+уровень ведёт себя одинаково между запусками.
+
+На первом уровне это даёт 135 тайлов, слитых в 30 коллайдеров. Блоки
+нестандартного размера или на дробных позициях ни с чем не сливаются и
+остаются отдельными коллайдерами. Это нормально: мердж — оптимизация против
+швов, а не требование к геометрии уровня.
+
+## Два соседних софтлока
+
+Мердж убрал спотыкание, но по дороге вылезли ещё две вещи, которые я чинил в
+том же цикле.
+
+**Куб заклинивало в щели.** Он въезжал в узкий разрыв между плитами и намертво
+вставал: трение о боковые стенки держало его, а горизонтальный контроль не
+хватало, чтобы вытолкнуть. Лечение оказалось грубым и работающим — трение
+самого куба выставлено в ноль:
+
+```ts
+cubeFriction: 0,
+```
+
+Трение поверхности при этом осталось (0.8 у плитки). Rapier комбинирует трения
+двух тел как среднее, так что эффективное трение стало 0.4 — куб по-прежнему не
+скользит как по льду, но и не заклинивается в вертикальной щели.
+
+**Watchdog на случай, если всё-таки застряли.** Чистое доменное правило: если
+игрок жмёт кнопки, а куб за четыре секунды не сместился больше чем на 0,15 —
+респаун без штрафа по массе.
+
+Важная деталь в одну строку: время копится **только при активном вводе**.
+
+```ts
+if (distance(pos, state.anchor) &gt; TUNING.watchdogMinMove) {
+  return { state: initialWatchdog(pos), stuck: false };
+}
+if (!inputActive) {
+  return { state, stuck: false };
+}
+```
+
+Без этой проверки игрок, который просто отошёл от компьютера, через четыре
+секунды телепортировался бы на чекпоинт. «Стою на месте» и «застрял» — разные
+состояния, и отличает их наличие ввода.
+
+## Итог
+
+- Ровный на вид пол из отдельных коллайдеров — не ровный для физического
+  движка. Швы существуют, даже когда зазоров нет.
+- Жадный мердж соседних блоков убирает швы в направлении движения. Тридцать
+  строк логики слияния плюс правильная сортировка.
+- Сортировка важнее самого слияния: неверный порядок обхода превращает жадный
+  алгоритм в пустой цикл, и это не падает с ошибкой, а просто тихо не работает.
+
+В следующей части — про архитектуру: почему доменный слой игры не знает про
+Three.js и Rapier, и как это позволило гонять правила игры в тестах без
+браузера.
+
+Поиграть: **cubanoid.vercel.app** — без установки, прямо в браузере.
+</script>
+<script>
+document.querySelectorAll('[data-copy]').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var src = document.getElementById(btn.dataset.copy);
+    if (!src) return;
+    var text = src.textContent;
+    var done = function () {
+      var was = btn.textContent;
+      btn.textContent = 'Скопировано';
+      btn.classList.add('pill--ok');
+      setTimeout(function () { btn.textContent = was; btn.classList.remove('pill--ok'); }, 1800);
+    };
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done, fallback);
+    } else { fallback(); }
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch (e) { alert('Скопируйте вручную'); }
+      document.body.removeChild(ta);
+    }
+  });
+});
+</script>
+</body>
+</html>

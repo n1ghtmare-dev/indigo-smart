@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:,">
+<title>«На кубе чёрные тени» — и почему виноваты оказались не тени</title>
+<style>
+:root{
+  --page:#090d14; --surface:#111823; --surface-soft:#0c1119; --sidebar:#0d121b;
+  --text:#eef3f8; --muted:#9caaba; --faint:#667486;
+  --line:rgba(185,205,228,.16); --line-strong:rgba(185,205,228,.32);
+  --accent:#8bc7db; --radius:12px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--page);color:var(--text);
+  font:16px/1.68 -apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:.8rem;
+  flex-wrap:wrap;padding:.8rem clamp(1rem,4vw,2rem);
+  background:rgba(13,18,27,.92);border-bottom:1px solid var(--line);
+  backdrop-filter:blur(12px)}
+.pill{display:inline-flex;align-items:center;gap:.4rem;padding:.36rem .8rem;
+  border:1px solid var(--line-strong);border-radius:999px;background:var(--surface);
+  color:var(--accent);font-size:.8rem;font-weight:700;text-decoration:none;
+  white-space:nowrap;cursor:pointer;font-family:inherit}
+.pill:hover{background:var(--surface-soft)}
+.pill--ok{color:#8fd6a8;border-color:rgba(143,214,168,.5)}
+.top__spacer{flex:1}
+.top__tag{color:var(--faint);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase}
+main{max-width:52rem;margin:0 auto;padding:clamp(1.4rem,4vw,3rem) clamp(1rem,4vw,2rem) 5rem}
+h1{font-size:clamp(1.7rem,4vw,2.4rem);line-height:1.2;letter-spacing:-.02em;margin:0 0 1.4rem}
+h2{font-size:clamp(1.15rem,2.6vw,1.4rem);margin:2.4rem 0 .8rem;letter-spacing:-.01em}
+p{margin:0 0 1.1rem}
+p.caption{color:var(--faint);font-size:.86rem;margin-top:-.6rem}
+ul,ol{margin:0 0 1.2rem;padding-left:1.3rem}
+li{margin:.3rem 0}
+strong{color:#fff}
+code{font-family:ui-monospace,Consolas,monospace;font-size:.88em;
+  background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:.1em .35em}
+pre.code{position:relative;overflow-x:auto;margin:0 0 1.3rem;padding:1rem 1.1rem;
+  background:var(--surface-soft);border:1px solid var(--line);border-radius:var(--radius)}
+pre.code code{background:none;border:0;padding:0;font-size:13.5px;line-height:1.6}
+pre.code[data-lang]:not([data-lang=""])::after{content:attr(data-lang);position:absolute;
+  top:.5rem;right:.7rem;color:var(--faint);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase}
+.table-wrap{overflow-x:auto;margin:0 0 1.3rem}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{border:1px solid var(--line);padding:.55rem .7rem;text-align:left;vertical-align:top}
+th{background:var(--surface);font-weight:700}
+figure.shot{margin:0 0 1.4rem}
+figure.shot img{display:block;width:100%;height:auto;border:1px solid var(--line);
+  border-radius:var(--radius);background:var(--surface)}
+figcaption{color:var(--faint);font-size:.85rem;margin-top:.5rem}
+.need-shot{display:flex;flex-direction:column;gap:.5rem;margin:0 0 1.4rem;padding:1.1rem 1.2rem;
+  border:1px dashed var(--line-strong);border-radius:var(--radius);background:var(--surface-soft)}
+.need-shot__tag{align-self:flex-start;font-size:.68rem;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;color:#e0b06a;border:1px solid rgba(224,176,106,.4);
+  border-radius:999px;padding:.2rem .6rem}
+.need-shot b{font-weight:600;color:var(--muted)}
+.need-shot code{font-size:.78rem;color:var(--faint)}
+.cards{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fill,minmax(17rem,1fr));margin:0 0 2rem}
+.card{display:flex;flex-direction:column;gap:.5rem;padding:1.1rem 1.2rem;text-decoration:none;
+  color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+.card:hover{border-color:var(--line-strong);background:var(--surface-soft)}
+.card__no{font-family:ui-monospace,Consolas,monospace;color:var(--accent);font-size:.78rem}
+.card__name{font-weight:700;line-height:1.35}
+.card__note{color:var(--muted);font-size:.86rem}
+.card__meta{color:var(--faint);font-size:.76rem;margin-top:auto;padding-top:.6rem;
+  border-top:1px solid var(--line)}
+.note{padding:1rem 1.2rem;border:1px solid var(--line);border-left:3px solid var(--accent);
+  border-radius:var(--radius);background:var(--surface);color:var(--muted);font-size:.92rem;margin:0 0 1.6rem}
+.note b{color:var(--text)}
+</style>
+</head>
+<body>
+<div class="top"><a class="pill" href="./">← Все статьи</a><button class="pill" type="button" data-copy="raw">Скопировать markdown</button><a class="pill" href="https://habr.com/ru/publication/new/" target="_blank" rel="noopener">Редактор Хабра ↗</a><span class="top__spacer"></span><span class="top__tag">Рендер</span></div>
+<main><h1>«На кубе чёрные тени» — и почему виноваты оказались не тени</h1>
+
+<p>У меня в браузерном платформере герой — красный желейный куб. Не просто красный кубик, а именно желе: полупрозрачное, глянцевое, с вмятинами, которое сплющивается при приземлении.</p>
+<p>Довести его до этого состояния оказалось историей из четырёх багов подряд, и каждый раз причина была не там, где казалось. Финальный — «на кубе появляются очень чёрные тени» — пришлось искать чтением шейдеров three.js, и виноватыми оказались вообще не тени.</p>
+<figure class="shot"><img src="img/current.png" alt="Куб крупным планом" loading="lazy"><figcaption>Куда пришли: transmission, clearcoat, вмятины и squash &amp; stretch.</figcaption></figure>
+<h2>Баг 1: «куб всё равно прозрачный»</h2>
+<p>Первая версия желе была наивной: <code>transparent: true</code>, <code>opacity: 0.88</code>. Работало так себе, но пока не было ничего лучше — сходило.</p>
+<p>Потом я добавил <code>transmission</code> — физически корректное просвечивание в <code>MeshPhysicalMaterial</code>, с преломлением и окраской света в толще материала. И куб... стал выглядеть хуже. Просто мутным.</p>
+<p>Причина оказалась в том, что теперь работали <strong>два независимых механизма прозрачности одновременно</strong>. Альфа подмешивала фон к кубу <em>до</em> того, как transmission успевал показать преломлённое изображение. Один эффект затирал другой.</p>
+<p>Лечение — выключить альфу совсем:</p>
+<pre class="code" data-lang="ts"><code>const JELLY_OPACITY = 1.0;   // transparent: false</code></pre>
+<p>За просвечивание отвечает transmission. Альфа для этого не нужна и только размывает силуэт. Строчка <code>opacity: 0.88</code> была рудиментом времён, когда transmission ещё не было, — и жила в коде ровно до тех пор, пока не начала мешать.</p>
+<h2>Баг 2: верхняя грань уехала в мадженту</h2>
+<p>Следующее замечание от владельца проекта звучало так: «верхняя грань читается фиолетовой».</p>
+<p>И ведь правда. База у куба глубоко-красная, а сверху он отдавал в мадженту.</p>
+<p>Дело в отражении окружения. Небо у меня — реальная панорама, и оно же работает как источник освещения через IBL. Синее небо отражалось в почти горизонтальной верхней грани и подмешивалось к красной базе. Причём на верхней грани мы смотрим на поверхность «в лоб», где френелевский член слабее, — казалось бы, отражение должно быть меньше, но его хватало.</p>
+<p>Снижал <code>envMapIntensity</code> постепенно: 1.6 → 1.0 → 0.5. На 0.5 замер пикселя показал, что оттенок всё ещё 330–339° при нужных 345–15°, а насыщенность 0.45 против нужных 0.55. Пришлось уйти до 0.3.</p>
+<p>По исходникам three.js (<code>envmap_physical_pars_fragment.glsl</code>) видно, почему полумеры не помогали: базовое specular-отражение и clearcoat-отражение используют <strong>один и тот же</strong> <code>envMapIntensity</code>. Снижая его, ты гасишь оба отражения сразу, поэтому «чуть-чуть подкрутить» не получается.</p>
+<p>Резкий блик при этом никуда не делся — за него отвечает отдельный направленный тёплый свет, который от интенсивности окружения не зависит.</p>
+<h2>Баг 3, главный: «на кубе очень чёрные тени»</h2>
+<p>А вот тут началось интересное.</p>
+<p>Теневая сторона куба уходила почти в чёрный. Выглядело как жёсткое самозатенение: будто куб отбрасывает тень сам на себя, и она получается угольной.</p>
+<p>Первая гипотеза — тени. Проверил: у куба <code>receiveShadow</code> <strong>не выставлен нигде</strong>, а по умолчанию у <code>Object3D</code> он <code>false</code>. То есть куб физически не может принимать тени. Самозатенение исключено полностью.</p>
+<p>Пошёл читать шейдеры three.js — <code>transmission_fragment.glsl.js</code> и <code>transmission_pars_fragment.glsl.js</code>. И нашёл вот такую строку:</p>
+<pre class="code" data-lang="glsl"><code>totalDiffuse = mix( totalDiffuse, transmitted.rgb, material.transmission );</code></pre>
+<p>Это <strong>безусловный</strong> mix. Transmission заменяет 45% (мой <code>JELLY_TRANSMISSION</code>) диффузного освещения на <code>transmitted.rgb</code> — независимо от того, лицевая это грань или теневая, независимо ни от чего.</p>
+<p>А сам <code>transmitted.rgb</code> считается как <code>transmittance * transmissionSample</code>, где transmittance — закон Бугера–Ламберта–Бера:</p>
+<pre class="code" data-lang=""><code>attenuationCoefficient = -log(attenuationColor) / attenuationDistance
+transmittance          = exp(-attenuationCoefficient * transmissionDistance)</code></pre>
+<p>Ключевой момент, который я сначала понял неправильно: <code>transmissionDistance</code> — это <strong>сама переданная <code>thickness</code></strong>, а не доля толщины. У меня thickness равна стороне куба, то есть примерно 0.794 на стартовой массе.</p>
+<p>Посчитал на калькуляторе, что при моих тогдашних настройках выживает от красного канала. <code>attenuationColor</code> = <code>0x8a0000</code>, <code>attenuationDistance</code> = 0.3, дистанция ≈ 0.8. Выживало <strong>около 2,7%</strong>.</p>
+<p>То есть картина такая: 45% диффузного освещения грани безусловно заменялись на проходящий свет, умноженный на 0,027. Почти ноль. А если за кубом в этот момент тёмный фон — соседний камень или тень на камне — то <code>transmitted.rgb</code> вообще околочёрный, и через <code>mix</code> он утягивал вниз <strong>всю грань</strong>.</p>
+<p>Вот и «чёрные тени». Никаких теней, просто затухание света в толще желе, настроенное слишком агрессивно.</p>
+<p>Лечение — поднять <code>attenuationDistance</code> с 0.3 до 0.55:</p>
+<pre class="code" data-lang="ts"><code>const JELLY_ATTENUATION_COLOR = 0x8a0000;
+const JELLY_ATTENUATION_DISTANCE = 0.55;</code></pre>
+<p>Выживаемость поднялась до ~14%. Вчетверо больше, чем было, — вклад transmission перестал быть почти нулевым и «съедать» теневую сторону до черноты. И при этом вдвое меньше, чем 0.9, которое я пробовал раньше: там выживало ~30%, куб становился стеклянным и <strong>терял силуэт</strong> на светлом камне.</p>
+<p>Мораль, которую я вынес: если у материала есть параметр с физическим смыслом, то и отлаживать его надо физикой, а не подкручиванием на глаз. Полчаса чтения шейдера и один расчёт на бумаге дали ответ, который перебором значений я искал бы долго и, скорее всего, нашёл бы неправильный компромисс.</p>
+<h2>Вмятины: два раза мимо</h2>
+<p>Мелкая, но показательная история про bump-текстуру.</p>
+<p>Хотелось, чтобы желе было не идеально гладким, а с вмятинами, как у мармеладки. Сначала я сделал текстуру из мелких пор и поднял <code>bumpScale</code> с 1.0 до 1.4 — поры всё равно тонули в резком clearcoat-блике, их просто не было видно.</p>
+<p>Тогда я переделал саму текстуру: вместо мелких пор — 10–16 <strong>крупных</strong> вмятин. И тот же <code>bumpScale</code> = 1.4 на вдвое больших по радиусу формах превратил поверхность в наждак. Пришлось опустить до 1.1.</p>
+<pre class="code" data-lang="ts"><code>const JELLY_BUMP_SCALE = 1.1;</code></pre>
+<p>Параметр силы рельефа нельзя настраивать отдельно от самой текстуры рельефа — это одна настройка, разнесённая по двум файлам.</p>
+<h2>Squash &amp; stretch: пружина в одну строку</h2>
+<p>Последнее, что превращает куб в живое желе, — деформация. Растягивается по направлению движения, сплющивается при ударе об пол.</p>
+<p>Вся физика эффекта — три строки затухающей пружины:</p>
+<pre class="code" data-lang="ts"><code>this.squashVel += (1 - this.squashScale) * SPRING_STIFFNESS * dt;
+this.squashVel *= Math.exp(-SPRING_DAMPING * dt);
+this.squashScale += this.squashVel * dt;</code></pre>
+<p>Первая строка тянет масштаб обратно к единице с силой, пропорциональной отклонению. Вторая гасит скорость экспоненциально — и это важнее, чем кажется: экспоненциальное демпфирование корректно себя ведёт при любом <code>dt</code> и гасит любые всплески, откуда бы они ни взялись.</p>
+<p>Приземление даёт пружине «пинок»:</p>
+<pre class="code" data-lang="ts"><code>this.squashVel -= LANDING_SQUASH_KICK * impact;</code></pre>
+<p>где <code>impact</code> посчитан из скорости удара и ограничен сверху, а сам пинок имеет кулдаун 0.25 секунды. Без кулдауна куб, дрожащий на месте у стены, получал пинок каждый кадр и начинал биться в судорогах.</p>
+<p>Итоговый масштаб зажат в диапазон 0.55…1.35 — за его пределами желе перестаёт читаться как куб.</p>
+<p>И важное ограничение, которое я задал себе в самом начале: <strong>squash &amp; stretch — это только масштаб меша</strong>. Физика и коллайдер не меняются. Иначе деформация начала бы влиять на проходимость щелей, и визуальный эффект превратился бы в геймплейный баг.</p>
+<h2>Что бы я сказал себе в начале</h2>
+<ul><li>Два механизма прозрачности не складываются, а мешают друг другу. Выбери один.</li><li><code>envMapIntensity</code> управляет и specular, и clearcoat одновременно — «чуть-чуть» не получится.</li><li>«Чёрные тени» на объекте с transmission — почти наверняка не тени, а затухание в толще. Проверь <code>receiveShadow</code>, прежде чем чинить свет.</li><li>Силу bump-рельефа настраивай вместе с текстурой рельефа, а не отдельно.</li><li>Демпфируй пружины экспоненциально и ставь кулдаун на импульсы.</li></ul>
+<p>В следующих частях — про физику: как куб спотыкался на ровном полу, и про архитектуру, из-за которой всё это удалось тестировать без браузера.</p>
+<p>Поиграть: <strong>cubanoid.vercel.app</strong></p></main>
+<script type="text/plain" id="raw"># «На кубе чёрные тени» — и почему виноваты оказались не тени
+
+У меня в браузерном платформере герой — красный желейный куб. Не просто красный
+кубик, а именно желе: полупрозрачное, глянцевое, с вмятинами, которое
+сплющивается при приземлении.
+
+Довести его до этого состояния оказалось историей из четырёх багов подряд, и
+каждый раз причина была не там, где казалось. Финальный — «на кубе появляются
+очень чёрные тени» — пришлось искать чтением шейдеров three.js, и виноватыми
+оказались вообще не тени.
+
+![Куб крупным планом](IMG:05-jelly-hero)
+*Куда пришли: transmission, clearcoat, вмятины и squash &amp; stretch.*
+
+## Баг 1: «куб всё равно прозрачный»
+
+Первая версия желе была наивной: `transparent: true`, `opacity: 0.88`. Работало
+так себе, но пока не было ничего лучше — сходило.
+
+Потом я добавил `transmission` — физически корректное просвечивание в
+`MeshPhysicalMaterial`, с преломлением и окраской света в толще материала. И
+куб... стал выглядеть хуже. Просто мутным.
+
+Причина оказалась в том, что теперь работали **два независимых механизма
+прозрачности одновременно**. Альфа подмешивала фон к кубу *до* того, как
+transmission успевал показать преломлённое изображение. Один эффект затирал
+другой.
+
+Лечение — выключить альфу совсем:
+
+```ts
+const JELLY_OPACITY = 1.0;   // transparent: false
+```
+
+За просвечивание отвечает transmission. Альфа для этого не нужна и только
+размывает силуэт. Строчка `opacity: 0.88` была рудиментом времён, когда
+transmission ещё не было, — и жила в коде ровно до тех пор, пока не начала
+мешать.
+
+## Баг 2: верхняя грань уехала в мадженту
+
+Следующее замечание от владельца проекта звучало так: «верхняя грань читается
+фиолетовой».
+
+И ведь правда. База у куба глубоко-красная, а сверху он отдавал в мадженту.
+
+Дело в отражении окружения. Небо у меня — реальная панорама, и оно же работает
+как источник освещения через IBL. Синее небо отражалось в почти горизонтальной
+верхней грани и подмешивалось к красной базе. Причём на верхней грани мы смотрим
+на поверхность «в лоб», где френелевский член слабее, — казалось бы, отражение
+должно быть меньше, но его хватало.
+
+Снижал `envMapIntensity` постепенно: 1.6 → 1.0 → 0.5. На 0.5 замер пикселя
+показал, что оттенок всё ещё 330–339° при нужных 345–15°, а насыщенность 0.45
+против нужных 0.55. Пришлось уйти до 0.3.
+
+По исходникам three.js (`envmap_physical_pars_fragment.glsl`) видно, почему
+полумеры не помогали: базовое specular-отражение и clearcoat-отражение
+используют **один и тот же** `envMapIntensity`. Снижая его, ты гасишь оба
+отражения сразу, поэтому «чуть-чуть подкрутить» не получается.
+
+Резкий блик при этом никуда не делся — за него отвечает отдельный направленный
+тёплый свет, который от интенсивности окружения не зависит.
+
+## Баг 3, главный: «на кубе очень чёрные тени»
+
+А вот тут началось интересное.
+
+Теневая сторона куба уходила почти в чёрный. Выглядело как жёсткое
+самозатенение: будто куб отбрасывает тень сам на себя, и она получается
+угольной.
+
+Первая гипотеза — тени. Проверил: у куба `receiveShadow` **не выставлен нигде**,
+а по умолчанию у `Object3D` он `false`. То есть куб физически не может принимать
+тени. Самозатенение исключено полностью.
+
+Пошёл читать шейдеры three.js — `transmission_fragment.glsl.js` и
+`transmission_pars_fragment.glsl.js`. И нашёл вот такую строку:
+
+```glsl
+totalDiffuse = mix( totalDiffuse, transmitted.rgb, material.transmission );
+```
+
+Это **безусловный** mix. Transmission заменяет 45% (мой `JELLY_TRANSMISSION`)
+диффузного освещения на `transmitted.rgb` — независимо от того, лицевая это
+грань или теневая, независимо ни от чего.
+
+А сам `transmitted.rgb` считается как `transmittance * transmissionSample`, где
+transmittance — закон Бугера–Ламберта–Бера:
+
+```
+attenuationCoefficient = -log(attenuationColor) / attenuationDistance
+transmittance          = exp(-attenuationCoefficient * transmissionDistance)
+```
+
+Ключевой момент, который я сначала понял неправильно: `transmissionDistance` —
+это **сама переданная `thickness`**, а не доля толщины. У меня thickness равна
+стороне куба, то есть примерно 0.794 на стартовой массе.
+
+Посчитал на калькуляторе, что при моих тогдашних настройках выживает от
+красного канала. `attenuationColor` = `0x8a0000`, `attenuationDistance` = 0.3,
+дистанция ≈ 0.8. Выживало **около 2,7%**.
+
+То есть картина такая: 45% диффузного освещения грани безусловно заменялись на
+проходящий свет, умноженный на 0,027. Почти ноль. А если за кубом в этот момент
+тёмный фон — соседний камень или тень на камне — то `transmitted.rgb` вообще
+околочёрный, и через `mix` он утягивал вниз **всю грань**.
+
+Вот и «чёрные тени». Никаких теней, просто затухание света в толще желе,
+настроенное слишком агрессивно.
+
+Лечение — поднять `attenuationDistance` с 0.3 до 0.55:
+
+```ts
+const JELLY_ATTENUATION_COLOR = 0x8a0000;
+const JELLY_ATTENUATION_DISTANCE = 0.55;
+```
+
+Выживаемость поднялась до ~14%. Вчетверо больше, чем было, — вклад
+transmission перестал быть почти нулевым и «съедать» теневую сторону до черноты.
+И при этом вдвое меньше, чем 0.9, которое я пробовал раньше: там выживало ~30%,
+куб становился стеклянным и **терял силуэт** на светлом камне.
+
+Мораль, которую я вынес: если у материала есть параметр с физическим смыслом,
+то и отлаживать его надо физикой, а не подкручиванием на глаз. Полчаса чтения
+шейдера и один расчёт на бумаге дали ответ, который перебором значений я искал
+бы долго и, скорее всего, нашёл бы неправильный компромисс.
+
+## Вмятины: два раза мимо
+
+Мелкая, но показательная история про bump-текстуру.
+
+Хотелось, чтобы желе было не идеально гладким, а с вмятинами, как у мармеладки.
+Сначала я сделал текстуру из мелких пор и поднял `bumpScale` с 1.0 до 1.4 —
+поры всё равно тонули в резком clearcoat-блике, их просто не было видно.
+
+Тогда я переделал саму текстуру: вместо мелких пор — 10–16 **крупных** вмятин.
+И тот же `bumpScale` = 1.4 на вдвое больших по радиусу формах превратил
+поверхность в наждак. Пришлось опустить до 1.1.
+
+```ts
+const JELLY_BUMP_SCALE = 1.1;
+```
+
+Параметр силы рельефа нельзя настраивать отдельно от самой текстуры рельефа —
+это одна настройка, разнесённая по двум файлам.
+
+## Squash &amp; stretch: пружина в одну строку
+
+Последнее, что превращает куб в живое желе, — деформация. Растягивается по
+направлению движения, сплющивается при ударе об пол.
+
+Вся физика эффекта — три строки затухающей пружины:
+
+```ts
+this.squashVel += (1 - this.squashScale) * SPRING_STIFFNESS * dt;
+this.squashVel *= Math.exp(-SPRING_DAMPING * dt);
+this.squashScale += this.squashVel * dt;
+```
+
+Первая строка тянет масштаб обратно к единице с силой, пропорциональной
+отклонению. Вторая гасит скорость экспоненциально — и это важнее, чем кажется:
+экспоненциальное демпфирование корректно себя ведёт при любом `dt` и гасит
+любые всплески, откуда бы они ни взялись.
+
+Приземление даёт пружине «пинок»:
+
+```ts
+this.squashVel -= LANDING_SQUASH_KICK * impact;
+```
+
+где `impact` посчитан из скорости удара и ограничен сверху, а сам пинок имеет
+кулдаун 0.25 секунды. Без кулдауна куб, дрожащий на месте у стены, получал
+пинок каждый кадр и начинал биться в судорогах.
+
+Итоговый масштаб зажат в диапазон 0.55…1.35 — за его пределами желе перестаёт
+читаться как куб.
+
+И важное ограничение, которое я задал себе в самом начале: **squash &amp; stretch —
+это только масштаб меша**. Физика и коллайдер не меняются. Иначе деформация
+начала бы влиять на проходимость щелей, и визуальный эффект превратился бы в
+геймплейный баг.
+
+## Что бы я сказал себе в начале
+
+- Два механизма прозрачности не складываются, а мешают друг другу. Выбери
+  один.
+- `envMapIntensity` управляет и specular, и clearcoat одновременно — «чуть-чуть»
+  не получится.
+- «Чёрные тени» на объекте с transmission — почти наверняка не тени, а
+  затухание в толще. Проверь `receiveShadow`, прежде чем чинить свет.
+- Силу bump-рельефа настраивай вместе с текстурой рельефа, а не отдельно.
+- Демпфируй пружины экспоненциально и ставь кулдаун на импульсы.
+
+В следующих частях — про физику: как куб спотыкался на ровном полу, и про
+архитектуру, из-за которой всё это удалось тестировать без браузера.
+
+Поиграть: **cubanoid.vercel.app**
+</script>
+<script>
+document.querySelectorAll('[data-copy]').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var src = document.getElementById(btn.dataset.copy);
+    if (!src) return;
+    var text = src.textContent;
+    var done = function () {
+      var was = btn.textContent;
+      btn.textContent = 'Скопировано';
+      btn.classList.add('pill--ok');
+      setTimeout(function () { btn.textContent = was; btn.classList.remove('pill--ok'); }, 1800);
+    };
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done, fallback);
+    } else { fallback(); }
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch (e) { alert('Скопируйте вручную'); }
+      document.body.removeChild(ta);
+    }
+  });
+});
+</script>
+</body>
+</html>

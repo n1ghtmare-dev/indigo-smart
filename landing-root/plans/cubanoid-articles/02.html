@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:,">
+<title>От серых коробок до желе: как за несколько дней менялась картинка в моей игре</title>
+<style>
+:root{
+  --page:#090d14; --surface:#111823; --surface-soft:#0c1119; --sidebar:#0d121b;
+  --text:#eef3f8; --muted:#9caaba; --faint:#667486;
+  --line:rgba(185,205,228,.16); --line-strong:rgba(185,205,228,.32);
+  --accent:#8bc7db; --radius:12px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--page);color:var(--text);
+  font:16px/1.68 -apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:.8rem;
+  flex-wrap:wrap;padding:.8rem clamp(1rem,4vw,2rem);
+  background:rgba(13,18,27,.92);border-bottom:1px solid var(--line);
+  backdrop-filter:blur(12px)}
+.pill{display:inline-flex;align-items:center;gap:.4rem;padding:.36rem .8rem;
+  border:1px solid var(--line-strong);border-radius:999px;background:var(--surface);
+  color:var(--accent);font-size:.8rem;font-weight:700;text-decoration:none;
+  white-space:nowrap;cursor:pointer;font-family:inherit}
+.pill:hover{background:var(--surface-soft)}
+.pill--ok{color:#8fd6a8;border-color:rgba(143,214,168,.5)}
+.top__spacer{flex:1}
+.top__tag{color:var(--faint);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase}
+main{max-width:52rem;margin:0 auto;padding:clamp(1.4rem,4vw,3rem) clamp(1rem,4vw,2rem) 5rem}
+h1{font-size:clamp(1.7rem,4vw,2.4rem);line-height:1.2;letter-spacing:-.02em;margin:0 0 1.4rem}
+h2{font-size:clamp(1.15rem,2.6vw,1.4rem);margin:2.4rem 0 .8rem;letter-spacing:-.01em}
+p{margin:0 0 1.1rem}
+p.caption{color:var(--faint);font-size:.86rem;margin-top:-.6rem}
+ul,ol{margin:0 0 1.2rem;padding-left:1.3rem}
+li{margin:.3rem 0}
+strong{color:#fff}
+code{font-family:ui-monospace,Consolas,monospace;font-size:.88em;
+  background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:.1em .35em}
+pre.code{position:relative;overflow-x:auto;margin:0 0 1.3rem;padding:1rem 1.1rem;
+  background:var(--surface-soft);border:1px solid var(--line);border-radius:var(--radius)}
+pre.code code{background:none;border:0;padding:0;font-size:13.5px;line-height:1.6}
+pre.code[data-lang]:not([data-lang=""])::after{content:attr(data-lang);position:absolute;
+  top:.5rem;right:.7rem;color:var(--faint);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase}
+.table-wrap{overflow-x:auto;margin:0 0 1.3rem}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{border:1px solid var(--line);padding:.55rem .7rem;text-align:left;vertical-align:top}
+th{background:var(--surface);font-weight:700}
+figure.shot{margin:0 0 1.4rem}
+figure.shot img{display:block;width:100%;height:auto;border:1px solid var(--line);
+  border-radius:var(--radius);background:var(--surface)}
+figcaption{color:var(--faint);font-size:.85rem;margin-top:.5rem}
+.need-shot{display:flex;flex-direction:column;gap:.5rem;margin:0 0 1.4rem;padding:1.1rem 1.2rem;
+  border:1px dashed var(--line-strong);border-radius:var(--radius);background:var(--surface-soft)}
+.need-shot__tag{align-self:flex-start;font-size:.68rem;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;color:#e0b06a;border:1px solid rgba(224,176,106,.4);
+  border-radius:999px;padding:.2rem .6rem}
+.need-shot b{font-weight:600;color:var(--muted)}
+.need-shot code{font-size:.78rem;color:var(--faint)}
+.cards{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fill,minmax(17rem,1fr));margin:0 0 2rem}
+.card{display:flex;flex-direction:column;gap:.5rem;padding:1.1rem 1.2rem;text-decoration:none;
+  color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+.card:hover{border-color:var(--line-strong);background:var(--surface-soft)}
+.card__no{font-family:ui-monospace,Consolas,monospace;color:var(--accent);font-size:.78rem}
+.card__name{font-weight:700;line-height:1.35}
+.card__note{color:var(--muted);font-size:.86rem}
+.card__meta{color:var(--faint);font-size:.76rem;margin-top:auto;padding-top:.6rem;
+  border-top:1px solid var(--line)}
+.note{padding:1rem 1.2rem;border:1px solid var(--line);border-left:3px solid var(--accent);
+  border-radius:var(--radius);background:var(--surface);color:var(--muted);font-size:.92rem;margin:0 0 1.6rem}
+.note b{color:var(--text)}
+</style>
+</head>
+<body>
+<div class="top"><a class="pill" href="./">← Все статьи</a><button class="pill" type="button" data-copy="raw">Скопировать markdown</button><a class="pill" href="https://habr.com/ru/publication/new/" target="_blank" rel="noopener">Редактор Хабра ↗</a><span class="top__spacer"></span><span class="top__tag">Хроника</span></div>
+<main><h1>От серых коробок до желе: как за несколько дней менялась картинка в моей игре</h1>
+<div class="note"><b>Не хватает 14 скриншот(ов).</b> Места отмечены в тексте: положите кадры в <code>docs/devlog/part-1/</code> и скажите — пересоберу страницу.</div>
+<p>Я делаю браузерный 3D-платформер на Three.js и Rapier. Начиналось всё, как обычно начинается, — с серых коробок на пустом фоне. Сейчас это красный желейный куб на каменных плитах, парящих в облаках.</p>
+<p>Я снимал скриншоты на каждом этапе. Ниже — вся дорога, по шагам: что именно добавлялось, что от этого менялось на экране и где было больно.</p>
+<h2>Шаг 1. Геометрия и ничего больше</h2>
+<div class="need-shot"><span class="need-shot__tag">нужен скриншот</span><b>Серые коробки</b><code>docs/devlog/part-1/ → 02-step1</code></div>
+<p>Первое, что появляется в любом 3D-проекте: сцена, камера, набор боксов и куб, который ими управляют. Ни текстур, ни теней, ни материалов сложнее <code>MeshStandardMaterial</code> серого цвета.</p>
+<p>На этом этапе смотреть не на что, зато проверяется главное: уровень грузится из JSON, куб стоит там, где написано, камера едет за ним. Уровень описан просто:</p>
+<pre class="code" data-lang="json"><code>{
+  &quot;name&quot;: &quot;level-01&quot;,
+  &quot;spawn&quot;: { &quot;x&quot;: 0, &quot;y&quot;: 3, &quot;z&quot;: 0 },
+  &quot;tiles&quot;: [
+    { &quot;type&quot;: &quot;stone&quot;, &quot;x&quot;: -1, &quot;y&quot;: 0, &quot;z&quot;: -1 },
+    { &quot;type&quot;: &quot;stone&quot;, &quot;x&quot;:  0, &quot;y&quot;: 0, &quot;z&quot;: -1 }
+  ]
+}</code></pre>
+<p>Тут же вылезло первое неочевидное: <strong>следящая камера должна сглаживаться, иначе от неё укачивает</strong>. Жёстко привязанная к кубу камера повторяет каждое дрожание физического тела, и картинка мелко трясётся.</p>
+<h2>Шаг 2. Физика: куб падает и прыгает</h2>
+<div class="need-shot"><span class="need-shot__tag">нужен скриншот</span><b>Первая физика</b><code>docs/devlog/part-1/ → 02-step2</code></div>
+<p>Подключается Rapier, куб получает скруглённый коллайдер, плиты — статические боксы. Появляется прыжок и падение в пропасть.</p>
+<p>Визуально почти ничего не изменилось — те же серые коробки. Зато поменялось ощущение: до этого шага был просмотрщик уровней, после — игра.</p>
+<h2>Шаг 3. Правила: масса, капли, шипы, финиш</h2>
+<div class="need-shot"><span class="need-shot__tag">нужен скриншот</span><b>HUD и первый уровень</b><code>docs/devlog/part-1/ → 02-step3</code></div>
+<p>Здесь появляется то, ради чего игра существует: масса как единственный ресурс. Капли добавляют массу, шипы срезают, финиш считает звёзды. И первый настоящий уровень вместо тестовой площадки.</p>
+<p>Картинка всё ещё серая, а вот интерфейс уже есть — счётчик массы в углу. Это, кстати, единственный элемент HUD в игре: здоровья, ключей и очков нет, всё это и есть масса.</p>
+<h2>Шаг 4. Первые текстуры — процедурные</h2>
+<div class="need-shot"><span class="need-shot__tag">нужен скриншот</span><b>Процедурные текстуры</b><code>docs/devlog/part-1/ → 02-step4</code></div>
+<p>Момент, когда игра впервые перестаёт выглядеть как прототип. Камень, трава, небо и облака — всё сгенерировано кодом, без единого файла-картинки.</p>
+<p>Почему процедурно, а не готовыми ассетами: на этом этапе я ещё не знал, какой именно камень нужен, и подбирать текстуру было бы гаданием. Процедурную можно крутить параметрами прямо в коде.</p>
+<p>Важное требование, которое пришло от владельца проекта сразу: <strong>соседние блоки не должны выглядеть одинаково</strong>. Решается детерминированным хэшем от координат тайла — вариант камня выбирается по позиции, а не случайно. Никакого <code>Math.random</code> в размещении: иначе уровень выглядел бы по-разному при каждой перезагрузке, а скриншот-тесты сломались бы.</p>
+<h2>Шаг 5. Желе и кинематографичная камера</h2>
+<div class="need-shot"><span class="need-shot__tag">нужен скриншот</span><b>Желейный куб</b><code>docs/devlog/part-1/ → 02-step5</code></div>
+<p>Куб перестаёт быть кубом. <code>RoundedBoxGeometry</code> вместо параллелепипеда, <code>MeshPhysicalMaterial</code> с clearcoat, squash &amp; stretch при прыжке и приземлении.</p>
+<p>Одновременно камера опускается почти до уровня куба и придвигается:</p>
+<pre class="code" data-lang="ts"><code>cameraOffset: { x: 0, y: 1.5, z: 3.8 },
+cameraLookAhead: { y: 0.35, z: -1.6 },</code></pre>
+<p>Это не косметика, а смена жанра картинки. С высокой камеры кадр читался как «вид сверху на площадку». С низкой — как узкий каменный коридор, стены которого уходят вверх за край экрана. Одни и те же плиты, разное ощущение.</p>
+<h2>Шаг 6. Небо, туман, тонмаппинг</h2>
+<div class="need-shot"><span class="need-shot__tag">нужен скриншот</span><b>Небо и туман</b><code>docs/devlog/part-1/ → 02-step6</code></div>
+<p>Уровни в моей игре парят в воздухе, и до этого шага они парили в пустоте. Появляются настоящая панорама неба, туман, который прячет обрыв уровня, и тонмаппинг, приводящий пересвеченные места в порядок.</p>
+<p>Небо здесь работает дважды: как фон и как источник освещения через IBL. Второе неожиданно аукнулось — синее небо стало отражаться в верхней грани красного куба, и она поехала в мадженту. Лечилось снижением интенсивности отражения окружения втрое.</p>
+<h2>Шаг 7. Свет, контактные тени и AO</h2>
+<div class="need-shot"><span class="need-shot__tag">нужен скриншот</span><b>Свет и глубина</b><code>docs/devlog/part-1/ → 02-step7</code></div>
+<p>Последний на сегодня большой шаг. Мягкий свет, вершинное затемнение на стыках блоков, контактная тень под кубом, SSAO и постобработка.</p>
+<p>Именно AO и контактная тень дали то, чего не хватало сильнее всего: <strong>куб перестал висеть над плитами</strong>. До этого он выглядел приклеенным поверх картинки, а не стоящим на поверхности. Тёмное пятно под ним стоит почти ничего — плоскость с радиальным градиентом, прозрачность которой зависит от высоты над землёй, — а разница огромная.</p>
+<p>Полный пайплайн с SSAO включается не всегда: на мобильных и под автоматизацией качество автоматически падает до low, иначе на слабом GPU всё встаёт.</p>
+<h2>Где сейчас</h2>
+<figure class="shot"><img src="img/current.png" alt="Текущее состояние" loading="lazy"><figcaption>Текущее состояние</figcaption></figure>
+<p>Здесь я сейчас: красный желейный куб, крупные светлые плиты с травяной крышкой, деревянные таблички-подсказки прямо в мире вместо текстовых попапов.</p>
+<p>Что вынес из этой дороги:</p>
+<p><strong>Серый этап нужно проходить быстро, но честно.</strong> Соблазн начать с красивого велик, но пока не работают правила, красота — это украшение неработающей игры.</p>
+<p><strong>Один параметр камеры может изменить больше, чем неделя работы с материалами.</strong> Опустить камеру на метр было дешевле любого шейдера и дало больше.</p>
+<p><strong>Контактная тень — самый выгодный эффект по соотношению «результат / усилия».</strong> Если объект выглядит парящим над поверхностью, скорее всего дело в ней, а не в материалах.</p>
+<p><strong>Процедурные текстуры хороши как черновик.</strong> Они позволяют не выбирать раньше времени. Но когда стало понятно, какой именно камень нужен, процедурный был заменён на настоящий PBR-набор — и это правильный порядок, а не поражение.</p>
+<p>В следующих частях — техническое: почему куб спотыкался на ровном полу, как устроена архитектура, и как отлаживались чёрные тени на желе.</p>
+<p>Поиграть можно прямо в браузере: <strong>cubanoid.vercel.app</strong></p></main>
+<script type="text/plain" id="raw"># От серых коробок до желе: как за несколько дней менялась картинка в моей игре
+
+Я делаю браузерный 3D-платформер на Three.js и Rapier. Начиналось всё, как
+обычно начинается, — с серых коробок на пустом фоне. Сейчас это красный
+желейный куб на каменных плитах, парящих в облаках.
+
+Я снимал скриншоты на каждом этапе. Ниже — вся дорога, по шагам: что именно
+добавлялось, что от этого менялось на экране и где было больно.
+
+## Шаг 1. Геометрия и ничего больше
+
+![Серые коробки](IMG:02-step1)
+
+Первое, что появляется в любом 3D-проекте: сцена, камера, набор боксов и куб,
+который ими управляют. Ни текстур, ни теней, ни материалов сложнее
+`MeshStandardMaterial` серого цвета.
+
+На этом этапе смотреть не на что, зато проверяется главное: уровень грузится
+из JSON, куб стоит там, где написано, камера едет за ним. Уровень описан просто:
+
+```json
+{
+  &quot;name&quot;: &quot;level-01&quot;,
+  &quot;spawn&quot;: { &quot;x&quot;: 0, &quot;y&quot;: 3, &quot;z&quot;: 0 },
+  &quot;tiles&quot;: [
+    { &quot;type&quot;: &quot;stone&quot;, &quot;x&quot;: -1, &quot;y&quot;: 0, &quot;z&quot;: -1 },
+    { &quot;type&quot;: &quot;stone&quot;, &quot;x&quot;:  0, &quot;y&quot;: 0, &quot;z&quot;: -1 }
+  ]
+}
+```
+
+Тут же вылезло первое неочевидное: **следящая камера должна сглаживаться, иначе
+от неё укачивает**. Жёстко привязанная к кубу камера повторяет каждое дрожание
+физического тела, и картинка мелко трясётся.
+
+## Шаг 2. Физика: куб падает и прыгает
+
+![Первая физика](IMG:02-step2)
+
+Подключается Rapier, куб получает скруглённый коллайдер, плиты — статические
+боксы. Появляется прыжок и падение в пропасть.
+
+Визуально почти ничего не изменилось — те же серые коробки. Зато поменялось
+ощущение: до этого шага был просмотрщик уровней, после — игра.
+
+## Шаг 3. Правила: масса, капли, шипы, финиш
+
+![HUD и первый уровень](IMG:02-step3)
+
+Здесь появляется то, ради чего игра существует: масса как единственный ресурс.
+Капли добавляют массу, шипы срезают, финиш считает звёзды. И первый настоящий
+уровень вместо тестовой площадки.
+
+Картинка всё ещё серая, а вот интерфейс уже есть — счётчик массы в углу. Это,
+кстати, единственный элемент HUD в игре: здоровья, ключей и очков нет, всё это
+и есть масса.
+
+## Шаг 4. Первые текстуры — процедурные
+
+![Процедурные текстуры](IMG:02-step4)
+
+Момент, когда игра впервые перестаёт выглядеть как прототип. Камень, трава,
+небо и облака — всё сгенерировано кодом, без единого файла-картинки.
+
+Почему процедурно, а не готовыми ассетами: на этом этапе я ещё не знал, какой
+именно камень нужен, и подбирать текстуру было бы гаданием. Процедурную можно
+крутить параметрами прямо в коде.
+
+Важное требование, которое пришло от владельца проекта сразу: **соседние блоки
+не должны выглядеть одинаково**. Решается детерминированным хэшем от координат
+тайла — вариант камня выбирается по позиции, а не случайно. Никакого
+`Math.random` в размещении: иначе уровень выглядел бы по-разному при каждой
+перезагрузке, а скриншот-тесты сломались бы.
+
+## Шаг 5. Желе и кинематографичная камера
+
+![Желейный куб](IMG:02-step5)
+
+Куб перестаёт быть кубом. `RoundedBoxGeometry` вместо параллелепипеда,
+`MeshPhysicalMaterial` с clearcoat, squash &amp; stretch при прыжке и приземлении.
+
+Одновременно камера опускается почти до уровня куба и придвигается:
+
+```ts
+cameraOffset: { x: 0, y: 1.5, z: 3.8 },
+cameraLookAhead: { y: 0.35, z: -1.6 },
+```
+
+Это не косметика, а смена жанра картинки. С высокой камеры кадр читался как
+«вид сверху на площадку». С низкой — как узкий каменный коридор, стены которого
+уходят вверх за край экрана. Одни и те же плиты, разное ощущение.
+
+## Шаг 6. Небо, туман, тонмаппинг
+
+![Небо и туман](IMG:02-step6)
+
+Уровни в моей игре парят в воздухе, и до этого шага они парили в пустоте.
+Появляются настоящая панорама неба, туман, который прячет обрыв уровня, и
+тонмаппинг, приводящий пересвеченные места в порядок.
+
+Небо здесь работает дважды: как фон и как источник освещения через IBL. Второе
+неожиданно аукнулось — синее небо стало отражаться в верхней грани красного
+куба, и она поехала в мадженту. Лечилось снижением интенсивности отражения
+окружения втрое.
+
+## Шаг 7. Свет, контактные тени и AO
+
+![Свет и глубина](IMG:02-step7)
+
+Последний на сегодня большой шаг. Мягкий свет, вершинное затемнение на стыках
+блоков, контактная тень под кубом, SSAO и постобработка.
+
+Именно AO и контактная тень дали то, чего не хватало сильнее всего: **куб
+перестал висеть над плитами**. До этого он выглядел приклеенным поверх
+картинки, а не стоящим на поверхности. Тёмное пятно под ним стоит почти
+ничего — плоскость с радиальным градиентом, прозрачность которой зависит от
+высоты над землёй, — а разница огромная.
+
+Полный пайплайн с SSAO включается не всегда: на мобильных и под автоматизацией
+качество автоматически падает до low, иначе на слабом GPU всё встаёт.
+
+## Где сейчас
+
+![Текущее состояние](IMG:02-current)
+
+Здесь я сейчас: красный желейный куб, крупные светлые плиты с травяной
+крышкой, деревянные таблички-подсказки прямо в мире вместо текстовых попапов.
+
+Что вынес из этой дороги:
+
+**Серый этап нужно проходить быстро, но честно.** Соблазн начать с красивого
+велик, но пока не работают правила, красота — это украшение неработающей игры.
+
+**Один параметр камеры может изменить больше, чем неделя работы с
+материалами.** Опустить камеру на метр было дешевле любого шейдера и дало
+больше.
+
+**Контактная тень — самый выгодный эффект по соотношению «результат / усилия».**
+Если объект выглядит парящим над поверхностью, скорее всего дело в ней, а не в
+материалах.
+
+**Процедурные текстуры хороши как черновик.** Они позволяют не выбирать раньше
+времени. Но когда стало понятно, какой именно камень нужен, процедурный был
+заменён на настоящий PBR-набор — и это правильный порядок, а не поражение.
+
+В следующих частях — техническое: почему куб спотыкался на ровном полу, как
+устроена архитектура, и как отлаживались чёрные тени на желе.
+
+Поиграть можно прямо в браузере: **cubanoid.vercel.app**
+</script>
+<script>
+document.querySelectorAll('[data-copy]').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var src = document.getElementById(btn.dataset.copy);
+    if (!src) return;
+    var text = src.textContent;
+    var done = function () {
+      var was = btn.textContent;
+      btn.textContent = 'Скопировано';
+      btn.classList.add('pill--ok');
+      setTimeout(function () { btn.textContent = was; btn.classList.remove('pill--ok'); }, 1800);
+    };
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done, fallback);
+    } else { fallback(); }
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch (e) { alert('Скопируйте вручную'); }
+      document.body.removeChild(ta);
+    }
+  });
+});
+</script>
+</body>
+</html>

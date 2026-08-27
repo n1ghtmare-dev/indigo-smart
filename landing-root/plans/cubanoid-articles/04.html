@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:,">
+<title>Доменный слой моей игры не знает про Three.js и Rapier. Зачем я так сделал</title>
+<style>
+:root{
+  --page:#090d14; --surface:#111823; --surface-soft:#0c1119; --sidebar:#0d121b;
+  --text:#eef3f8; --muted:#9caaba; --faint:#667486;
+  --line:rgba(185,205,228,.16); --line-strong:rgba(185,205,228,.32);
+  --accent:#8bc7db; --radius:12px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--page);color:var(--text);
+  font:16px/1.68 -apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:.8rem;
+  flex-wrap:wrap;padding:.8rem clamp(1rem,4vw,2rem);
+  background:rgba(13,18,27,.92);border-bottom:1px solid var(--line);
+  backdrop-filter:blur(12px)}
+.pill{display:inline-flex;align-items:center;gap:.4rem;padding:.36rem .8rem;
+  border:1px solid var(--line-strong);border-radius:999px;background:var(--surface);
+  color:var(--accent);font-size:.8rem;font-weight:700;text-decoration:none;
+  white-space:nowrap;cursor:pointer;font-family:inherit}
+.pill:hover{background:var(--surface-soft)}
+.pill--ok{color:#8fd6a8;border-color:rgba(143,214,168,.5)}
+.top__spacer{flex:1}
+.top__tag{color:var(--faint);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase}
+main{max-width:52rem;margin:0 auto;padding:clamp(1.4rem,4vw,3rem) clamp(1rem,4vw,2rem) 5rem}
+h1{font-size:clamp(1.7rem,4vw,2.4rem);line-height:1.2;letter-spacing:-.02em;margin:0 0 1.4rem}
+h2{font-size:clamp(1.15rem,2.6vw,1.4rem);margin:2.4rem 0 .8rem;letter-spacing:-.01em}
+p{margin:0 0 1.1rem}
+p.caption{color:var(--faint);font-size:.86rem;margin-top:-.6rem}
+ul,ol{margin:0 0 1.2rem;padding-left:1.3rem}
+li{margin:.3rem 0}
+strong{color:#fff}
+code{font-family:ui-monospace,Consolas,monospace;font-size:.88em;
+  background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:.1em .35em}
+pre.code{position:relative;overflow-x:auto;margin:0 0 1.3rem;padding:1rem 1.1rem;
+  background:var(--surface-soft);border:1px solid var(--line);border-radius:var(--radius)}
+pre.code code{background:none;border:0;padding:0;font-size:13.5px;line-height:1.6}
+pre.code[data-lang]:not([data-lang=""])::after{content:attr(data-lang);position:absolute;
+  top:.5rem;right:.7rem;color:var(--faint);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase}
+.table-wrap{overflow-x:auto;margin:0 0 1.3rem}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{border:1px solid var(--line);padding:.55rem .7rem;text-align:left;vertical-align:top}
+th{background:var(--surface);font-weight:700}
+figure.shot{margin:0 0 1.4rem}
+figure.shot img{display:block;width:100%;height:auto;border:1px solid var(--line);
+  border-radius:var(--radius);background:var(--surface)}
+figcaption{color:var(--faint);font-size:.85rem;margin-top:.5rem}
+.need-shot{display:flex;flex-direction:column;gap:.5rem;margin:0 0 1.4rem;padding:1.1rem 1.2rem;
+  border:1px dashed var(--line-strong);border-radius:var(--radius);background:var(--surface-soft)}
+.need-shot__tag{align-self:flex-start;font-size:.68rem;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;color:#e0b06a;border:1px solid rgba(224,176,106,.4);
+  border-radius:999px;padding:.2rem .6rem}
+.need-shot b{font-weight:600;color:var(--muted)}
+.need-shot code{font-size:.78rem;color:var(--faint)}
+.cards{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fill,minmax(17rem,1fr));margin:0 0 2rem}
+.card{display:flex;flex-direction:column;gap:.5rem;padding:1.1rem 1.2rem;text-decoration:none;
+  color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+.card:hover{border-color:var(--line-strong);background:var(--surface-soft)}
+.card__no{font-family:ui-monospace,Consolas,monospace;color:var(--accent);font-size:.78rem}
+.card__name{font-weight:700;line-height:1.35}
+.card__note{color:var(--muted);font-size:.86rem}
+.card__meta{color:var(--faint);font-size:.76rem;margin-top:auto;padding-top:.6rem;
+  border-top:1px solid var(--line)}
+.note{padding:1rem 1.2rem;border:1px solid var(--line);border-left:3px solid var(--accent);
+  border-radius:var(--radius);background:var(--surface);color:var(--muted);font-size:.92rem;margin:0 0 1.6rem}
+.note b{color:var(--text)}
+</style>
+</head>
+<body>
+<div class="top"><a class="pill" href="./">← Все статьи</a><button class="pill" type="button" data-copy="raw">Скопировать markdown</button><a class="pill" href="https://habr.com/ru/publication/new/" target="_blank" rel="noopener">Редактор Хабра ↗</a><span class="top__spacer"></span><span class="top__tag">Архитектура</span></div>
+<main><h1>Доменный слой моей игры не знает про Three.js и Rapier. Зачем я так сделал</h1>
+
+<p>Игры редко пишут по чистой архитектуре. Обычно игровой объект сам держит меш, сам дёргает физическое тело и сам решает правила — так быстрее, и в геймдеве это норма.</p>
+<p>Я в своём браузерном 3D-платформере пошёл другим путём: <strong>правила игры не знают ни про Three.js, ни про Rapier, ни про DOM</strong>. Ниже — как это устроено, во что обошлось и что дало взамен. Спойлер: главное, что дало, — тесты, которые проходят за секунды и не зависят от того, насколько медленно на этой машине рисуется кадр.</p>
+<figure class="shot"><img src="img/04-layers.png" alt="Слои" loading="lazy"><figcaption>Зависимости направлены только внутрь. Домен — в центре и ни на кого не смотрит.</figcaption></figure>
+<h2>Правило, которое всё держит</h2>
+<p>Оно одно и жёсткое: <strong>в <code>src/domain/**</code> запрещены импорты three, rapier, DOM API и вообще любых адаптеров</strong>. Только стандартный TypeScript.</p>
+<p>Из этого правила следует всё остальное. Домен не может «просто позвать движок» — значит, всё, что ему нужно от внешнего мира, приходит аргументом, а всё, что он хочет сделать с миром, он возвращает как данные.</p>
+<p>Правила прогресса — чистые функции вида «событие → новое состояние + эффекты». Функция <code>onEntityEnter</code> не удаляет меш и не меняет коллайдер. Она возвращает новый прогресс и список эффектов, которые <em>кто-то другой</em> исполнит.</p>
+<h2>Порты</h2>
+<p>Между доменом и внешним миром — интерфейсы. Их немного, и весь контракт игры с физикой умещается в один экран:</p>
+<pre class="code" data-lang="ts"><code>export interface PhysicsPort {
+  loadLevel(level: LevelDef): void;
+  setMoveIntent(x: number, z: number): void;
+  requestJump(): void;
+  step(dt: number): void;
+  getCubeState(): CubeState;
+  consumeEvents(): PhysicsEvent[];
+  setCubeMass(mass: number): void;
+  removeEntity(index: number): void;
+  spawnShedDrop(id: number, position: Vec3): void;
+  removeShedDrop(id: number): void;
+  applyKnockback(): void;
+  respawnCube(): void;
+}
+
+export interface RenderPort {
+  syncLevel(level: LevelDef): void;
+  syncCube(cube: CubeState): void;
+  removeEntity(index: number): void;
+  syncShedDrops(drops: ReadonlyArray&lt;ShedDropState&gt;): void;
+  render(): void;
+}</code></pre>
+<p>Обратите внимание, чего в <code>PhysicsPort</code> нет. Нет <code>RigidBody</code>, нет <code>Collider</code>, нет типов Rapier вообще. Есть <code>LevelDef</code>, <code>CubeState</code>, <code>Vec3</code> — мои собственные структуры. Реализация <code>RapierPhysics</code> знает про Rapier; всё, что выше неё, — нет.</p>
+<p>То же самое с рендером: <code>syncCube(cube: CubeState)</code> — «вот состояние куба, покажи как хочешь». Адаптер на Three.js внутри творит что угодно, включая squash &amp; stretch и пересчёт материала, — наружу это не протекает.</p>
+<h2>Цена</h2>
+<p>Врать не буду, цена есть.</p>
+<p><strong>Порт разрастается.</strong> Двенадцать методов в <code>PhysicsPort</code> — это уже не элегантный интерфейс из учебника. Каждая новая механика, которой нужно что-то от физики, добавляет метод.</p>
+<p><strong>Один раз пришлось продавить домен.</strong> Рендеру для squash &amp; stretch нужна скорость куба. Скорость живёт в физике, а рендер её оттуда достать не может — он видит только <code>CubeState</code>. Пришлось добавить в доменную модель поле <code>velocity</code>, которое домену самому не нужно ни для одного правила. Это честный компромисс, а не победа архитектуры: данные поехали через центр только потому, что маршрута в обход не было.</p>
+<p><strong>Тюнинг живёт в одном месте.</strong> Все константы игры — в <code>src/domain/tuning.ts</code>, и в адаптерах нельзя писать магические числа. Дисциплина полезная, но требует привычки.</p>
+<h2>Что это дало: тесты без браузера</h2>
+<p>Правила массы, правила движения, правила прогресса и watchdog — чистые функции без зависимостей. Их можно гонять в Vitest пачками, без headless-браузера, без WASM-модуля физики, без канваса. Это быстро и, что важнее, это <strong>тесты на правила игры</strong>, а не на пиксели.</p>
+<p>Физика тоже тестируется отдельно, а <code>Game</code> — с фейковой реализацией портов. Чтобы проверить, что подобранная капля увеличивает массу, не нужен Rapier: достаточно фейка, который вернёт нужное событие.</p>
+<h2>И главное: детерминированные e2e</h2>
+<p>Вот здесь чистая архитектура окупилась целиком.</p>
+<p>Сначала о цикле. Игра крутится на фиксированном шаге с аккумулятором:</p>
+<pre class="code" data-lang="ts"><code>export class FixedTimestep {
+  private accumulator = 0;
+
+  constructor(
+    private readonly dt: number,
+    private readonly maxStepsPerFrame = 5,
+  ) {}
+
+  advance(elapsedSec: number, stepFn: () =&gt; void): void {
+    this.accumulator += elapsedSec;
+    let steps = 0;
+    while (this.accumulator &gt;= this.dt &amp;&amp; steps &lt; this.maxStepsPerFrame) {
+      stepFn();
+      this.accumulator -= this.dt;
+      steps++;
+    }
+    if (steps === this.maxStepsPerFrame) this.accumulator = 0;
+  }
+}</code></pre>
+<p><code>maxStepsPerFrame</code> тут не для красоты — это защита от «спирали смерти»: если кадр отрисовался медленно, накопилось много игрового времени, движок пытается догнать, из-за чего следующий кадр ещё медленнее, и так до полной остановки. Упёрлись в лимит — сбрасываем накопитель и осознанно теряем игровое время вместо того, чтобы уронить вкладку.</p>
+<p>А теперь проблема тестов. Playwright-тест «дойди до капли и проверь, что масса выросла» в обычном виде выглядит как «нажми стрелку, подожди секунду, проверь». На быстрой машине хватает, на софтверном рендере в CI — нет, и тест мигает. Ждать по wall-clock нельзя, потому что симуляция едет со скоростью отрисовки.</p>
+<p>Раз симуляция отделена от рендера, её можно прокрутить <strong>синхронно</strong>:</p>
+<pre class="code" data-lang="ts"><code>if (import.meta.env.DEV) {
+  (window as unknown as Record&lt;string, unknown&gt;).__cubanoid = {
+    getState: () =&gt; game.getCubeState(),
+    getProgress: () =&gt; game.getProgress(),
+    advance: (seconds: number) =&gt; {
+      const step = 1 / 60;
+      for (let t = 0; t &lt; seconds; t += step) game.tick(step);
+    },
+  };
+}</code></pre>
+<p>И тест перестаёт зависеть от железа:</p>
+<pre class="code" data-lang="ts"><code>for (let i = 0; i &lt; 40 &amp;&amp; c.getProgress().mass !== 5; i++) c.advance(0.1);</code></pre>
+<p>Это не «подожди четыре секунды», это «прокрути ровно четыре секунды игрового времени фиксированными шагами по 1/60». Результат одинаковый на моей машине и на софтверном рендере.</p>
+<p>Хук объявлен под <code>import.meta.env.DEV</code> и в продакшен-сборку не попадает.</p>
+<h2>Бонус: качество рендера тоже знает про тесты</h2>
+<p>Раз уж заговорили про CI. Полный пайплайн с SSAO и bloom на софтверном GL живёт мучительно, поэтому режим качества выбирается сам:</p>
+<pre class="code" data-lang="ts"><code>if (requested === &#x27;high&#x27; || requested === &#x27;low&#x27;) {
+  quality = requested;
+} else if (
+  (typeof navigator !== &#x27;undefined&#x27; &amp;&amp; navigator.webdriver === true) ||
+  MOBILE_UA_PATTERN.test(navigator.userAgent)
+) {
+  quality = &#x27;low&#x27;;
+} else {
+  quality = &#x27;high&#x27;;
+}</code></pre>
+<p><code>navigator.webdriver === true</code> — это и есть «нас запустил Playwright». Функциональные e2e идут на low и не тормозят; скриншот для сверки с визуальным референсом снимается отдельно с <code>?quality=high</code>.</p>
+<p>Важно, что это решение <strong>рендер-локальное</strong>: домен, физика и тюнинг про режим качества не знают ничего. Ровно так, как и задумано.</p>
+<h2>Стоило ли</h2>
+<p>Для игры на полторы минуты уровень — вопрос спорный, и я не буду утверждать, что так надо делать всем. Но три вещи я бы повторил не задумываясь:</p>
+<ol><li><strong>Правила игры как чистые функции.</strong> Их можно читать, тестировать и обсуждать без запуска игры.</li><li><strong>Фиксированный шаг с ограничителем.</strong> Дёшево и снимает целый класс проблем.</li><li><strong>Синхронная прокрутка симуляции для тестов.</strong> Возможна ровно потому, что симуляция не привязана к отрисовке — и именно она превратила мигающие e2e в стабильные.</li></ol>
+<p>В следующей части — про рендер: как обычный <code>MeshPhysicalMaterial</code> превращался в желе, почему <code>transparent: true</code> пришлось выключить и откуда на кубе брались чёрные тени.</p>
+<p>Поиграть: <strong>cubanoid.vercel.app</strong></p></main>
+<script type="text/plain" id="raw"># Доменный слой моей игры не знает про Three.js и Rapier. Зачем я так сделал
+
+Игры редко пишут по чистой архитектуре. Обычно игровой объект сам держит меш,
+сам дёргает физическое тело и сам решает правила — так быстрее, и в геймдеве
+это норма.
+
+Я в своём браузерном 3D-платформере пошёл другим путём: **правила игры не знают
+ни про Three.js, ни про Rapier, ни про DOM**. Ниже — как это устроено, во что
+обошлось и что дало взамен. Спойлер: главное, что дало, — тесты, которые
+проходят за секунды и не зависят от того, насколько медленно на этой машине
+рисуется кадр.
+
+![Слои](IMG:04-layers)
+*Зависимости направлены только внутрь. Домен — в центре и ни на кого не смотрит.*
+
+## Правило, которое всё держит
+
+Оно одно и жёсткое: **в `src/domain/**` запрещены импорты three, rapier, DOM API
+и вообще любых адаптеров**. Только стандартный TypeScript.
+
+Из этого правила следует всё остальное. Домен не может «просто позвать движок» —
+значит, всё, что ему нужно от внешнего мира, приходит аргументом, а всё, что он
+хочет сделать с миром, он возвращает как данные.
+
+Правила прогресса — чистые функции вида «событие → новое состояние + эффекты».
+Функция `onEntityEnter` не удаляет меш и не меняет коллайдер. Она возвращает
+новый прогресс и список эффектов, которые *кто-то другой* исполнит.
+
+## Порты
+
+Между доменом и внешним миром — интерфейсы. Их немного, и весь контракт игры с
+физикой умещается в один экран:
+
+```ts
+export interface PhysicsPort {
+  loadLevel(level: LevelDef): void;
+  setMoveIntent(x: number, z: number): void;
+  requestJump(): void;
+  step(dt: number): void;
+  getCubeState(): CubeState;
+  consumeEvents(): PhysicsEvent[];
+  setCubeMass(mass: number): void;
+  removeEntity(index: number): void;
+  spawnShedDrop(id: number, position: Vec3): void;
+  removeShedDrop(id: number): void;
+  applyKnockback(): void;
+  respawnCube(): void;
+}
+
+export interface RenderPort {
+  syncLevel(level: LevelDef): void;
+  syncCube(cube: CubeState): void;
+  removeEntity(index: number): void;
+  syncShedDrops(drops: ReadonlyArray&lt;ShedDropState&gt;): void;
+  render(): void;
+}
+```
+
+Обратите внимание, чего в `PhysicsPort` нет. Нет `RigidBody`, нет `Collider`,
+нет типов Rapier вообще. Есть `LevelDef`, `CubeState`, `Vec3` — мои собственные
+структуры. Реализация `RapierPhysics` знает про Rapier; всё, что выше неё, —
+нет.
+
+То же самое с рендером: `syncCube(cube: CubeState)` — «вот состояние куба,
+покажи как хочешь». Адаптер на Three.js внутри творит что угодно, включая
+squash &amp; stretch и пересчёт материала, — наружу это не протекает.
+
+## Цена
+
+Врать не буду, цена есть.
+
+**Порт разрастается.** Двенадцать методов в `PhysicsPort` — это уже не
+элегантный интерфейс из учебника. Каждая новая механика, которой нужно что-то
+от физики, добавляет метод.
+
+**Один раз пришлось продавить домен.** Рендеру для squash &amp; stretch нужна
+скорость куба. Скорость живёт в физике, а рендер её оттуда достать не может —
+он видит только `CubeState`. Пришлось добавить в доменную модель поле
+`velocity`, которое домену самому не нужно ни для одного правила. Это честный
+компромисс, а не победа архитектуры: данные поехали через центр только потому,
+что маршрута в обход не было.
+
+**Тюнинг живёт в одном месте.** Все константы игры — в `src/domain/tuning.ts`, и
+в адаптерах нельзя писать магические числа. Дисциплина полезная, но требует
+привычки.
+
+## Что это дало: тесты без браузера
+
+Правила массы, правила движения, правила прогресса и watchdog — чистые функции
+без зависимостей. Их можно гонять в Vitest пачками, без headless-браузера, без
+WASM-модуля физики, без канваса. Это быстро и, что важнее, это **тесты на
+правила игры**, а не на пиксели.
+
+Физика тоже тестируется отдельно, а `Game` — с фейковой реализацией портов.
+Чтобы проверить, что подобранная капля увеличивает массу, не нужен Rapier:
+достаточно фейка, который вернёт нужное событие.
+
+## И главное: детерминированные e2e
+
+Вот здесь чистая архитектура окупилась целиком.
+
+Сначала о цикле. Игра крутится на фиксированном шаге с аккумулятором:
+
+```ts
+export class FixedTimestep {
+  private accumulator = 0;
+
+  constructor(
+    private readonly dt: number,
+    private readonly maxStepsPerFrame = 5,
+  ) {}
+
+  advance(elapsedSec: number, stepFn: () =&gt; void): void {
+    this.accumulator += elapsedSec;
+    let steps = 0;
+    while (this.accumulator &gt;= this.dt &amp;&amp; steps &lt; this.maxStepsPerFrame) {
+      stepFn();
+      this.accumulator -= this.dt;
+      steps++;
+    }
+    if (steps === this.maxStepsPerFrame) this.accumulator = 0;
+  }
+}
+```
+
+`maxStepsPerFrame` тут не для красоты — это защита от «спирали смерти»: если
+кадр отрисовался медленно, накопилось много игрового времени, движок пытается
+догнать, из-за чего следующий кадр ещё медленнее, и так до полной остановки.
+Упёрлись в лимит — сбрасываем накопитель и осознанно теряем игровое время
+вместо того, чтобы уронить вкладку.
+
+А теперь проблема тестов. Playwright-тест «дойди до капли и проверь, что масса
+выросла» в обычном виде выглядит как «нажми стрелку, подожди секунду, проверь».
+На быстрой машине хватает, на софтверном рендере в CI — нет, и тест мигает.
+Ждать по wall-clock нельзя, потому что симуляция едет со скоростью отрисовки.
+
+Раз симуляция отделена от рендера, её можно прокрутить **синхронно**:
+
+```ts
+if (import.meta.env.DEV) {
+  (window as unknown as Record&lt;string, unknown&gt;).__cubanoid = {
+    getState: () =&gt; game.getCubeState(),
+    getProgress: () =&gt; game.getProgress(),
+    advance: (seconds: number) =&gt; {
+      const step = 1 / 60;
+      for (let t = 0; t &lt; seconds; t += step) game.tick(step);
+    },
+  };
+}
+```
+
+И тест перестаёт зависеть от железа:
+
+```ts
+for (let i = 0; i &lt; 40 &amp;&amp; c.getProgress().mass !== 5; i++) c.advance(0.1);
+```
+
+Это не «подожди четыре секунды», это «прокрути ровно четыре секунды игрового
+времени фиксированными шагами по 1/60». Результат одинаковый на моей машине и
+на софтверном рендере.
+
+Хук объявлен под `import.meta.env.DEV` и в продакшен-сборку не попадает.
+
+## Бонус: качество рендера тоже знает про тесты
+
+Раз уж заговорили про CI. Полный пайплайн с SSAO и bloom на софтверном GL
+живёт мучительно, поэтому режим качества выбирается сам:
+
+```ts
+if (requested === &#x27;high&#x27; || requested === &#x27;low&#x27;) {
+  quality = requested;
+} else if (
+  (typeof navigator !== &#x27;undefined&#x27; &amp;&amp; navigator.webdriver === true) ||
+  MOBILE_UA_PATTERN.test(navigator.userAgent)
+) {
+  quality = &#x27;low&#x27;;
+} else {
+  quality = &#x27;high&#x27;;
+}
+```
+
+`navigator.webdriver === true` — это и есть «нас запустил Playwright».
+Функциональные e2e идут на low и не тормозят; скриншот для сверки с
+визуальным референсом снимается отдельно с `?quality=high`.
+
+Важно, что это решение **рендер-локальное**: домен, физика и тюнинг про режим
+качества не знают ничего. Ровно так, как и задумано.
+
+## Стоило ли
+
+Для игры на полторы минуты уровень — вопрос спорный, и я не буду утверждать,
+что так надо делать всем. Но три вещи я бы повторил не задумываясь:
+
+1. **Правила игры как чистые функции.** Их можно читать, тестировать и
+   обсуждать без запуска игры.
+2. **Фиксированный шаг с ограничителем.** Дёшево и снимает целый класс
+   проблем.
+3. **Синхронная прокрутка симуляции для тестов.** Возможна ровно потому, что
+   симуляция не привязана к отрисовке — и именно она превратила мигающие e2e в
+   стабильные.
+
+В следующей части — про рендер: как обычный `MeshPhysicalMaterial` превращался
+в желе, почему `transparent: true` пришлось выключить и откуда на кубе брались
+чёрные тени.
+
+Поиграть: **cubanoid.vercel.app**
+</script>
+<script>
+document.querySelectorAll('[data-copy]').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var src = document.getElementById(btn.dataset.copy);
+    if (!src) return;
+    var text = src.textContent;
+    var done = function () {
+      var was = btn.textContent;
+      btn.textContent = 'Скопировано';
+      btn.classList.add('pill--ok');
+      setTimeout(function () { btn.textContent = was; btn.classList.remove('pill--ok'); }, 1800);
+    };
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done, fallback);
+    } else { fallback(); }
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch (e) { alert('Скопируйте вручную'); }
+      document.body.removeChild(ta);
+    }
+  });
+});
+</script>
+</body>
+</html>

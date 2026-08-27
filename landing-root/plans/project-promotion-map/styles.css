@@ -612,3 +612,26 @@ body.is-embedded .app-shell {
 body.is-embedded .project-sidebar {
   display: none;
 }
+
+/* Список ссылок в панели деталей (узел «Статьи») */
+.detail-links {
+  display: grid;
+  gap: 6px;
+}
+
+.detail-links a {
+  display: block;
+  padding: 9px 11px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface-soft);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.detail-links a:hover {
+  border-color: var(--line-strong);
+  background: var(--surface-active);
+}

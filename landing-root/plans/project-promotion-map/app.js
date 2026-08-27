@@ -128,7 +128,7 @@ const projects = [
     kind: "Браузерная 3D-игра",
     summary: "Два контура на одну воронку: игроки и инженерное портфолио. Выберите узел, чтобы открыть формат и задачу.",
     image: "assets/cubanoid-hero.jpg",
-    canvas: { width: 1440, height: 860 },
+    canvas: { width: 1440, height: 900 },
     nodes: [
       {
         id: "project",
@@ -193,6 +193,30 @@ const projects = [
           ["Почему это шлюз", "Habr, three.js Showcase и GitHub как точка подписки без публичного кода не работают. До открытия живёт только игровой контур."],
           ["Условие выхода", "Три уровня вместо одного, README с GIF и управлением, зелёные npm test, lint и build, внятная история коммитов."],
           ["Прятать нечего", "Лицензия MIT уже стоит, собранный билд и так публичен на Vercel. Открытие не раскроет ничего сверх того, что браузер уже получает."]
+        ]
+      },
+      {
+        id: "articles",
+        title: "Статьи",
+        mark: "04",
+        type: "Материалы",
+        x: 326,
+        y: 740,
+        width: 186,
+        className: "gate",
+        sections: [
+          ["Что готово", "Пять независимых статей о разработке игры — их можно выкладывать в разные дни и в любом порядке. Открываются по ссылкам ниже, внутри каждой кнопка «Скопировать markdown»."],
+          ["Как публиковать", "Скопировать markdown → редактор Хабра → вставить. Картинки перетаскиваются в редактор отдельно, в тексте помечено где. Хаб «Разработка игр», аудитория «Фронтенд» — без неё черновик не сохраняется."],
+          ["Чего не хватает", "Скриншотов игры от сырого прототипа к текущему виду. Места под них размечены прямо в статьях; класть в docs/devlog/part-1/ в репозитории Cubanoid."],
+          ["Порядок", "02 хроника → 01 геймдизайн → 03 физика → 05 рендер → 04 архитектура. Первая самая лёгкая и с картинками, она собирает аудиторию на остальные."]
+        ],
+        links: [
+          ["Все статьи — список", "/plans/cubanoid-articles/"],
+          ["01 · Масса — это всё", "/plans/cubanoid-articles/01.html"],
+          ["02 · От серых кубов до желе", "/plans/cubanoid-articles/02.html"],
+          ["03 · Куб спотыкался о швы", "/plans/cubanoid-articles/03.html"],
+          ["04 · Домен не знает про Three.js", "/plans/cubanoid-articles/04.html"],
+          ["05 · Желейный куб", "/plans/cubanoid-articles/05.html"]
         ]
       },
       {
@@ -344,6 +368,9 @@ const projects = [
       ["project", "gate-showcase", "primary"],
       ["project", "gate-profile", "primary"],
       ["project", "gate-open", "primary"],
+      ["project", "articles", "primary"],
+      ["articles", "habr", "primary"],
+      ["articles", "vc", "secondary"],
       ["gate-showcase", "dtf", "primary"],
       ["gate-showcase", "telegram", "primary"],
       ["gate-showcase", "vc", "primary"],
@@ -533,12 +560,21 @@ function openDetail(project, nodeId, trigger) {
   graphNodes.querySelectorAll(".node").forEach((item) => item.classList.toggle("is-selected", item.dataset.node === nodeId));
   detailType.textContent = node.type;
   detailTitle.textContent = node.title;
-  detailSections.innerHTML = node.sections.map(([label, copy]) => `
+  const sectionsHtml = node.sections.map(([label, copy]) => `
     <section class="detail-section">
       <span>${label}</span>
       <p>${copy}</p>
     </section>
   `).join("");
+  const linksHtml = node.links
+    ? `<section class="detail-section">
+        <span>Открыть</span>
+        <nav class="detail-links">${node.links
+          .map(([title, href]) => `<a href="${href}">${title}</a>`)
+          .join("")}</nav>
+      </section>`
+    : "";
+  detailSections.innerHTML = sectionsHtml + linksHtml;
   detailPanel.classList.add("is-open");
   detailPanel.setAttribute("aria-hidden", "false");
   detailPanel.removeAttribute("inert");
