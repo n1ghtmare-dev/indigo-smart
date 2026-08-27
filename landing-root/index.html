@@ -3,200 +3,506 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Панель проектов</title>
+<title>Рабочее пространство</title>
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#0d0f12">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%236b8afd'/><text x='16' y='22' font-family='monospace' font-size='15' fill='%23fff' text-anchor='middle'>IS</text></svg>">
+<meta name="theme-color" content="#0B0D1A">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%236b8afd'/><stop offset='1' stop-color='%23c06bfd'/></linearGradient></defs><rect width='32' height='32' rx='9' fill='url(%23g)'/><text x='16' y='21' font-family='system-ui,sans-serif' font-size='13' font-weight='700' fill='%23fff' text-anchor='middle'>IS</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0d0f12; --panel:#15181e; --panel-2:#1b1f26;
-    --fg:#e7e9ee; --dim:#8b91a0; --faint:#5b616e;
-    --line:rgba(255,255,255,.08); --line-2:rgba(255,255,255,.14);
-    --accent:#6b8afd; --accent-soft:rgba(107,138,253,.14);
-    --sans:'Inter',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
-    --r:12px;
+    --bg:#0B0D1A;
+    --fg:#eef0ff; --dim:#aab0d8; --faint:#9aa2d4;
+    --glass-bg:rgba(255,255,255,.06); --glass-bg-hover:rgba(255,255,255,.1);
+    --glass-border:rgba(255,255,255,.16);
+    --accent-grad:linear-gradient(135deg,#6b8afd,#c06bfd);
+    --accent:#8ea2ff;
+    --shadow:0 20px 50px -25px rgba(0,0,0,.6);
+    --sans:'Manrope',system-ui,sans-serif;
+    --r:14px;
+    --sidebar-w:240px;
   }
   *,*::before,*::after{box-sizing:border-box}
-  body{margin:0;min-height:100vh;background:var(--bg);color:var(--fg);
-    font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;
-    display:flex;flex-direction:column}
-  a{color:inherit}
-  .wrap{width:100%;max-width:76rem;margin:0 auto;padding:clamp(1.5rem,4vw,3rem) clamp(1.1rem,3vw,2.5rem);flex:1}
+  html,body{margin:0;padding:0}
+  body{
+    min-height:100vh;
+    background:radial-gradient(130% 100% at 12% -10%, #2a2170 0%, #0B0D1A 58%) fixed, var(--bg);
+    background-attachment:fixed;
+    color:var(--fg);
+    font-family:var(--sans);
+    font-size:15px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit}
+  .grad-text{
+    background:var(--accent-grad);
+    -webkit-background-clip:text;background-clip:text;
+    color:transparent;
+  }
+  ::selection{background:rgba(142,162,255,.35)}
 
-  .top{display:flex;align-items:center;gap:1rem;margin-bottom:clamp(1.75rem,4vw,2.75rem)}
-  .logo{display:flex;align-items:center;gap:.6rem;font-weight:600;letter-spacing:.01em}
-  .logo__mark{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--accent),#9b6bfd);
-    display:grid;place-items:center;color:#fff;font-family:var(--mono);font-size:13px;font-weight:500}
-  .count{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--dim);
-    border:1px solid var(--line);border-radius:999px;padding:.35rem .8rem}
+  @media (prefers-reduced-motion: no-preference){
+    .transition-all,.nav__item,.tile,.card,.sidebar__toggle,.card__preview img,.card__go i,.drawer,.scrim{
+      transition:background-color .18s,border-color .18s,color .18s,transform .18s,opacity .18s,visibility .18s;
+    }
+  }
 
-  h1{font-size:clamp(1.6rem,3.5vw,2.2rem);font-weight:700;letter-spacing:-.02em;margin:0 0 .4rem}
-  .sub{color:var(--dim);margin:0 0 clamp(1.5rem,3vw,2.25rem);font-size:.95rem}
+  .app{display:flex;min-height:100vh;width:100%}
 
-  .controls{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;margin-bottom:1.5rem}
-  .search{flex:1;min-width:12rem;display:flex;align-items:center;gap:.55rem;
-    background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:.55rem 1rem}
-  .search:focus-within{border-color:var(--line-2)}
-  .search svg{width:15px;height:15px;flex:none;color:var(--faint)}
-  .search input{border:0;background:none;color:var(--fg);font-family:var(--sans);font-size:.9rem;width:100%;outline:none}
-  .search input::placeholder{color:var(--faint)}
-  .filters{display:flex;flex-wrap:wrap;gap:.4rem}
-  .chip{font-family:var(--mono);font-size:12px;color:var(--dim);cursor:pointer;
-    background:none;border:1px solid var(--line);border-radius:999px;padding:.45rem .85rem;
-    transition:border-color .2s,color .2s,background-color .2s}
-  .chip:hover{color:var(--fg);border-color:var(--line-2)}
-  .chip[aria-pressed="true"]{color:#fff;background:var(--accent-soft);border-color:var(--accent)}
+  /* ── Sidebar (desktop) ── */
+  .sidebar{
+    width:var(--sidebar-w);
+    flex:none;
+    position:sticky;
+    top:0;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    padding:1.4rem 1.1rem;
+    background:var(--glass-bg);
+    border-right:1px solid var(--glass-border);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    gap:1.6rem;
+  }
+  .brand{display:flex;align-items:center;gap:.65rem;padding:0 .3rem}
+  .brand__mark{
+    width:22px;height:22px;border-radius:7px;flex:none;
+    background:var(--accent-grad);
+    box-shadow:0 6px 18px -8px rgba(107,138,253,.7);
+  }
+  .brand__name{font-weight:700;font-size:1rem;letter-spacing:-.01em}
 
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(19rem,1fr));gap:1rem}
-  .card{display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);
-    border-radius:var(--r);overflow:hidden;text-decoration:none;color:inherit;
-    transition:border-color .2s,background-color .2s,transform .25s cubic-bezier(.16,1,.3,1)}
-  .card:hover{border-color:var(--line-2);background:var(--panel-2);transform:translateY(-2px)}
-  .card__preview{position:relative;aspect-ratio:16/10;overflow:hidden;background:var(--panel-2);
-    border-bottom:1px solid var(--line)}
-  .card__preview img{width:100%;height:100%;object-fit:cover;object-position:top center;
-    transition:transform .35s cubic-bezier(.16,1,.3,1)}
-  .card:hover .card__preview img{transform:scale(1.04)}
-  .card__cat{position:absolute;top:.6rem;right:.6rem;font-family:var(--mono);font-size:10px;letter-spacing:.08em;
-    text-transform:uppercase;color:var(--fg);background:rgba(8,9,12,.66);backdrop-filter:blur(6px);
-    border:1px solid var(--line-2);border-radius:999px;padding:.28rem .62rem}
-  .card__body{display:flex;flex-direction:column;flex:1;padding:1rem 1.15rem 1.2rem}
-  .card__name{font-weight:600;font-size:1.02rem;letter-spacing:-.01em;margin:0 0 .3rem}
+  .nav{display:flex;flex-direction:column;gap:.3rem}
+  .nav__item{
+    display:flex;align-items:center;gap:.7rem;
+    padding:.65rem .85rem;
+    border-radius:11px;
+    color:var(--dim);
+    font-weight:600;
+    font-size:.92rem;
+    border-left:3px solid transparent;
+    cursor:pointer;
+  }
+  .nav__item .glyph{
+    width:1.1em;display:inline-flex;justify-content:center;
+    font-size:1.02em;opacity:.9;
+  }
+  .nav__item:hover{color:var(--fg);background:rgba(255,255,255,.05)}
+  .nav__item.is-active{
+    background:var(--glass-bg-hover);
+    border:1px solid var(--glass-border);
+    border-left:3px solid var(--accent);
+    color:var(--fg);
+    padding-left:calc(.85rem - 2px);
+  }
+
+  .sidebar__spacer{flex:1}
+
+  .lock-pill{
+    display:inline-flex;align-items:center;gap:.4rem;
+    align-self:flex-start;
+    font-size:.78rem;font-weight:600;color:var(--dim);
+    background:var(--glass-bg);
+    border:1px solid var(--glass-border);
+    border-radius:999px;
+    padding:.4rem .75rem;
+    cursor:default;
+  }
+  .sidebar__caption{
+    font-size:.72rem;color:var(--faint);
+    padding:0 .3rem;
+  }
+
+  /* ── Mobile header / burger ── */
+  .topbar{display:none}
+  .burger{
+    width:38px;height:38px;border-radius:10px;
+    background:var(--glass-bg);
+    border:1px solid var(--glass-border);
+    display:flex;align-items:center;justify-content:center;
+    flex-direction:column;gap:4px;
+    cursor:pointer;
+  }
+  .burger span{display:block;width:16px;height:2px;background:var(--fg);border-radius:2px}
+
+  .scrim{
+    position:fixed;inset:0;
+    background:rgba(5,6,14,.6);
+    backdrop-filter:blur(2px);
+    opacity:0;visibility:hidden;
+    z-index:40;
+  }
+  .scrim.is-open{opacity:1;visibility:visible}
+
+  .drawer{
+    position:fixed;top:0;right:0;
+    height:100vh;width:min(78vw,300px);
+    background:rgba(20,20,40,.85);
+    border-left:1px solid var(--glass-border);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    transform:translateX(100%);
+    z-index:50;
+    display:flex;flex-direction:column;
+    padding:1.4rem 1.1rem;
+    gap:1.4rem;
+  }
+  .drawer.is-open{transform:translateX(0)}
+  .drawer__head{display:flex;align-items:center;justify-content:space-between}
+  .drawer__close{
+    width:34px;height:34px;border-radius:9px;
+    background:var(--glass-bg);border:1px solid var(--glass-border);
+    color:var(--fg);font-size:1.1rem;line-height:1;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+  }
+
+  /* ── Main ── */
+  .main{
+    flex:1;
+    min-width:0;
+    padding:clamp(1.2rem,3vw,2.4rem);
+  }
+  .view{display:none}
+  .view.is-active{display:block}
+
+  h1.page-title{
+    font-size:clamp(1.8rem,4vw,2.6rem);
+    font-weight:800;
+    letter-spacing:-.02em;
+    margin:0 0 .5rem;
+  }
+  .page-sub{color:var(--dim);margin:0 0 clamp(1.6rem,3.5vw,2.4rem);font-size:1rem;max-width:40rem}
+
+  .glass{
+    background:var(--glass-bg);
+    border:1px solid var(--glass-border);
+    border-radius:var(--r);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    box-shadow:var(--shadow);
+  }
+
+  /* Overview tiles */
+  .tiles{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(13rem,1fr));
+    gap:1rem;
+    margin-bottom:1.5rem;
+  }
+  .tile{
+    display:flex;flex-direction:column;gap:.6rem;
+    padding:1.3rem 1.2rem;
+    cursor:pointer;
+  }
+  .tile:hover{background:var(--glass-bg-hover);transform:translateY(-3px)}
+  .tile__glyph{font-size:1.4rem}
+  .tile__name{font-weight:700;font-size:1.05rem}
+  .tile__status{font-size:.82rem;color:var(--faint)}
+
+  .recent{padding:1.3rem 1.4rem}
+  .recent h2{margin:0 0 .9rem;font-size:1.02rem;font-weight:700}
+  .recent ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.55rem}
+  .recent li{font-size:.85rem;color:var(--faint);display:flex;gap:.55rem;align-items:baseline}
+  .recent li::before{content:"—";color:var(--accent);flex:none}
+
+  /* Landings grid */
+  .cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(19rem,1fr));
+    gap:1rem;
+  }
+  .card{
+    display:flex;flex-direction:column;
+    overflow:hidden;
+    color:inherit;
+  }
+  .card:hover{background:var(--glass-bg-hover);transform:translateY(-3px)}
+  .card__preview{
+    position:relative;
+    aspect-ratio:16/10;
+    overflow:hidden;
+    background:rgba(255,255,255,.03);
+    border-bottom:1px solid var(--glass-border);
+  }
+  .card__preview img{
+    width:100%;height:100%;
+    object-fit:cover;object-position:top center;
+    display:block;
+    max-width:100%;
+  }
+  .card__cat{
+    position:absolute;top:.6rem;right:.6rem;
+    font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--fg);
+    background:rgba(10,10,24,.55);
+    border:1px solid var(--glass-border);
+    backdrop-filter:blur(6px);
+    border-radius:999px;
+    padding:.3rem .65rem;
+  }
+  .card__body{display:flex;flex-direction:column;flex:1;padding:1rem 1.15rem 1.15rem}
+  .card__name{font-weight:600;font-size:1rem;margin:0 0 .35rem}
   .card__note{color:var(--dim);font-size:.85rem;margin:0 0 1rem;flex:1}
-  .card__foot{display:flex;align-items:center;justify-content:space-between;gap:.5rem;
-    padding-top:.9rem;border-top:1px solid var(--line)}
-  .card__path{font-family:var(--mono);font-size:11.5px;color:var(--faint)}
-  .card__go{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);
+  .card__foot{
+    display:flex;align-items:center;justify-content:space-between;gap:.5rem;
+    padding-top:.85rem;border-top:1px solid var(--glass-border);
+  }
+  .card__path{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.75rem;color:var(--faint)}
+  .card__go{font-size:.78rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--accent);
     display:inline-flex;gap:.4rem;align-items:center}
-  .card__go i{font-style:normal;transition:transform .3s cubic-bezier(.16,1,.3,1)}
+  .card__go i{font-style:normal;display:inline-block}
   .card:hover .card__go i{transform:translateX(4px)}
 
-  .empty{color:var(--faint);font-family:var(--mono);font-size:13px;padding:2rem 0}
+  /* Placeholder views */
+  .empty-state{
+    padding:clamp(2.2rem,6vw,3.4rem) clamp(1.4rem,4vw,2.4rem);
+    text-align:center;
+    display:flex;flex-direction:column;align-items:center;gap:.7rem;
+  }
+  .empty-state__glyph{font-size:2.2rem;opacity:.85}
+  .empty-state__title{font-weight:700;font-size:1.15rem}
+  .empty-state__text{color:var(--dim);font-size:.92rem;max-width:26rem}
 
-  footer{padding:1.25rem clamp(1.1rem,3vw,2.5rem);border-top:1px solid var(--line);
-    color:var(--faint);font-family:var(--mono);font-size:11px;letter-spacing:.04em}
+  /* ── Responsive ── */
+  @media (max-width:860px){
+    .app{display:block}
+    .sidebar{display:none}
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;
+      position:sticky;top:0;z-index:30;
+      padding:.9rem 1.1rem;
+      background:var(--glass-bg);
+      border-bottom:1px solid var(--glass-border);
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+    }
+    .main{width:100%}
+  }
+  @media (min-width:861px){
+    .drawer,.scrim{display:none}
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="top">
-    <span class="logo"><span class="logo__mark">IS</span> Панель проектов</span>
-    <span class="count" id="count"></span>
+<div class="app">
+
+  <!-- Desktop sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="brand__name">workspace</span>
+    </div>
+
+    <nav class="nav" id="nav" aria-label="Основная навигация">
+      <a class="nav__item" data-route="overview" href="#/overview"><span class="glyph">◍</span>Обзор</a>
+      <a class="nav__item" data-route="plans" href="#/plans"><span class="glyph">◷</span>Планы</a>
+      <a class="nav__item" data-route="schemes" href="#/schemes"><span class="glyph">▧</span>Схемы</a>
+      <a class="nav__item" data-route="portfolio" href="#/portfolio"><span class="glyph">✦</span>Портфолио</a>
+      <a class="nav__item" data-route="landings" href="#/landings"><span class="glyph">❏</span>Лендинги</a>
+    </nav>
+
+    <div class="sidebar__spacer"></div>
+
+    <span class="lock-pill">🔒 приватная зона</span>
+    <span class="sidebar__caption">indigosmart · личный хаб</span>
+  </aside>
+
+  <!-- Mobile topbar -->
+  <div class="topbar">
+    <div class="brand">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="brand__name">workspace</span>
+    </div>
+    <button class="burger" id="burgerOpen" aria-label="Открыть меню" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 
-  <h1>Проекты</h1>
-  <p class="sub">Сайты, размещённые на этом домене. Откройте нужный.</p>
-
-  <div class="controls">
-    <label class="search">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-      <input id="q" type="search" placeholder="Поиск по названию…" autocomplete="off">
-    </label>
-    <div class="filters" id="filters"></div>
+  <!-- Mobile drawer -->
+  <div class="scrim" id="scrim"></div>
+  <div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Меню навигации">
+    <div class="drawer__head">
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span class="brand__name">workspace</span>
+      </div>
+      <button class="drawer__close" id="drawerClose" aria-label="Закрыть меню">✕</button>
+    </div>
+    <nav class="nav" id="navMobile" aria-label="Мобильная навигация">
+      <a class="nav__item" data-route="overview" href="#/overview"><span class="glyph">◍</span>Обзор</a>
+      <a class="nav__item" data-route="plans" href="#/plans"><span class="glyph">◷</span>Планы</a>
+      <a class="nav__item" data-route="schemes" href="#/schemes"><span class="glyph">▧</span>Схемы</a>
+      <a class="nav__item" data-route="portfolio" href="#/portfolio"><span class="glyph">✦</span>Портфолио</a>
+      <a class="nav__item" data-route="landings" href="#/landings"><span class="glyph">❏</span>Лендинги</a>
+    </nav>
+    <div class="sidebar__spacer"></div>
+    <span class="lock-pill">🔒 приватная зона</span>
+    <span class="sidebar__caption">indigosmart · личный хаб</span>
   </div>
 
-  <div class="grid" id="grid"></div>
-  <p class="empty" id="empty" hidden>Ничего не найдено.</p>
+  <!-- Main content -->
+  <main class="main">
+
+    <section class="view" id="view-overview" data-view="overview">
+      <h1 class="page-title">Рабочее <span class="grad-text">пространство</span></h1>
+      <p class="page-sub">Планы, схемы, портфолио и лендинги — в одном месте.</p>
+
+      <div class="tiles">
+        <a class="tile glass" href="#/plans">
+          <span class="tile__glyph">◷</span>
+          <span class="tile__name">Планы</span>
+          <span class="tile__status">в работе</span>
+        </a>
+        <a class="tile glass" href="#/schemes">
+          <span class="tile__glyph">▧</span>
+          <span class="tile__name">Схемы</span>
+          <span class="tile__status">в работе</span>
+        </a>
+        <a class="tile glass" href="#/portfolio">
+          <span class="tile__glyph">✦</span>
+          <span class="tile__name">Портфолио</span>
+          <span class="tile__status">в работе</span>
+        </a>
+        <a class="tile glass" href="#/landings">
+          <span class="tile__glyph">❏</span>
+          <span class="tile__name">Лендинги</span>
+          <span class="tile__status">4 проекта</span>
+        </a>
+      </div>
+
+      <div class="glass recent">
+        <h2>Недавнее</h2>
+        <ul>
+          <li>landing4 — светлый премиум ✓</li>
+          <li>Панель — новый воркспейс</li>
+          <li>Инфра — DNS/SSL indigosmart</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="view" id="view-plans" data-view="plans">
+      <h1 class="page-title">Планы</h1>
+      <p class="page-sub">Задачи и планы на ближайшее время.</p>
+      <div class="glass empty-state">
+        <span class="empty-state__glyph">◷</span>
+        <span class="empty-state__title">Раздел в работе</span>
+        <span class="empty-state__text">Скоро здесь появятся мои планы.</span>
+      </div>
+    </section>
+
+    <section class="view" id="view-schemes" data-view="schemes">
+      <h1 class="page-title">Схемы</h1>
+      <p class="page-sub">Схемы и структурные наброски проектов.</p>
+      <div class="glass empty-state">
+        <span class="empty-state__glyph">▧</span>
+        <span class="empty-state__title">Раздел в работе</span>
+        <span class="empty-state__text">Скоро здесь появятся мои схемы.</span>
+      </div>
+    </section>
+
+    <section class="view" id="view-portfolio" data-view="portfolio">
+      <h1 class="page-title">Портфолио</h1>
+      <p class="page-sub">Подборка кейсов и завершённых работ.</p>
+      <div class="glass empty-state">
+        <span class="empty-state__glyph">✦</span>
+        <span class="empty-state__title">Раздел в работе</span>
+        <span class="empty-state__text">Скоро здесь появятся мои кейсы.</span>
+      </div>
+    </section>
+
+    <section class="view" id="view-landings" data-view="landings">
+      <h1 class="page-title">Лендинги</h1>
+      <p class="page-sub">Одностраничные сайты, размещённые на этом домене.</p>
+      <div class="cards" id="cardsGrid"></div>
+    </section>
+
+  </main>
 </div>
 
-<footer>Внутренняя панель · доступ для управления размещёнными сайтами</footer>
-
 <script>
-  /* ── Реестр сайтов. Добавить проект = один объект. Темы могут быть любыми. ── */
   const SITES = [
-    {
-      name: "Школа-студия красоты — тёмный",
-      category: "Красота",
-      path: "/landing/index.html",
-      thumb: "/thumbs/landing.webp",
-      note: "Тёмный атмосферный лендинг: почти чёрный фон, золото, кинокадры.",
-      accent: "#c9a24a"
-    },
-    {
-      name: "Школа-студия красоты — зелёный",
-      category: "Красота",
-      path: "/landing2/index.html",
-      thumb: "/thumbs/landing2.webp",
-      note: "Тёмно-зелёный вариант с реальными фото студии, упор на обучение.",
-      accent: "#2f7d5b"
-    },
-    {
-      name: "DarFit — женская фитнес-студия",
-      category: "Фитнес",
-      path: "/landing3/index.html",
-      thumb: "/thumbs/landing3.webp",
-      note: "Тёмный атмосферный лендинг: фиолетовый неон, кольцо-портал и свечения, плотная вёрстка.",
-      accent: "#8b5cf6"
-    },
-    {
-      name: "New home — агентство недвижимости",
-      category: "Недвижимость",
-      path: "/landing4/index.html",
-      thumb: "/thumbs/landing4.webp",
-      note: "Светлый премиум-лендинг: бело-чёрно-зелёная палитра, дома-выезды (breakout) и воздушная вёрстка.",
-      accent: "#1F8A4C"
-    }
+    { name:"Школа-студия красоты — тёмный", category:"Красота", path:"/landing/index.html", thumb:"/thumbs/landing.webp", note:"Тёмный атмосферный лендинг: почти чёрный фон, золото, кинокадры." },
+    { name:"Школа-студия красоты — зелёный", category:"Красота", path:"/landing2/index.html", thumb:"/thumbs/landing2.webp", note:"Тёмно-зелёный вариант с реальными фото студии, упор на обучение." },
+    { name:"DarFit — женская фитнес-студия", category:"Фитнес", path:"/landing3/index.html", thumb:"/thumbs/landing3.webp", note:"Тёмный атмосферный лендинг: фиолетовый неон, кольцо-портал и свечения, плотная вёрстка." },
+    { name:"New home — агентство недвижимости", category:"Недвижимость", path:"/landing4/index.html", thumb:"/thumbs/landing4.webp", note:"Светлый премиум-лендинг: бело-чёрно-зелёная палитра, дома-выезды (breakout) и воздушная вёрстка." }
   ];
 
-  const grid = document.getElementById("grid");
-  const filtersEl = document.getElementById("filters");
-  const countEl = document.getElementById("count");
-  const emptyEl = document.getElementById("empty");
-  const qEl = document.getElementById("q");
-
-  let activeCat = "Все";
-  let query = "";
-
-  // Монограмма: первые буквы двух первых слов; токены-тире и вариант после «—» отбрасываем.
-  const initials = (s) =>
-    s.split(/\s*[—–]\s*/)[0].trim().split(/\s+/).filter(Boolean).slice(0, 2)
-      .map(w => w[0]).join("").toUpperCase();
-
-  const plural = (n) => n + (n % 10 === 1 && n % 100 !== 11 ? " сайт"
-    : ([2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100) ? " сайта" : " сайтов"));
-
-  const categories = ["Все", ...Array.from(new Set(SITES.map(s => s.category)))];
-  filtersEl.innerHTML = categories.map(c =>
-    '<button class="chip" data-cat="' + c + '" aria-pressed="' + (c === "Все") + '">' + c + '</button>').join("");
-
-  filtersEl.addEventListener("click", (e) => {
-    const btn = e.target.closest(".chip");
-    if (!btn) return;
-    activeCat = btn.dataset.cat;
-    filtersEl.querySelectorAll(".chip").forEach(b => b.setAttribute("aria-pressed", b === btn));
-    render();
-  });
-
-  qEl.addEventListener("input", () => { query = qEl.value.trim().toLowerCase(); render(); });
-
-  function render() {
-    const list = SITES.filter(s =>
-      (activeCat === "Все" || s.category === activeCat) &&
-      (!query || s.name.toLowerCase().includes(query) || s.category.toLowerCase().includes(query))
-    );
-    countEl.textContent = plural(SITES.length);
-    emptyEl.hidden = list.length > 0;
-    grid.innerHTML = list.map(s =>
-      '<a class="card" href="' + s.path + '" target="_blank" rel="noopener">' +
-        '<div class="card__preview">' +
-          '<img src="' + s.thumb + '" alt="Превью: ' + s.name + '" loading="lazy" decoding="async">' +
-          '<span class="card__cat">' + s.category + '</span>' +
+  const cardsGrid = document.getElementById("cardsGrid");
+  cardsGrid.innerHTML = SITES.map(s =>
+    '<a class="card glass" href="' + s.path + '" target="_blank" rel="noopener">' +
+      '<div class="card__preview">' +
+        '<img src="' + s.thumb + '" alt="Превью: ' + s.name + '" loading="lazy" decoding="async">' +
+        '<span class="card__cat">' + s.category + '</span>' +
+      '</div>' +
+      '<div class="card__body">' +
+        '<h2 class="card__name">' + s.name + '</h2>' +
+        '<p class="card__note">' + s.note + '</p>' +
+        '<div class="card__foot">' +
+          '<span class="card__path">' + s.path.replace(/\/index\.html$/, "/") + '</span>' +
+          '<span class="card__go">Открыть <i aria-hidden="true">→</i></span>' +
         '</div>' +
-        '<div class="card__body">' +
-          '<h2 class="card__name">' + s.name + '</h2>' +
-          '<p class="card__note">' + s.note + '</p>' +
-          '<div class="card__foot">' +
-            '<span class="card__path">' + s.path.replace(/\/index\.html$/, "/") + '</span>' +
-            '<span class="card__go">Открыть <i aria-hidden="true">→</i></span>' +
-          '</div>' +
-        '</div>' +
-      '</a>').join("");
+      '</div>' +
+    '</a>').join("");
+
+  /* ── Routing ── */
+  const ROUTES = ["overview","plans","schemes","portfolio","landings"];
+  const views = {};
+  ROUTES.forEach(r => { views[r] = document.getElementById("view-" + r); });
+  const navItems = document.querySelectorAll(".nav__item");
+
+  function currentRoute(){
+    const hash = window.location.hash.replace(/^#\//, "").trim();
+    return ROUTES.includes(hash) ? hash : "overview";
   }
 
-  render();
+  function renderRoute(){
+    const route = currentRoute();
+    ROUTES.forEach(r => {
+      views[r].classList.toggle("is-active", r === route);
+    });
+    navItems.forEach(item => {
+      item.classList.toggle("is-active", item.dataset.route === route);
+    });
+  }
+
+  window.addEventListener("hashchange", renderRoute);
+  window.addEventListener("DOMContentLoaded", () => {
+    if (!window.location.hash) {
+      window.location.hash = "#/overview";
+    }
+    renderRoute();
+  });
+  // In case DOMContentLoaded already fired (script at end of body).
+  renderRoute();
+
+  /* ── Mobile drawer ── */
+  const burgerOpen = document.getElementById("burgerOpen");
+  const drawerClose = document.getElementById("drawerClose");
+  const drawer = document.getElementById("drawer");
+  const scrim = document.getElementById("scrim");
+  const navMobileItems = document.querySelectorAll("#navMobile .nav__item");
+
+  function openDrawer(){
+    drawer.classList.add("is-open");
+    scrim.classList.add("is-open");
+    burgerOpen.setAttribute("aria-expanded", "true");
+  }
+  function closeDrawer(){
+    drawer.classList.remove("is-open");
+    scrim.classList.remove("is-open");
+    burgerOpen.setAttribute("aria-expanded", "false");
+  }
+
+  burgerOpen.addEventListener("click", openDrawer);
+  drawerClose.addEventListener("click", closeDrawer);
+  scrim.addEventListener("click", closeDrawer);
+  navMobileItems.forEach(item => item.addEventListener("click", closeDrawer));
 </script>
 </body>
 </html>
