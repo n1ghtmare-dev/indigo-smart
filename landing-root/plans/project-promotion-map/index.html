@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Локальная карта продвижения проектов по площадкам и форматам.">
+  <title>Content Map | Проекты и площадки</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="project-sidebar" aria-label="Проекты">
+      <header class="sidebar-header">
+        <a class="brand" href="./">Content Map</a>
+        <span>Проекты</span>
+      </header>
+
+      <nav class="project-list" id="project-list" aria-label="Выбор проекта"></nav>
+
+      <div class="sidebar-empty">
+        <span>Следующий проект</span>
+        <p>Появится здесь со своей схемой продвижения.</p>
+      </div>
+
+      <a class="source-link" href="https://github.com/n1ghtmare-dev/project-promotion-map" target="_blank" rel="noreferrer">Репозиторий проекта</a>
+    </aside>
+
+    <main class="workspace">
+      <header class="workspace-header">
+        <div>
+          <span id="project-kind">Obsidian plugin</span>
+          <h1 id="project-title">CosmoGraph 3D</h1>
+        </div>
+        <p id="project-summary">Карта продвижения плагина по техническим, продуктовым и социальным площадкам.</p>
+        <span class="click-hint">Тяните холст, колесо меняет масштаб</span>
+      </header>
+
+      <div class="graph-canvas" id="graph-canvas" tabindex="0" aria-label="Интерактивная схема продвижения выбранного проекта">
+        <div class="graph-surface" id="graph-surface">
+          <svg class="connections" id="connections" viewBox="0 0 1180 720" aria-hidden="true"></svg>
+          <div class="graph-nodes" id="graph-nodes"></div>
+        </div>
+        <div class="canvas-controls" aria-label="Управление картой">
+          <button type="button" data-canvas-action="zoom-out" aria-label="Уменьшить масштаб">−</button>
+          <output id="zoom-level" aria-live="polite">100%</output>
+          <button type="button" data-canvas-action="zoom-in" aria-label="Увеличить масштаб">+</button>
+          <button class="reset-view" type="button" data-canvas-action="reset">В центр</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <button class="detail-backdrop" id="detail-backdrop" type="button" aria-label="Закрыть описание"></button>
+  <aside class="detail-panel" id="detail-panel" aria-hidden="true" aria-labelledby="detail-title" inert>
+    <header>
+      <div>
+        <span id="detail-type">Платформа</span>
+        <h2 id="detail-title">Habr</h2>
+      </div>
+      <button class="close-detail" id="close-detail" type="button" aria-label="Закрыть описание">Закрыть</button>
+    </header>
+    <div class="detail-sections" id="detail-sections"></div>
+  </aside>
+
+  <noscript>
+    <div class="noscript-message">Для выбора проекта и открытия описаний нужен JavaScript.</div>
+  </noscript>
+  <script src="app.js"></script>
+</body>
+</html>
