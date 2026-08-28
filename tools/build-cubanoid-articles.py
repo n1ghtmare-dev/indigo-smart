@@ -27,6 +27,8 @@ ARTICLES = [
      "Ports & adapters и детерминированные e2e"),
     ("05", "05-zhelejnyj-kub.md", "Рендер",
      "Transmission, «чёрные тени» и squash & stretch"),
+    ("06", "06-deshyovye-pravki.md", "Практика",
+     "Пять дешёвых правок, которые дали больше шейдеров"),
 ]
 
 # Метка IMG:<имя> -> файл в img/ (если None - картинки ещё нет, рисуем заглушку)
@@ -45,6 +47,8 @@ IMAGES = {
     "04-layers": "04-layers.png",
     "05-jelly-hero": "step5-current.jpg",
     "05-early-cube": "step2-rounded.jpg",
+    "06-before": "step3-water-sky.jpg",
+    "06-after": "step5-current.jpg",
 }
 
 

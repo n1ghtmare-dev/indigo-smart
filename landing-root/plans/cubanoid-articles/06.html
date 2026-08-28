@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:,">
+<title>Картинку в моей игре вытянули не шейдеры. Самой полезной правкой оказались две строки конфига</title>
+<style>
+:root{
+  --page:#090d14; --surface:#111823; --surface-soft:#0c1119; --sidebar:#0d121b;
+  --text:#eef3f8; --muted:#9caaba; --faint:#667486;
+  --line:rgba(185,205,228,.16); --line-strong:rgba(185,205,228,.32);
+  --accent:#8bc7db; --radius:12px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--page);color:var(--text);
+  font:16px/1.68 -apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:.8rem;
+  flex-wrap:wrap;padding:.8rem clamp(1rem,4vw,2rem);
+  background:rgba(13,18,27,.92);border-bottom:1px solid var(--line);
+  backdrop-filter:blur(12px)}
+.pill{display:inline-flex;align-items:center;gap:.4rem;padding:.36rem .8rem;
+  border:1px solid var(--line-strong);border-radius:999px;background:var(--surface);
+  color:var(--accent);font-size:.8rem;font-weight:700;text-decoration:none;
+  white-space:nowrap;cursor:pointer;font-family:inherit}
+.pill:hover{background:var(--surface-soft)}
+.pill--ok{color:#8fd6a8;border-color:rgba(143,214,168,.5)}
+.top__spacer{flex:1}
+.top__tag{color:var(--faint);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase}
+main{max-width:52rem;margin:0 auto;padding:clamp(1.4rem,4vw,3rem) clamp(1rem,4vw,2rem) 5rem}
+h1{font-size:clamp(1.7rem,4vw,2.4rem);line-height:1.2;letter-spacing:-.02em;margin:0 0 1.4rem}
+h2{font-size:clamp(1.15rem,2.6vw,1.4rem);margin:2.4rem 0 .8rem;letter-spacing:-.01em}
+h3{font-size:1.05rem;margin:1.8rem 0 .6rem;color:var(--muted)}
+p{margin:0 0 1.1rem}
+p.caption{color:var(--faint);font-size:.86rem;margin-top:-.6rem}
+ul,ol{margin:0 0 1.2rem;padding-left:1.3rem}
+li{margin:.3rem 0}
+strong{color:#fff}
+code{font-family:ui-monospace,Consolas,monospace;font-size:.88em;
+  background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:.1em .35em}
+pre.code{position:relative;overflow-x:auto;margin:0 0 1.3rem;padding:1rem 1.1rem;
+  background:var(--surface-soft);border:1px solid var(--line);border-radius:var(--radius)}
+pre.code code{background:none;border:0;padding:0;font-size:13.5px;line-height:1.6}
+pre.code[data-lang]:not([data-lang=""])::after{content:attr(data-lang);position:absolute;
+  top:.5rem;right:.7rem;color:var(--faint);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase}
+.table-wrap{overflow-x:auto;margin:0 0 1.3rem}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{border:1px solid var(--line);padding:.55rem .7rem;text-align:left;vertical-align:top}
+th{background:var(--surface);font-weight:700}
+figure.shot{margin:0 0 1.4rem}
+figure.shot img{display:block;width:100%;height:auto;border:1px solid var(--line);
+  border-radius:var(--radius);background:var(--surface)}
+figcaption{color:var(--faint);font-size:.85rem;margin-top:.5rem}
+.need-shot{display:flex;flex-direction:column;gap:.5rem;margin:0 0 1.4rem;padding:1.1rem 1.2rem;
+  border:1px dashed var(--line-strong);border-radius:var(--radius);background:var(--surface-soft)}
+.need-shot__tag{align-self:flex-start;font-size:.68rem;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;color:#e0b06a;border:1px solid rgba(224,176,106,.4);
+  border-radius:999px;padding:.2rem .6rem}
+.need-shot b{font-weight:600;color:var(--muted)}
+.need-shot code{font-size:.78rem;color:var(--faint)}
+.cards{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fill,minmax(17rem,1fr));margin:0 0 2rem}
+.card{display:flex;flex-direction:column;gap:.5rem;padding:1.1rem 1.2rem;text-decoration:none;
+  color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+.card:hover{border-color:var(--line-strong);background:var(--surface-soft)}
+.card__no{font-family:ui-monospace,Consolas,monospace;color:var(--accent);font-size:.78rem}
+.card__name{font-weight:700;line-height:1.35}
+.card__note{color:var(--muted);font-size:.86rem}
+.card__meta{color:var(--faint);font-size:.76rem;margin-top:auto;padding-top:.6rem;
+  border-top:1px solid var(--line)}
+.note{padding:1rem 1.2rem;border:1px solid var(--line);border-left:3px solid var(--accent);
+  border-radius:var(--radius);background:var(--surface);color:var(--muted);font-size:.92rem;margin:0 0 1.6rem}
+.note b{color:var(--text)}
+</style>
+</head>
+<body>
+<div class="top"><a class="pill" href="./">← Все статьи</a><button class="pill" type="button" data-copy="raw">Скопировать markdown</button><a class="pill" href="https://habr.com/ru/publication/new/" target="_blank" rel="noopener">Редактор Хабра ↗</a><span class="top__spacer"></span><span class="top__tag">Практика</span></div>
+<main><h1>Картинку в моей игре вытянули не шейдеры. Самой полезной правкой оказались две строки конфига</h1>
+
+<p>Есть распространённый способ сделать игру красивее: пойти изучать шейдеры. Я так и сделал, потратил на это прилично времени и получил желейный куб, которым доволен.</p>
+<p>А потом посмотрел на два скриншота рядом и понял неприятное: <strong>большую часть разницы дали не шейдеры</strong>. Её дали пять довольно тупых правок, каждая из которых занимает от двух до тридцати строк.</p>
+<p>Ниже они по порядку - от самой выгодной к менее. Игра браузерная, на Three.js и Rapier, но четыре пункта из пяти к движку вообще не привязаны.</p>
+<figure class="shot"><img src="img/step3-water-sky.jpg" alt="Было" loading="lazy"><figcaption>Было: камера сверху, одинаковые плитки, куб висит над поверхностью.</figcaption></figure>
+<figure class="shot"><img src="img/step5-current.jpg" alt="Стало" loading="lazy"><figcaption>Стало: та же геометрия уровня, тот же движок.</figcaption></figure>
+<h2>Сводка: что сколько стоило</h2>
+<div class="table-wrap"><table><thead><tr><th>Правка</th><th>Объём</th><th>Что чинит</th></tr></thead><tbody><tr><td>Опустить камеру</td><td>2 строки конфига</td><td>кадр как жанр</td></tr><tr><td>Контактная тень</td><td>~30 строк + текстура градиента</td><td>объект «висит» над полом</td></tr><tr><td>Разные тайлы по хэшу</td><td>~10 строк</td><td>мир читается как таблица</td></tr><tr><td>Vertex-AO на стыках</td><td>чистая функция, ~40 строк</td><td>плоские, «картонные» блоки</td></tr><tr><td>Туман и тонмаппинг</td><td>5 констант</td><td>обрыв уровня и пересветы</td></tr></tbody></table></div>
+<p>Дальше по каждой.</p>
+<h2>1. Опустить камеру. Две строки</h2>
+<p>Самая выгодная правка за весь проект, и мне до сих пор немного обидно.</p>
+<pre class="code" data-lang="ts"><code>cameraOffset: { x: 0, y: 1.5, z: 3.8 },
+cameraLookAhead: { y: 0.35, z: -1.6 },</code></pre>
+<p>Было <code>y: 2.4, z: 4.4</code>. Камера смотрела на площадку сверху, и кадр читался как «вид на локацию»: игрок наблюдает за коробочкой снаружи. Стало - камера почти на уровне куба и придвинута вплотную, стены уходят вверх за край экрана, и это уже «я внутри коридора».</p>
+<p>Ни одного нового полигона. Ни одной новой текстуры. Две строки.</p>
+<p>Второй параметр важен не меньше первого: <code>cameraLookAhead</code> опускает точку взгляда, из-за чего горизонт поднимается выше в кадре. Без него низкая камера даёт ощущение, что вы ползёте по полу.</p>
+<p><strong>Вывод, который я записал большими буквами:</strong> прежде чем неделю воевать с материалами, подвигайте камеру. Материалы никуда не денутся.</p>
+<h2>2. Контактная тень под объектом</h2>
+<p>Второе место по соотношению «результат / усилия», и первое - по тому, насколько неочевидно.</p>
+<p>Посмотрите на кадр «было»: куб не стоит на траве. Он над ней висит. При этом динамические тени в сцене включены и формально работают - просто на контакте они дают слишком мало.</p>
+<p>Лечится плоскостью с радиальным градиентом, которая ездит под кубом:</p>
+<pre class="code" data-lang="ts"><code>const CONTACT_SHADOW_SIZE = 1.1;
+const CONTACT_SHADOW_Y_OFFSET = 0.01;
+const CONTACT_SHADOW_FADE_DISTANCE = 2;
+const AO_BLOB_MAX = 0.3;</code></pre>
+<p>Вся логика - одна формула прозрачности:</p>
+<pre class="code" data-lang="ts"><code>const heightAboveSupport = Math.max(0, bottomY - supportTopY);
+this.contactShadowMaterial.opacity =
+  THREE.MathUtils.clamp(1 - heightAboveSupport / CONTACT_SHADOW_FADE_DISTANCE, 0, 1) *
+  AO_BLOB_MAX;</code></pre>
+<p>Чем выше объект над опорой, тем слабее пятно; на высоте двух единиц оно исчезает совсем. Плоскость лежит на сантиметр выше верха опоры, чтобы не воевать с z-fighting.</p>
+<p>Три детали, на которых легко ошибиться:</p>
+<ul><li><strong>Размер пятна больше самого объекта</strong> (1.1 против стороны куба ~0.79). Тень ровно по размеру выглядит как приклеенная наклейка.</li><li><strong>Максимальная непрозрачность 0.3, а не 1.0.</strong> Чёрное пятно под объектом читается как дыра в полу.</li><li><strong>Нужна опора под объектом.</strong> Если под кубом пропасть, пятно надо прятать, а не рисовать в воздухе.</li></ul>
+<h2>3. Соседние блоки не должны быть близнецами</h2>
+<p>На кадре «было» отлично видно проблему: плитки идентичны до пикселя, и мозг считывает это как таблицу. Не как стену, не как мир - как Excel.</p>
+<p>Требование от владельца проекта звучало ровно так: соседние каменные блоки не должны выглядеть одинаково. Решается вариантом текстуры по хэшу от координат тайла:</p>
+<pre class="code" data-lang="ts"><code>const rng = mulberry32(hashTileFace(tile.x, tile.y, tile.z, STONE_UV_OFFSET_HASH_CHANNEL));</code></pre>
+<p>Здесь важны две вещи.</p>
+<p><strong>Хэш детерминированный, а не случайный.</strong> Никакого <code>Math.random</code> в размещении. Иначе уровень выглядит по-новому при каждой перезагрузке, а скриншотные тесты начинают падать через раз и вы вместе с ними.</p>
+<p><strong>У каждого потребителя свой канал хэша.</strong> Вариант травы, UV-сдвиг камня и seed потёртости кромок берут разные каналы от одних и тех же координат. Иначе они скоррелируют, и вместо разнообразия получится узор - а узор глаз ловит так же быстро, как повтор.</p>
+<p>Вариантов травы три, камень варьируется сдвигом UV. Этого хватает: глаз перестаёт видеть решётку уже на двух-трёх.</p>
+<h2>4. Vertex-AO на стыках блоков</h2>
+<p>Тут чуть больше работы, но всё ещё дёшево - и эффект заметный: блоки перестают выглядеть плоскими наклейками и обретают объём.</p>
+<p>Идея простая: вершины, которые лежат у грани, за которой есть сосед, затемняются.</p>
+<pre class="code" data-lang="ts"><code>export const AO_OPEN = 1.0;
+export const AO_EDGE_DARKEN = 0.55;</code></pre>
+<p>Каждый тайл получает свой клон геометрии с вершинными цветами, материал идёт с <code>vertexColors: true</code>, и альбедо просто умножается на этот множитель. То есть затемнение стыков <strong>запечено в геометрию</strong> и не стоит ни одного прохода рендера.</p>
+<p>Функция расчёта чистая: на вход позиции вершин и множество соседей, на выходе массив множителей от 0.55 до 1.0. Её можно покрыть юнит-тестами, не запуская браузер, что я и сделал.</p>
+<p>Цена: 36 клонов геометрии на уровень вместо одной общей. Клоны надо не забыть диспозить при перезагрузке уровня - <code>group.clear()</code> этого не делает, память утекает молча.</p>
+<h2>5. Туман и тонмаппинг. Пять констант</h2>
+<p>Самое дешёвое из списка.</p>
+<pre class="code" data-lang="ts"><code>const FOG_COLOR = 0xb2c0d5;
+const FOG_NEAR = 22;
+const FOG_FAR = 52;</code></pre>
+<p>Уровни в игре парят в небе, то есть у мира есть край. Туман решает это без единой строчки логики: дальние блоки растворяются в цвет неба, и обрыв перестаёт читаться как «тут кончилась карта».</p>
+<p>Тонмаппинг (ACES Filmic) убирает выжженные пересветы там, где солнце попадает на светлый камень. Разница не бросается в глаза на скриншоте, но без него светлые участки превращаются в белые пятна без деталей.</p>
+<h2>Что НЕ дало столько же</h2>
+<p>Честности ради - список правок, которые стоили гораздо дороже и дали меньше:</p>
+<p><strong>Transmission на кубе.</strong> Физически корректное просвечивание, дорогая фича: отдельный проход рендера сцены за объектом. Куб от него действительно стал желейным, но по вкладу в общее впечатление от кадра он проиграл камере. Плюс принёс отдельный баг с чёрной теневой стороной, который я потом искал чтением шейдеров three.js.</p>
+<p><strong>SSAO.</strong> Красиво, дорого, и на слабых машинах приходится выключать целиком. Vertex-AO из пункта 4 даёт часть того же эффекта бесплатно и работает везде.</p>
+<p><strong>Процедурные текстуры.</strong> Отличный черновик, пока не знаешь, какой камень нужен. Но когда стало понятно, они заменились обычным PBR-набором, и это оказалось и быстрее, и лучше.</p>
+<h2>Если коротко</h2>
+<p>Дешёвые правки выигрывают у дорогих чаще, чем хочется признавать. Порядок, который я теперь советую самому себе:</p>
+<ol><li>Подвигать камеру.</li><li>Посадить объекты на поверхность контактной тенью.</li><li>Убрать одинаковость.</li><li>Добавить объём на стыках.</li><li>Спрятать край мира туманом.</li></ol>
+<p>И только после этого лезть в шейдеры - там уже красиво, но дальше начинается работа за проценты.</p>
+<p>А какая самая дешёвая правка дала вам самый неожиданный результат? Мне кажется, у каждого есть своя история про две строки конфига.</p></main>
+<script type="text/plain" id="raw"># Картинку в моей игре вытянули не шейдеры. Самой полезной правкой оказались две строки конфига
+
+Есть распространённый способ сделать игру красивее: пойти изучать шейдеры. Я так
+и сделал, потратил на это прилично времени и получил желейный куб, которым
+доволен.
+
+А потом посмотрел на два скриншота рядом и понял неприятное: **большую часть
+разницы дали не шейдеры**. Её дали пять довольно тупых правок, каждая из которых
+занимает от двух до тридцати строк.
+
+Ниже они по порядку - от самой выгодной к менее. Игра браузерная, на Three.js и
+Rapier, но четыре пункта из пяти к движку вообще не привязаны.
+
+![Было](IMG:06-before)
+*Было: камера сверху, одинаковые плитки, куб висит над поверхностью.*
+
+![Стало](IMG:06-after)
+*Стало: та же геометрия уровня, тот же движок.*
+
+## Сводка: что сколько стоило
+
+| Правка | Объём | Что чинит |
+|---|---|---|
+| Опустить камеру | 2 строки конфига | кадр как жанр |
+| Контактная тень | ~30 строк + текстура градиента | объект «висит» над полом |
+| Разные тайлы по хэшу | ~10 строк | мир читается как таблица |
+| Vertex-AO на стыках | чистая функция, ~40 строк | плоские, «картонные» блоки |
+| Туман и тонмаппинг | 5 констант | обрыв уровня и пересветы |
+
+Дальше по каждой.
+
+## 1. Опустить камеру. Две строки
+
+Самая выгодная правка за весь проект, и мне до сих пор немного обидно.
+
+```ts
+cameraOffset: { x: 0, y: 1.5, z: 3.8 },
+cameraLookAhead: { y: 0.35, z: -1.6 },
+```
+
+Было `y: 2.4, z: 4.4`. Камера смотрела на площадку сверху, и кадр читался как
+«вид на локацию»: игрок наблюдает за коробочкой снаружи. Стало - камера почти на
+уровне куба и придвинута вплотную, стены уходят вверх за край экрана, и это уже
+«я внутри коридора».
+
+Ни одного нового полигона. Ни одной новой текстуры. Две строки.
+
+Второй параметр важен не меньше первого: `cameraLookAhead` опускает точку
+взгляда, из-за чего горизонт поднимается выше в кадре. Без него низкая камера
+даёт ощущение, что вы ползёте по полу.
+
+**Вывод, который я записал большими буквами:** прежде чем неделю воевать с
+материалами, подвигайте камеру. Материалы никуда не денутся.
+
+## 2. Контактная тень под объектом
+
+Второе место по соотношению «результат / усилия», и первое - по тому, насколько
+неочевидно.
+
+Посмотрите на кадр «было»: куб не стоит на траве. Он над ней висит. При этом
+динамические тени в сцене включены и формально работают - просто на контакте
+они дают слишком мало.
+
+Лечится плоскостью с радиальным градиентом, которая ездит под кубом:
+
+```ts
+const CONTACT_SHADOW_SIZE = 1.1;
+const CONTACT_SHADOW_Y_OFFSET = 0.01;
+const CONTACT_SHADOW_FADE_DISTANCE = 2;
+const AO_BLOB_MAX = 0.3;
+```
+
+Вся логика - одна формула прозрачности:
+
+```ts
+const heightAboveSupport = Math.max(0, bottomY - supportTopY);
+this.contactShadowMaterial.opacity =
+  THREE.MathUtils.clamp(1 - heightAboveSupport / CONTACT_SHADOW_FADE_DISTANCE, 0, 1) *
+  AO_BLOB_MAX;
+```
+
+Чем выше объект над опорой, тем слабее пятно; на высоте двух единиц оно исчезает
+совсем. Плоскость лежит на сантиметр выше верха опоры, чтобы не воевать с
+z-fighting.
+
+Три детали, на которых легко ошибиться:
+
+- **Размер пятна больше самого объекта** (1.1 против стороны куба ~0.79). Тень
+  ровно по размеру выглядит как приклеенная наклейка.
+- **Максимальная непрозрачность 0.3, а не 1.0.** Чёрное пятно под объектом
+  читается как дыра в полу.
+- **Нужна опора под объектом.** Если под кубом пропасть, пятно надо прятать, а
+  не рисовать в воздухе.
+
+## 3. Соседние блоки не должны быть близнецами
+
+На кадре «было» отлично видно проблему: плитки идентичны до пикселя, и мозг
+считывает это как таблицу. Не как стену, не как мир - как Excel.
+
+Требование от владельца проекта звучало ровно так: соседние каменные блоки не
+должны выглядеть одинаково. Решается вариантом текстуры по хэшу от координат
+тайла:
+
+```ts
+const rng = mulberry32(hashTileFace(tile.x, tile.y, tile.z, STONE_UV_OFFSET_HASH_CHANNEL));
+```
+
+Здесь важны две вещи.
+
+**Хэш детерминированный, а не случайный.** Никакого `Math.random` в размещении.
+Иначе уровень выглядит по-новому при каждой перезагрузке, а скриншотные тесты
+начинают падать через раз и вы вместе с ними.
+
+**У каждого потребителя свой канал хэша.** Вариант травы, UV-сдвиг камня и seed
+потёртости кромок берут разные каналы от одних и тех же координат. Иначе они
+скоррелируют, и вместо разнообразия получится узор - а узор глаз ловит так же
+быстро, как повтор.
+
+Вариантов травы три, камень варьируется сдвигом UV. Этого хватает: глаз
+перестаёт видеть решётку уже на двух-трёх.
+
+## 4. Vertex-AO на стыках блоков
+
+Тут чуть больше работы, но всё ещё дёшево - и эффект заметный: блоки перестают
+выглядеть плоскими наклейками и обретают объём.
+
+Идея простая: вершины, которые лежат у грани, за которой есть сосед, затемняются.
+
+```ts
+export const AO_OPEN = 1.0;
+export const AO_EDGE_DARKEN = 0.55;
+```
+
+Каждый тайл получает свой клон геометрии с вершинными цветами, материал идёт с
+`vertexColors: true`, и альбедо просто умножается на этот множитель. То есть
+затемнение стыков **запечено в геометрию** и не стоит ни одного прохода рендера.
+
+Функция расчёта чистая: на вход позиции вершин и множество соседей, на выходе
+массив множителей от 0.55 до 1.0. Её можно покрыть юнит-тестами, не запуская
+браузер, что я и сделал.
+
+Цена: 36 клонов геометрии на уровень вместо одной общей. Клоны надо не забыть
+диспозить при перезагрузке уровня - `group.clear()` этого не делает, память
+утекает молча.
+
+## 5. Туман и тонмаппинг. Пять констант
+
+Самое дешёвое из списка.
+
+```ts
+const FOG_COLOR = 0xb2c0d5;
+const FOG_NEAR = 22;
+const FOG_FAR = 52;
+```
+
+Уровни в игре парят в небе, то есть у мира есть край. Туман решает это без
+единой строчки логики: дальние блоки растворяются в цвет неба, и обрыв
+перестаёт читаться как «тут кончилась карта».
+
+Тонмаппинг (ACES Filmic) убирает выжженные пересветы там, где солнце попадает
+на светлый камень. Разница не бросается в глаза на скриншоте, но без него
+светлые участки превращаются в белые пятна без деталей.
+
+## Что НЕ дало столько же
+
+Честности ради - список правок, которые стоили гораздо дороже и дали меньше:
+
+**Transmission на кубе.** Физически корректное просвечивание, дорогая фича:
+отдельный проход рендера сцены за объектом. Куб от него действительно стал
+желейным, но по вкладу в общее впечатление от кадра он проиграл камере. Плюс
+принёс отдельный баг с чёрной теневой стороной, который я потом искал чтением
+шейдеров three.js.
+
+**SSAO.** Красиво, дорого, и на слабых машинах приходится выключать целиком.
+Vertex-AO из пункта 4 даёт часть того же эффекта бесплатно и работает везде.
+
+**Процедурные текстуры.** Отличный черновик, пока не знаешь, какой камень нужен.
+Но когда стало понятно, они заменились обычным PBR-набором, и это оказалось и
+быстрее, и лучше.
+
+## Если коротко
+
+Дешёвые правки выигрывают у дорогих чаще, чем хочется признавать. Порядок,
+который я теперь советую самому себе:
+
+1. Подвигать камеру.
+2. Посадить объекты на поверхность контактной тенью.
+3. Убрать одинаковость.
+4. Добавить объём на стыках.
+5. Спрятать край мира туманом.
+
+И только после этого лезть в шейдеры - там уже красиво, но дальше начинается
+работа за проценты.
+
+А какая самая дешёвая правка дала вам самый неожиданный результат? Мне кажется,
+у каждого есть своя история про две строки конфига.
+</script>
+<script>
+document.querySelectorAll('[data-copy]').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var src = document.getElementById(btn.dataset.copy);
+    if (!src) return;
+    var text = src.textContent;
+    var done = function () {
+      var was = btn.textContent;
+      btn.textContent = 'Скопировано';
+      btn.classList.add('pill--ok');
+      setTimeout(function () { btn.textContent = was; btn.classList.remove('pill--ok'); }, 1800);
+    };
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done, fallback);
+    } else { fallback(); }
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch (e) { alert('Скопируйте вручную'); }
+      document.body.removeChild(ta);
+    }
+  });
+});
+</script>
+</body>
+</html>
