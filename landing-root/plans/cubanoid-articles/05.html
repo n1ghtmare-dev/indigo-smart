@@ -35,6 +35,14 @@ main{max-width:52rem;margin:0 auto;padding:clamp(1.4rem,4vw,3rem) clamp(1rem,4vw
 h1{font-size:clamp(1.7rem,4vw,2.4rem);line-height:1.2;letter-spacing:-.02em;margin:0 0 1.4rem}
 h2{font-size:clamp(1.15rem,2.6vw,1.4rem);margin:2.4rem 0 .8rem;letter-spacing:-.01em}
 h3{font-size:1.05rem;margin:1.8rem 0 .6rem;color:var(--muted)}
+html{scroll-behavior:smooth}
+h2[id],h3[id]{scroll-margin-top:4.5rem}
+.toc{margin:0 0 2rem;padding:1.1rem 1.3rem;background:var(--surface);
+  border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:var(--radius)}
+.toc ol{margin:0;padding-left:1.2rem}
+.toc li{margin:.35rem 0}
+.toc a{text-decoration:none}
+.toc a:hover{text-decoration:underline}
 p{margin:0 0 1.1rem}
 p.caption{color:var(--faint);font-size:.86rem;margin-top:-.6rem}
 ul,ol{margin:0 0 1.2rem;padding-left:1.3rem}

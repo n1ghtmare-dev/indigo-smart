@@ -29,6 +29,8 @@ ARTICLES = [
      "Transmission, «чёрные тени» и squash & stretch"),
     ("06", "06-deshyovye-pravki.md", "Практика",
      "Пять дешёвых правок, которые дали больше шейдеров"),
+    ("07", "07-realizm.md", "Визуал",
+     "Как плоские кубики превратились в скалы над морем облаков"),
 ]
 
 # Метка IMG:<имя> -> файл в img/ (если None - картинки ещё нет, рисуем заглушку)
@@ -49,6 +51,13 @@ IMAGES = {
     "05-early-cube": "step2-rounded.jpg",
     "06-before": "step3-water-sky.jpg",
     "06-after": "step5-current.jpg",
+    "07-hero": "now-menu.jpg",
+    "07-before": "step4-cartoon.jpg",
+    "07-pbr": "07-pbr-maps.png",
+    "07-panorama": "07-panorama.png",
+    "07-mountains": "07-mountains.png",
+    "07-layers": "07-layers.png",
+    "07-cube": "07-cube-closeup.jpg",
 }
 
 
@@ -63,6 +72,7 @@ def inline(text):
 
     text = re.sub(r"`([^`]+)`", stash, text)
     text = html.escape(text)
+    text = re.sub(r"\[([^\]]+)\]\(([^)\s]+)\)", r'<a href="\2">\1</a>', text)
     text = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", text)
     text = re.sub(r"(?<![*\w])\*([^*\n]+)\*(?!\*)", r"<em>\1</em>", text)
     text = re.sub(r"\x00(\d+)\x00", lambda m: slots[int(m.group(1))], text)
@@ -121,13 +131,15 @@ def render(md):
             out.append(image_block(m.group(1), m.group(2), caption))
             continue
 
-        if line.startswith("### "):
-            out.append("<h3>%s</h3>" % inline(line[4:].strip()))
-            i += 1
-            continue
-
-        if line.startswith("## "):
-            out.append("<h2>%s</h2>" % inline(line[3:].strip()))
+        if line.startswith("### ") or line.startswith("## "):
+            level = 3 if line.startswith("### ") else 2
+            raw = line[level + 1:].strip()
+            anchor = ""
+            m_anchor = re.search(r"\s*\{#([\w-]+)\}$", raw)
+            if m_anchor:
+                anchor = ' id="%s"' % m_anchor.group(1)
+                raw = raw[: m_anchor.start()].rstrip()
+            out.append("<h%d%s>%s</h%d>" % (level, anchor, inline(raw), level))
             i += 1
             continue
 
@@ -158,7 +170,12 @@ def render(md):
                     items.append(re.sub(r"^([-*]|\d+\.) ", "", lines[i]))
                 i += 1
             tag = "ol" if ordered else "ul"
-            out.append("<%s>%s</%s>" % (tag, "".join("<li>%s</li>" % inline(x) for x in items), tag))
+            html_list = "<%s>%s</%s>" % (tag, "".join("<li>%s</li>" % inline(x) for x in items), tag)
+            # Список сразу после абзаца-маркера «Оглавление» оформляется как оглавление.
+            if out and out[-1].startswith("<p>") and "Оглавление" in out[-1]:
+                out[-1] = '<nav class="toc">' + out[-1] + html_list + "</nav>"
+            else:
+                out.append(html_list)
             continue
 
         if not line.strip():
@@ -213,6 +230,14 @@ main{max-width:52rem;margin:0 auto;padding:clamp(1.4rem,4vw,3rem) clamp(1rem,4vw
 h1{font-size:clamp(1.7rem,4vw,2.4rem);line-height:1.2;letter-spacing:-.02em;margin:0 0 1.4rem}
 h2{font-size:clamp(1.15rem,2.6vw,1.4rem);margin:2.4rem 0 .8rem;letter-spacing:-.01em}
 h3{font-size:1.05rem;margin:1.8rem 0 .6rem;color:var(--muted)}
+html{scroll-behavior:smooth}
+h2[id],h3[id]{scroll-margin-top:4.5rem}
+.toc{margin:0 0 2rem;padding:1.1rem 1.3rem;background:var(--surface);
+  border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:var(--radius)}
+.toc ol{margin:0;padding-left:1.2rem}
+.toc li{margin:.35rem 0}
+.toc a{text-decoration:none}
+.toc a:hover{text-decoration:underline}
 p{margin:0 0 1.1rem}
 p.caption{color:var(--faint);font-size:.86rem;margin-top:-.6rem}
 ul,ol{margin:0 0 1.2rem;padding-left:1.3rem}
