@@ -10,3 +10,5 @@
 
 User-agent: *
 Disallow: /api/
+
+Sitemap: https://indigosmart.ru/sitemap.xml

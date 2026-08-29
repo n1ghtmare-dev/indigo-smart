@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Только индексируемые страницы. Клиентские лендинги и внутренние разделы
+     закрыты через <meta name="robots" content="noindex, nofollow"> и сюда не попадают. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://indigosmart.ru/cosmograph/</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>

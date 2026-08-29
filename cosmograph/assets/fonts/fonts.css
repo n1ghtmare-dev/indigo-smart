@@ -1,0 +1,6 @@
+/* Локальные шрифты пресета tech-neon. font-display: block обязателен:
+   background-clip:text до загрузки шрифта замораживает fallback-маску в Chromium.
+   format('truetype') — 'truetype-variations' Chrome не принимает, шрифт молча падает в fallback. */
+@font-face{font-family:'Unbounded';src:url('Unbounded.ttf') format('truetype');font-weight:200 900;font-style:normal;font-display:block}
+@font-face{font-family:'Inter';src:url('Inter.ttf') format('truetype');font-weight:100 900;font-style:normal;font-display:block}
+@font-face{font-family:'JetBrains Mono';src:url('JetBrainsMono.ttf') format('truetype');font-weight:100 800;font-style:normal;font-display:block}
