@@ -338,6 +338,7 @@
       <a class="nav__item" data-route="plans" href="#/plans"><span class="glyph">◷</span>Планы</a>
       <a class="nav__item" data-route="schemes" href="#/schemes"><span class="glyph">▧</span>Схемы</a>
       <a class="nav__item" data-route="portfolio" href="#/portfolio"><span class="glyph">✦</span>Портфолио</a>
+      <a class="nav__item" data-route="projects" href="#/projects"><span class="glyph">◆</span>Проекты</a>
       <a class="nav__item" data-route="landings" href="#/landings"><span class="glyph">❏</span>Лендинги</a>
     </nav>
 
@@ -373,6 +374,7 @@
       <a class="nav__item" data-route="plans" href="#/plans"><span class="glyph">◷</span>Планы</a>
       <a class="nav__item" data-route="schemes" href="#/schemes"><span class="glyph">▧</span>Схемы</a>
       <a class="nav__item" data-route="portfolio" href="#/portfolio"><span class="glyph">✦</span>Портфолио</a>
+      <a class="nav__item" data-route="projects" href="#/projects"><span class="glyph">◆</span>Проекты</a>
       <a class="nav__item" data-route="landings" href="#/landings"><span class="glyph">❏</span>Лендинги</a>
     </nav>
     <div class="sidebar__spacer"></div>
@@ -385,7 +387,7 @@
 
     <section class="view" id="view-overview" data-view="overview">
       <h1 class="page-title">Рабочее <span class="grad-text">пространство</span></h1>
-      <p class="page-sub">Планы, схемы, портфолио и лендинги — в одном месте.</p>
+      <p class="page-sub">Планы, схемы, портфолио, проекты и лендинги — в одном месте.</p>
 
       <div class="tiles">
         <a class="tile glass" href="#/plans">
@@ -403,16 +405,22 @@
           <span class="tile__name">Портфолио</span>
           <span class="tile__status">в работе</span>
         </a>
+        <a class="tile glass" href="#/projects">
+          <span class="tile__glyph">◆</span>
+          <span class="tile__name">Проекты</span>
+          <span class="tile__status">1 сайт в проде</span>
+        </a>
         <a class="tile glass" href="#/landings">
           <span class="tile__glyph">❏</span>
           <span class="tile__name">Лендинги</span>
-          <span class="tile__status">4 проекта</span>
+          <span class="tile__status">4 черновика</span>
         </a>
       </div>
 
       <div class="glass recent">
         <h2>Недавнее</h2>
         <ul>
+          <li>Проекты — CosmoGraph 3D выкачен в прод</li>
           <li>Планы — добавлен план продвижения Cubanoid</li>
           <li>Планы — карта продвижения подключена</li>
           <li>landing4 — светлый премиум ✓</li>
@@ -457,9 +465,15 @@
       </div>
     </section>
 
+    <section class="view" id="view-projects" data-view="projects">
+      <h1 class="page-title">Проекты</h1>
+      <p class="page-sub">Боевые сайты собственных разработок. Открыты поисковикам, продвигаются вдолгую.</p>
+      <div class="cards" id="projectsGrid"></div>
+    </section>
+
     <section class="view" id="view-landings" data-view="landings">
       <h1 class="page-title">Лендинги</h1>
-      <p class="page-sub">Одностраничные сайты, размещённые на этом домене.</p>
+      <p class="page-sub">Черновые одностраничники под клиентов: показываю, дорабатываю, при необходимости удаляю. Закрыты от индексации.</p>
       <div class="cards" id="cardsGrid"></div>
     </section>
 
@@ -471,12 +485,11 @@
     { name:"Школа-студия красоты — тёмный", category:"Красота", path:"/landing/index.html", thumb:"/thumbs/landing.webp", note:"Тёмный атмосферный лендинг: почти чёрный фон, золото, кинокадры." },
     { name:"Школа-студия красоты — зелёный", category:"Красота", path:"/landing2/index.html", thumb:"/thumbs/landing2.webp", note:"Тёмно-зелёный вариант с реальными фото студии, упор на обучение." },
     { name:"DarFit — женская фитнес-студия", category:"Фитнес", path:"/landing3/index.html", thumb:"/thumbs/landing3.webp", note:"Тёмный атмосферный лендинг: фиолетовый неон, кольцо-портал и свечения, плотная вёрстка." },
-    { name:"New home — агентство недвижимости", category:"Недвижимость", path:"/landing4/index.html", thumb:"/thumbs/landing4.webp", note:"Светлый премиум-лендинг: бело-чёрно-зелёная палитра, дома-выезды (breakout) и воздушная вёрстка." },
-    { name:"CosmoGraph 3D — плагин для Obsidian", category:"Продакшн", path:"/cosmograph/index.html", thumb:"/thumbs/cosmograph.webp", note:"Продакшн-лендинг собственного проекта: тёмный tech-neon, гигантская типографика Unbounded, живой скриншот сферы знаний. Единственная индексируемая страница домена." }
+    { name:"New home — агентство недвижимости", category:"Недвижимость", path:"/landing4/index.html", thumb:"/thumbs/landing4.webp", note:"Светлый премиум-лендинг: бело-чёрно-зелёная палитра, дома-выезды (breakout) и воздушная вёрстка." }
   ];
 
-  const cardsGrid = document.getElementById("cardsGrid");
-  cardsGrid.innerHTML = SITES.map(s =>
+  /* Карточка сайта: одна разметка на «Проекты» и «Лендинги». */
+  const siteCard = (s) =>
     '<a class="card glass" href="' + s.path + '" target="_blank" rel="noopener">' +
       '<div class="card__preview">' +
         '<img src="' + s.thumb + '" alt="Превью: ' + s.name + '" loading="lazy" decoding="async">' +
@@ -490,7 +503,15 @@
           '<span class="card__go">Открыть <i aria-hidden="true">→</i></span>' +
         '</div>' +
       '</div>' +
-    '</a>').join("");
+    '</a>';
+
+  document.getElementById("cardsGrid").innerHTML = SITES.map(siteCard).join("");
+
+  /* Боевые сайты: живут вдолгую, индексируются, продвигаются владельцем. */
+  const PROJECTS = [
+    { name:"CosmoGraph 3D — плагин для Obsidian", category:"Плагин", path:"/cosmograph/index.html", thumb:"/thumbs/cosmograph.webp", note:"Хранилище заметок как трёхмерная планета знаний. Лендинг на английском под каталог плагинов Obsidian: canonical, Open Graph, JSON-LD, в карте сайта." }
+  ];
+  document.getElementById("projectsGrid").innerHTML = PROJECTS.map(siteCard).join("");
 
   const PLANS = [
     {
@@ -531,7 +552,7 @@
     '</a>').join("");
 
   /* ── Routing ── */
-  const ROUTES = ["overview","plans","schemes","portfolio","landings"];
+  const ROUTES = ["overview","plans","schemes","portfolio","projects","landings"];
   const views = {};
   ROUTES.forEach(r => { views[r] = document.getElementById("view-" + r); });
   const navItems = document.querySelectorAll(".nav__item");
