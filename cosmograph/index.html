@@ -69,6 +69,13 @@ body{
   margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);
   font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;
 }
+/* Общее «небо» сайта: один фиксированный слой под всем содержимым. Секции своих
+   заливок не имеют, поэтому переходов между экранами не видно. */
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(64vw 64vw at 76% 34%, rgba(124,140,255,.11), transparent 64%),
+    radial-gradient(70vw 70vw at 20% 82%, rgba(124,140,255,.07), transparent 66%),
+    radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(0,0,0,.55) 100%)}
 a{color:inherit;text-decoration:none}
 img{max-width:100%;display:block}
 h1,h2,h3{margin:0;font-weight:400}
@@ -76,7 +83,8 @@ p{margin:0}
 ul{margin:0;padding:0;list-style:none}
 
 /* ── общий каркас секций ───────────────────────────────────────── */
-.section{position:relative;overflow:hidden;padding:clamp(80px,10vh,160px) var(--gutter)}
+.section{position:relative;z-index:1;overflow:hidden;background:transparent;
+  padding:clamp(80px,10vh,160px) var(--gutter)}
 .inner{position:relative;z-index:4;max-width:var(--maxw);margin:0 auto}
 
 .kicker{font-family:var(--mono);font-size:clamp(10px,1vw,12px);letter-spacing:.42em;
@@ -137,11 +145,11 @@ ul{margin:0;padding:0;list-style:none}
   backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
 
 /* ── HERO: рабочее приложение плагина ──────────────────────────── */
-.hero{position:relative;overflow:hidden;min-height:100svh;display:flex;flex-direction:column;
-  background:#05070d}
+.hero{position:relative;z-index:1;overflow:hidden;min-height:100svh;display:flex;flex-direction:column;
+  background:transparent}
 .hero__app{position:relative;flex:1;min-height:420px}
-.hero__frame{position:absolute;inset:0;width:100%;height:100%;border:0;opacity:0;
-  transition:opacity .5s ease;background:#05070d}
+.hero__frame{position:absolute;inset:0;z-index:3;width:100%;height:100%;border:0;opacity:0;
+  transition:opacity .5s ease;background:transparent}
 .hero__frame.is-ready{opacity:1}
 .hero__chip{position:absolute;left:1rem;bottom:1rem;z-index:5;
   font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
@@ -154,6 +162,8 @@ ul{margin:0;padding:0;list-style:none}
 .hero__open{position:absolute;left:1rem;bottom:1rem;z-index:6;white-space:nowrap}
 
 /* ── INTRO: то, что раньше было текстовой половиной хиро ────────── */
+.intro::before{content:"";position:absolute;left:0;right:0;top:0;height:clamp(160px,26vh,320px);
+  z-index:0;pointer-events:none;background:linear-gradient(180deg,#000 0%,rgba(0,0,0,.72) 42%,transparent 100%)}
 .intro__grid{display:grid;grid-template-columns:1.34fr .66fr;gap:clamp(24px,4vw,64px);
   align-items:center}
 .hero__display{position:relative;z-index:2;margin:1.4rem 0 1.6rem;
@@ -305,6 +315,10 @@ ul{margin:0;padding:0;list-style:none}
   </header>
 
   <div class="hero__app" id="appStage">
+    <div class="streaks" aria-hidden="true">
+      <i style="width:46%;top:14%;right:-4%;transform:rotate(-13deg);filter:blur(5px);opacity:.42"></i>
+      <i style="width:62%;top:26%;right:-10%;transform:rotate(-13deg);filter:blur(20px);opacity:.22"></i>
+    </div>
     <iframe class="hero__frame" id="appFrame" src="app/index.html" title="CosmoGraph 3D — the plugin interface, running live"></iframe>
     <div class="hero__shield" id="appShield" hidden aria-hidden="true"></div>
     <span class="hero__chip" id="appChip" hidden>Click the planet to interact</span>
@@ -313,7 +327,6 @@ ul{margin:0;padding:0;list-style:none}
 </section>
 
 <section class="section intro" id="intro">
-  <div class="glow" style="width:52vw;height:52vw;right:-10vw;top:-16vw;background:radial-gradient(circle,rgba(124,140,255,.26),transparent 68%)" aria-hidden="true"></div>
   <div class="streaks" aria-hidden="true">
     <i style="width:52%;top:18%;right:-6%;transform:rotate(-12deg);filter:blur(6px)"></i>
     <i style="width:38%;top:30%;right:-4%;transform:rotate(-12deg);filter:blur(16px);opacity:.3"></i>
@@ -410,7 +423,6 @@ ul{margin:0;padding:0;list-style:none}
 </section>
 
 <section class="section" id="inside">
-  <div class="glow" style="width:50vw;height:50vw;right:-12vw;top:-8vw;background:radial-gradient(circle,rgba(124,140,255,.22),transparent 70%)" aria-hidden="true"></div>
   <div class="inner">
     <div class="rows__head reveal">
       <div>
