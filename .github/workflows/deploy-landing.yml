@@ -8,6 +8,7 @@ on:
       - 'landing2/**'
       - 'landing3/**'
       - 'landing4/**'
+      - 'cosmograph/**'
       - 'landing-root/**'
       - '.github/workflows/deploy-landing.yml'
   workflow_dispatch: {}
@@ -17,7 +18,8 @@ on:
 # nginx лишь проксирует всё на :8000. Поэтому:
 #   - хаб живёт в docroot/index.html (страница-выбор шаблонов),
 #   - лендинги — в docroot/<slug>/, доступны по /<slug>/index.html,
-#   - «голый» /<slug>/ отдаёт хаб (это ок — хаб ведёт на index.html лендингов).
+#   - «голый» /<slug>/ отдаёт index.html этого каталога (проверено на проде),
+#     поэтому канонические адреса вида /cosmograph/ рабочие.
 # Бэкенд обязан работать, иначе сайт вернёт 502. Он сохранён в `pm2 save`.
 env:
   SITE_ROOT: /var/www/indigosmart/data/www/indigosmart.ru
