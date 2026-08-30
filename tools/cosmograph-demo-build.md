@@ -72,11 +72,10 @@ cd obsidian-cosmograph && npm install
 Ещё в `index.html` прототипа: `lang="ru"` → `lang="en"` и английское описание.
 
 
-### 1b. Фон: убрать собственную заливку приложения
+### 1b. Фон и режим встраивания
 
 Чтобы планета выглядела частью сайта, а не врезкой в рамке, из прототипа
-убирается его собственный фон — иначе в хиро видна тёмно-синяя коробка с
-фиолетовой засветкой, обрывающаяся ровно по краю секции.
+убирается его собственный фон, а подложка сцены красится в цвет страницы.
 
 `src/style.css`:
 
@@ -86,16 +85,35 @@ cd obsidian-cosmograph && npm install
 | `html, body, #app { … }` | добавлено `background: transparent` |
 | `.app-shell { background: radial-gradient(…), #02020b; }` | `background: transparent` |
 
-`src/graph/SphericalGraph.ts`: `alpha: false` → `alpha: true`,
-`setClearColor(0x02020b, 1)` → `setClearColor(0x000000, 0)`.
+`color-scheme: dark` убирается обязательно: с ним холст документа в iframe
+остаётся непрозрачным независимо от CSS.
 
-**Важно:** полной прозрачности этим не добиться — сцена идёт через
-EffectComposer с UnrealBloomPass, и финальный кадр приходит непрозрачным.
-Проверено прямо: приложение над красно-зелёно-синим градиентом всё равно
-показывает чёрный фон. Поэтому подложка сцены — чистый чёрный, а стык с
-остальной страницей гасится градиентом `.intro::before` в лендинге, который
-уводит верх следующей секции в тот же чёрный. `color-scheme: dark` убран
-именно потому, что он делает холст документа непрозрачным независимо от CSS.
+`src/graph/SphericalGraph.ts`: `setClearColor(0x02020b, 1)` →
+`setClearColor(0x0a0b12, 1)` — цвет подложки страницы.
+
+Полной прозрачности добиться нельзя: сцена идёт через EffectComposer с
+UnrealBloomPass, финальный кадр приходит непрозрачным (проверено пробой над
+цветным градиентом). Поэтому подложка красится в цвет сайта, а края кадра
+растворяются маской `.hero__frame` в лендинге.
+
+В `src/main.ts` добавлены два параметра для встраивания — один билд обслуживает
+и хиро, и полноэкранное демо:
+
+```ts
+const embedParams = new URLSearchParams(window.location.search);
+if (embedParams.has("scene")) {          // ?scene=1 — сразу сцена, без панелей
+  setImmersive(true);
+  sceneSettings.hidden = true;           // и без кнопки настроек
+}
+const embedLabels = embedParams.get("labels");
+if (embedLabels === "none" || embedLabels === "important" || embedLabels === "all") {
+  setLabelMode(embedLabels as LabelMode, false);   // false — не писать в localStorage
+}
+```
+
+Лендинг открывает `app/index.html?scene=1` в хиро (на узких экранах ещё и
+`&labels=none`, иначе подписи сливаются), а ссылка «Open the full interface»
+ведёт на `app/index.html` без параметров — там весь интерфейс.
 
 ### 2. Сборка
 

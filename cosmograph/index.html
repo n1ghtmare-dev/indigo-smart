@@ -47,7 +47,7 @@
 
 <style>
 :root{
-  --bg:#08090F;
+  --bg:#0B0C11;
   --accent:#7C8CFF;
   --accent-glow:rgba(124,140,255,.55);
   --bone:#F4F2EE;
@@ -73,9 +73,11 @@ body{
    заливок не имеют, поэтому переходов между экранами не видно. */
 body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
-    radial-gradient(64vw 64vw at 76% 34%, rgba(124,140,255,.11), transparent 64%),
-    radial-gradient(70vw 70vw at 20% 82%, rgba(124,140,255,.07), transparent 66%),
-    radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(0,0,0,.55) 100%)}
+    radial-gradient(72vw 52vw at 72% 6%, rgba(158,172,224,.10), transparent 62%),
+    radial-gradient(64vw 64vw at 14% 88%, rgba(124,140,255,.055), transparent 64%),
+    linear-gradient(180deg, rgba(255,255,255,.022), transparent 34%),
+    radial-gradient(132% 104% at 50% 36%, transparent 58%, rgba(0,0,0,.5) 100%)}
+
 a{color:inherit;text-decoration:none}
 img{max-width:100%;display:block}
 h1,h2,h3{margin:0;font-weight:400}
@@ -144,35 +146,40 @@ ul{margin:0;padding:0;list-style:none}
 .glass{background:var(--glass);border:1px solid var(--glass-border);border-radius:20px;
   backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
 
-/* ── HERO: рабочее приложение плагина ──────────────────────────── */
+/* ── HERO: текст слева, живая планета справа и поверх ──────────── */
 .hero{position:relative;z-index:1;overflow:hidden;min-height:100svh;display:flex;flex-direction:column;
   background:transparent}
-.hero__app{position:relative;flex:1;min-height:420px}
-.hero__frame{position:absolute;inset:0;z-index:3;width:100%;height:100%;border:0;opacity:0;
-  transition:opacity .5s ease;background:transparent}
-.hero__frame.is-ready{opacity:1}
-.hero__chip{position:absolute;left:1rem;bottom:1rem;z-index:5;
-  font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
-  color:var(--text-faint);background:rgba(5,7,13,.72);border:1px solid var(--glass-border);
-  border-radius:999px;padding:.45rem 1rem;white-space:nowrap;pointer-events:none}
-.hero__chip[hidden],.hero__open[hidden],.hero__shield[hidden]{display:none}
-/* На тач-экранах щит пропускает вертикальный свайп странице: иначе приложение
-   перехватило бы жест и хиро стало бы ловушкой. Сфера при этом видна живая. */
-.hero__shield{position:absolute;inset:0;z-index:4;touch-action:pan-y;background:transparent}
-.hero__open{position:absolute;left:1rem;bottom:1rem;z-index:6;white-space:nowrap}
+.hero__body{position:relative;flex:1;min-height:520px}
 
-/* ── INTRO: то, что раньше было текстовой половиной хиро ────────── */
-.intro::before{content:"";position:absolute;left:0;right:0;top:0;height:clamp(160px,26vh,320px);
-  z-index:0;pointer-events:none;background:linear-gradient(180deg,#000 0%,rgba(0,0,0,.72) 42%,transparent 100%)}
-.intro__grid{display:grid;grid-template-columns:1.34fr .66fr;gap:clamp(24px,4vw,64px);
-  align-items:center}
-.hero__display{position:relative;z-index:2;margin:1.4rem 0 1.6rem;
-  font-size:clamp(48px,6.5vw,114px)}
+.hero__stage{position:absolute;z-index:3;right:-2%;top:50%;transform:translateY(-50%);
+  height:min(96%,1040px);aspect-ratio:1/1;width:auto}
+.hero__frame{position:absolute;inset:0;width:100%;height:100%;border:0;background:transparent;
+  opacity:0;transition:opacity .6s ease;
+  -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 50%,rgba(0,0,0,.72) 64%,transparent 76%);
+  mask-image:radial-gradient(circle at 50% 50%,#000 50%,rgba(0,0,0,.72) 64%,transparent 76%)}
+.hero__frame.is-ready{opacity:1}
+/* На тач-экранах щит пропускает вертикальный свайп странице: иначе сцена
+   перехватила бы жест и хиро стало бы ловушкой. Планета при этом живая. */
+.hero__shield{position:absolute;inset:0;z-index:4;touch-action:pan-y;background:transparent}
+.hero__shield[hidden],.hero__chip[hidden]{display:none}
+
+.hero__copy{position:absolute;z-index:2;left:var(--gutter);top:50%;transform:translateY(-50%);
+  width:min(54%,780px)}
+.hero__display{margin:1.3rem 0 1.5rem;font-size:clamp(48px,6.4vw,112px);
+  -webkit-mask-image:linear-gradient(96deg,#000 42%,rgba(0,0,0,.42) 74%,transparent 96%);
+  mask-image:linear-gradient(96deg,#000 42%,rgba(0,0,0,.42) 74%,transparent 96%)}
 .hero__display span{display:block}
-.hero__actions{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:2rem}
-.hero__note{margin-top:1.4rem;font-family:var(--mono);font-size:11px;letter-spacing:.2em;
+.hero__actions{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:1.9rem}
+.hero__note{margin-top:1.3rem;font-family:var(--mono);font-size:11px;letter-spacing:.2em;
   text-transform:uppercase;color:var(--text-faint)}
-.hero__card{padding:1.3rem 1.5rem;justify-self:end;width:min(400px,100%)}
+.hero__card{margin-top:1.9rem;padding:1.1rem 1.3rem;width:min(360px,100%)}
+.hero__links{display:flex;flex-wrap:wrap;align-items:center;gap:1rem;margin-top:1.5rem}
+.hero__chip{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--text-faint)}
+.hero__open{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--accent);border-bottom:1px solid rgba(124,140,255,.35);padding-bottom:2px;white-space:nowrap}
+.hero__open:hover{color:#fff;border-color:#fff}
+
 .stat-row{display:flex;align-items:baseline;justify-content:space-between;gap:1rem}
 .stat-row__label{font-family:var(--mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;
   color:var(--text-faint)}
@@ -283,12 +290,17 @@ ul{margin:0;padding:0;list-style:none}
   .stats{grid-template-columns:1fr;gap:clamp(26px,5vw,40px)}
   .panels{grid-template-columns:1fr}
   .foot__cols{grid-template-columns:1fr 1fr}
-  .hero__app{min-height:70svh}
-  .hero__chip{font-size:10px;letter-spacing:.1em;white-space:normal;max-width:82%;text-align:center}
-  /* поднимаем над доком приложения, чтобы не перекрывать его кнопки */
-  .hero__open{bottom:4.8rem}
-  .intro__grid{grid-template-columns:1fr;gap:clamp(24px,6vw,44px)}
-  .hero__card{justify-self:stretch;width:100%}
+  /* на узких экранах колонки складываются: текст сверху, планета под ним */
+  .hero{min-height:auto}
+  .hero__body{display:flex;flex-direction:column-reverse;min-height:0;
+    padding:clamp(18px,4vw,32px) 0 clamp(28px,6vw,48px)}
+  .hero__stage{position:relative;right:auto;top:auto;transform:none;
+    width:118%;margin-left:-9%;max-width:none}
+  .hero__copy{position:relative;left:auto;top:auto;transform:none;width:auto;
+    padding:0 var(--gutter)}
+  .hero__display{-webkit-mask-image:none;mask-image:none}
+  .hero__card{width:100%}
+  .hero__chip{font-size:10px;letter-spacing:.1em}
   .row__body{grid-template-columns:1fr;gap:.5rem}
   .fade-text{background:linear-gradient(180deg,#fff 0%,#fff 58%,rgba(255,255,255,.42) 100%);
     -webkit-background-clip:text;background-clip:text}
@@ -314,25 +326,18 @@ ul{margin:0;padding:0;list-style:none}
     <a class="pill pill--outline nav__cta" href="https://obsidian.md/plugins?id=cosmograph" rel="noopener">Add to Obsidian ↗</a>
   </header>
 
-  <div class="hero__app" id="appStage">
+  <div class="hero__body">
     <div class="streaks" aria-hidden="true">
-      <i style="width:46%;top:14%;right:-4%;transform:rotate(-13deg);filter:blur(5px);opacity:.42"></i>
-      <i style="width:62%;top:26%;right:-10%;transform:rotate(-13deg);filter:blur(20px);opacity:.22"></i>
+      <i style="width:52%;top:16%;right:2%;transform:rotate(-12deg);filter:blur(6px);opacity:.38"></i>
+      <i style="width:66%;top:29%;right:-6%;transform:rotate(-12deg);filter:blur(22px);opacity:.2"></i>
     </div>
-    <iframe class="hero__frame" id="appFrame" src="app/index.html" title="CosmoGraph 3D — the plugin interface, running live"></iframe>
-    <div class="hero__shield" id="appShield" hidden aria-hidden="true"></div>
-    <span class="hero__chip" id="appChip" hidden>Click the planet to interact</span>
-    <a class="pill pill--primary hero__open" id="appOpen" href="app/index.html" target="_blank" rel="noopener" hidden>Open full screen ↗</a>
-  </div>
-</section>
 
-<section class="section intro" id="intro">
-  <div class="streaks" aria-hidden="true">
-    <i style="width:52%;top:18%;right:-6%;transform:rotate(-12deg);filter:blur(6px)"></i>
-    <i style="width:38%;top:30%;right:-4%;transform:rotate(-12deg);filter:blur(16px);opacity:.3"></i>
-  </div>
-  <div class="inner intro__grid">
-    <div>
+    <div class="hero__stage" id="appStage">
+      <iframe class="hero__frame" id="appFrame" src="app/index.html?scene=1" title="CosmoGraph 3D — the plugin scene, running live"></iframe>
+      <div class="hero__shield" id="appShield" hidden aria-hidden="true"></div>
+    </div>
+
+    <div class="hero__copy">
       <p class="kicker">Obsidian community plugin — v0.2.2</p>
       <h1 class="display hero__display fade-text"><span>Your vault</span><span>has shape</span></h1>
       <p class="lead">Most knowledge graphs scatter notes across a flat canvas. CosmoGraph gives the vault a surface, depth and terrain: notes become luminous points on a procedural planet, wikilinks form a network across it, folders become visible clusters.</p>
@@ -341,13 +346,17 @@ ul{margin:0;padding:0;list-style:none}
         <a class="pill pill--ghost" href="https://github.com/n1ghtmare-dev/obsidian-cosmograph" rel="noopener">View source</a>
       </div>
       <p class="hero__note">MIT licence · local-first · no account required</p>
-    </div>
-    <div class="hero__card glass">
+      <div class="hero__card glass">
         <div class="stat-row"><span class="stat-row__label">Vault data on device</span><span class="stat-row__value">100%</span></div>
         <div class="bar"><i style="width:100%"></i></div>
         <div class="stat-row"><span class="stat-row__label">Uploads to any server</span><span class="stat-row__value">0</span></div>
         <div class="bar"><i style="width:0"></i></div>
       </div>
+      <div class="hero__links">
+        <span class="hero__chip" id="appChip" hidden>Click the planet to interact</span>
+        <a class="hero__open" id="appOpen" href="app/index.html" target="_blank" rel="noopener">Open the full interface ↗</a>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -575,13 +584,12 @@ document.fonts.ready.then(function(){
   items.forEach(function(el){io.observe(el)});
 })();
 
-/* В хиро работает сам веб-прототип плагина (папка app/): тот же рендерер и тот
-   же интерфейс, что в Obsidian. Грузится сразу, без картинки-заглушки. */
+/* В хиро работает сцена плагина (папка app/, режим ?scene=1): тот же рендерер,
+   что в Obsidian, без панелей — интерфейс целиком открывается по ссылке. */
 (function(){
   var frame  = document.getElementById('appFrame');
   var chip   = document.getElementById('appChip');
   var shield = document.getElementById('appShield');
-  var open   = document.getElementById('appOpen');
   var stage  = document.getElementById('appStage');
   if (!frame) return;
 
@@ -591,22 +599,19 @@ document.fonts.ready.then(function(){
   var touch = window.matchMedia('(pointer: coarse)').matches ||
               window.matchMedia('(max-width: 900px)').matches;
 
+  // на узких экранах подписи узлов сливаются — сцена запускается без них
+  if (touch) frame.src = frame.src + '&labels=none';
+
   frame.addEventListener('load', function(){
     frame.classList.add('is-ready');
-    if (touch) {
-      // Приложение видно и живёт, но жесты забирает щит — страница листается.
-      // Полноценно потыкать можно в отдельной вкладке, во весь экран.
-      shield.hidden = false;
-      open.hidden = false;
-    } else {
-      chip.hidden = false;
-      guard();
-    }
+    if (touch) { shield.hidden = false; return; }
+    chip.hidden = false;
+    guard();
   });
 
-  // Приложение отдаётся с того же домена, поэтому в его документ можно повесить
-  // сторож колеса: пока по сцене не кликнули, wheel до графа не доходит и
-  // страница прокручивается нормально. После клика колесо зумит, как в плагине.
+  // Сцена отдаётся с того же домена, поэтому в её документ можно повесить сторож
+  // колеса: пока по планете не кликнули, wheel до графа не доходит и страница
+  // прокручивается нормально. После клика колесо зумит, как в плагине.
   function guard(){
     var d;
     try { d = frame.contentDocument; } catch (e) { return; }
@@ -614,12 +619,9 @@ document.fonts.ready.then(function(){
     var active = false;
     d.addEventListener('wheel', function(e){ if (!active) e.stopPropagation(); },
       { capture: true, passive: true });
-    d.addEventListener('pointerdown', function(){
-      active = true; chip.textContent = LIVE;
-    }, { capture: true });
-    stage.addEventListener('mouseleave', function(){
-      active = false; chip.textContent = IDLE;
-    });
+    d.addEventListener('pointerdown', function(){ active = true; chip.textContent = LIVE; },
+      { capture: true });
+    stage.addEventListener('mouseleave', function(){ active = false; chip.textContent = IDLE; });
   }
 })();
 </script>
