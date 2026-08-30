@@ -1,7 +1,8 @@
-# cosmograph-demo.js — как собран
+# Как собран встроенный демо-плагин (cosmograph/app/)
 
-Это артефакт сборки: настоящий рендерер плагина, вынутый из его репозитория
-без UI-обвязки прототипа. Держим здесь, потому что лендинг обязан открываться
+В хиро лендинга работает не картинка, а сам веб-прототип плагина: тот же
+рендерер и тот же интерфейс, что внутри Obsidian. Сборка лежит в
+`cosmograph/app/` и отдаётся с нашего домена — лендинг обязан работать
 без внешних CDN.
 
 Источник: https://github.com/n1ghtmare-dev/obsidian-cosmograph (MIT).
@@ -14,59 +15,100 @@ git clone https://github.com/n1ghtmare-dev/obsidian-cosmograph
 cd obsidian-cosmograph && npm install
 ```
 
-Точка входа `src/demo-embed.ts` — тонкая обёртка, ничего своего не рисует:
+### 1. Перевод интерфейса
 
-```ts
-import { SphericalGraph } from "./graph/SphericalGraph";
-import { sampleGraph } from "./data/sample";
-import type { GraphNode } from "./types";
+Интерфейс прототипа написан по-русски, лендинг — английский, поэтому строки
+переводятся **при сборке**; репозиторий плагина не трогается. Заменять нужно
+в трёх файлах (порядок важен: длинные строки раньше коротких, иначе «Все»
+испортит «Все заметки»).
 
-type Opts = {
-  onSelect?: (node: GraphNode | null) => void;
-  onHover?: (node: GraphNode | null, x: number, y: number) => void;
-};
+`src/main.ts` — оболочка приложения:
 
-export function mount(canvas: HTMLCanvasElement, opts: Opts = {}) {
-  const graph = new SphericalGraph(canvas);
-  graph.setSphereStyle("radiant");
-  graph.setLabelMode("important");
-  graph.setHandlers(
-    (node) => opts.onSelect?.(node),
-    (node, x, y) => opts.onHover?.(node, x, y),
-  );
-  graph.setData(sampleGraph);
-  return graph;
-}
-```
+| было | стало |
+|---|---|
+| Настройки сцены | Scene settings |
+| Управление | Controls |
+| Подписи узлов | Node labels |
+| Какие названия показывать | Which names to show |
+| Режим подписей узлов | Node label mode |
+| Нет / Важные / Все | None / Important / All |
+| Сцена | Scene |
+| Скрыть интерфейс / Показать интерфейс | Hide interface / Show interface |
+| Включить / Выключить | On / Off |
+| ваши мысли, связанные. | your thoughts, connected. |
+| Открыть vault | Open vault |
+| Разделы хранилища | Vault sections |
+| Поиск заметок / Поиск заметки | Search notes |
+| Трёхмерный граф заметок | 3D note graph |
+| Закрыть | Close |
+| Входящие связи / Исходящие связи | Inbound links / Outbound links |
+| Связанные заметки | Linked notes |
+| Режим отображения | View mode |
+| Стиль сферы | Sphere style |
+| Мягкая / Сияние | Calm / Radiant |
+| Фокус | Focus |
+| Демо | Demo |
+| Строим карту связей | Building the link map |
+| Все заметки | All notes |
+| Кластер | Cluster |
+| Заметок / Связей | Notes / Links |
+| Читаем заметки | Reading notes |
+| Локальный vault | Local vault |
+| Не удалось открыть vault | Could not open the vault |
 
-Конфиг `vite.demo.config.mjs`:
+`src/graph/SphericalGraph.ts`:
+
+| было | стало |
+|---|---|
+| `${notes.length} заметок в кластере` | `${notes.length} notes in this cluster` |
+| `\|\| "Заметки"` | `\|\| "Notes"` |
+
+`src/vault.ts`: «В выбранной папке не найдено Markdown-заметок.» →
+«No Markdown notes found in the selected folder.»
+
+Названия заметок в `src/data/sample.ts` остаются как есть: это содержимое
+демонстрационного хранилища, а не интерфейс.
+
+Ещё в `index.html` прототипа: `lang="ru"` → `lang="en"` и английское описание.
+
+### 2. Сборка
+
+`vite.app.config.mjs`:
 
 ```js
 import { defineConfig } from "vite";
 export default defineConfig({
-  build: {
-    lib: { entry: "src/demo-embed.ts", formats: ["es"], fileName: () => "cosmograph-demo.js" },
-    outDir: "demo-dist", emptyOutDir: true, target: "es2020", minify: "esbuild",
-  },
+  base: "./",                    // приложение живёт в подкаталоге /cosmograph/app/
+  build: { outDir: "app-dist", emptyOutDir: true, target: "es2020" },
 });
 ```
 
 ```bash
-npx vite build --config vite.demo.config.mjs
+npx vite build --config vite.app.config.mjs
 ```
 
-Готовый файл — `demo-dist/cosmograph-demo.js` (~900 КБ, ~192 КБ gzip).
-Скопировать сюда и вернуть лицензионную шапку в первые строки.
+`base: "./"` обязателен: без него ссылки на ассеты станут абсолютными и
+приложение не найдёт их в подкаталоге.
 
-## Что важно знать про сам рендерер
+Содержимое `app-dist/` копируется в `cosmograph/app/`, в начало JS
+возвращается лицензионная шапка. Размер: ~563 КБ JS (~144 КБ gzip) + 13 КБ CSS.
 
-- Размер берётся у родителя холста (`parentElement.clientWidth/Height`),
-  следит `ResizeObserver` — родителю нужен `position: relative` и явная высота.
-- Подписи узлов рисует `CSS2DRenderer` в слой `.graph-label-layer`, который
-  дописывается к родителю холста. Стили `.graph-label*` продублированы в
-  `index.html` из `src/style.css` плагина.
-- `wheel` перехватывается с `preventDefault`, поэтому над запущенной сферой
-  страница не прокручивается — об этом предупреждает подсказка в HUD.
-- Pinch-зума нет: на тач-устройствах доступны только вращение и тап по узлу.
-- Контекст WebGL привязан к холсту навсегда: при закрытии демо элемент
-  заменяется на новый, иначе повторный запуск не поднимется.
+## Что учтено в лендинге
+
+- Приложение подключается через 250 мс после `load`; до этого виден
+  постер-скриншот, он же остаётся при `prefers-reduced-motion: reduce`.
+- Колесо мыши: пока по сцене не кликнули, `wheel` останавливается на стадии
+  capture внутри документа приложения — иначе прокрутка страницы над хиро
+  превращалась бы в зум. После клика колесо зумит, как в плагине; уход курсора
+  за пределы кадра снова отдаёт колесо странице.
+- На тач-экранах и ширине до 900px приложение не встраивается вовсе: свайп над
+  ним перехватывался бы и страницу нельзя было бы пролистать. Там показывается
+  постер и кнопка, открывающая демо отдельной вкладкой.
+
+## Известное ограничение проверки
+
+В headless-Chrome с программным WebGL канвас приложения выходит чёрным:
+контекст теряется и восстанавливается, объекты three.js остаются от старого
+контекста. Проверено, что канвас имеет верный размер, контекст не потерян и
+подписи узлов рисуются, — но сами пиксели сферы в автоснимке не видны.
+Смотреть результат нужно в обычном браузере.

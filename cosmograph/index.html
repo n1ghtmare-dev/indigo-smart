@@ -121,8 +121,9 @@ ul{margin:0;padding:0;list-style:none}
 .pill--outline:hover{border-color:var(--accent);color:var(--accent)}
 
 /* нав */
-.nav{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;gap:2rem;
-  padding:clamp(18px,3vh,34px) var(--gutter)}
+.nav{position:relative;z-index:20;display:flex;align-items:center;gap:2rem;flex:none;
+  padding:clamp(14px,2.4vh,26px) var(--gutter);border-bottom:1px solid var(--hairline);
+  background:rgba(8,9,15,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .brand{display:flex;align-items:center;gap:.7rem;font-weight:600;letter-spacing:.02em;font-size:15px}
 .brand__mark{width:13px;height:13px;background:var(--accent);transform:rotate(45deg);
   box-shadow:0 0 16px var(--accent-glow)}
@@ -135,32 +136,32 @@ ul{margin:0;padding:0;list-style:none}
 .glass{background:var(--glass);border:1px solid var(--glass-border);border-radius:20px;
   backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
 
-/* ── HERO ──────────────────────────────────────────────────────── */
-.hero{position:relative;overflow:hidden;min-height:100svh;display:flex;align-items:center;
-  padding:clamp(140px,18vh,200px) var(--gutter) clamp(60px,9vh,110px)}
-.hero__glow{width:60vw;height:60vw;max-width:900px;max-height:900px;right:-6vw;top:-10vw;
-  background:radial-gradient(circle,rgba(124,140,255,.34),transparent 68%)}
-.hero__glow2{width:40vw;height:40vw;left:-10vw;bottom:-14vw;
-  background:radial-gradient(circle,rgba(214,110,232,.18),transparent 70%)}
-.hero__grid{position:relative;z-index:4;max-width:var(--maxw);margin:0 auto;width:100%;
-  display:grid;grid-template-columns:.92fr 1.08fr;align-items:center;gap:clamp(24px,4vw,56px)}
-.hero__col{position:relative;z-index:4}
+/* ── HERO: рабочее приложение плагина ──────────────────────────── */
+.hero{position:relative;overflow:hidden;min-height:100svh;display:flex;flex-direction:column;
+  background:#05070d}
+.hero__app{position:relative;flex:1;min-height:420px}
+.hero__poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.85}
+.hero__frame{position:absolute;inset:0;width:100%;height:100%;border:0;opacity:0;
+  transition:opacity .5s ease;background:#05070d}
+.hero__frame.is-ready{opacity:1}
+.hero__chip{position:absolute;left:50%;bottom:1.1rem;transform:translateX(-50%);z-index:5;
+  font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--text-faint);background:rgba(5,7,13,.72);border:1px solid var(--glass-border);
+  border-radius:999px;padding:.45rem 1rem;white-space:nowrap;pointer-events:none}
+.hero__chip[hidden],.hero__open[hidden]{display:none}
+.hero__open{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:6;
+  white-space:nowrap}
+
+/* ── INTRO: то, что раньше было текстовой половиной хиро ────────── */
+.intro__grid{display:grid;grid-template-columns:1.34fr .66fr;gap:clamp(24px,4vw,64px);
+  align-items:center}
 .hero__display{position:relative;z-index:2;margin:1.4rem 0 1.6rem;
-  font-size:clamp(58px,8.4vw,148px);width:min(174%,1330px)}
+  font-size:clamp(48px,6.5vw,114px)}
 .hero__display span{display:block}
 .hero__actions{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:2rem}
 .hero__note{margin-top:1.4rem;font-family:var(--mono);font-size:11px;letter-spacing:.2em;
   text-transform:uppercase;color:var(--text-faint)}
-
-.hero__stage{position:relative;z-index:3;justify-self:end;width:100%;max-width:840px}
-.planet{position:relative;aspect-ratio:1;width:100%;
-  background:url('assets/img/planet.jpg') center/cover no-repeat;
-  filter:contrast(1.12) saturate(1.18) brightness(.97);
-  -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 38%,rgba(0,0,0,.5) 52%,transparent 64%);
-  mask-image:radial-gradient(circle at 50% 50%,#000 38%,rgba(0,0,0,.5) 52%,transparent 64%)}
-.planet__ring{position:absolute;inset:11%;border:1px solid rgba(124,140,255,.34);border-radius:50%;
-  box-shadow:0 0 60px rgba(124,140,255,.22) inset;z-index:-1}
-.hero__card{position:absolute;right:-2%;bottom:6%;z-index:5;width:min(330px,86%);padding:1.15rem 1.3rem}
+.hero__card{padding:1.3rem 1.5rem;justify-self:end;width:min(400px,100%)}
 .stat-row{display:flex;align-items:baseline;justify-content:space-between;gap:1rem}
 .stat-row__label{font-family:var(--mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;
   color:var(--text-faint)}
@@ -170,10 +171,6 @@ ul{margin:0;padding:0;list-style:none}
   background:linear-gradient(90deg,var(--accent),rgba(124,140,255,0))}
 .bar i::after{content:"";position:absolute;right:0;top:-2px;width:7px;height:7px;border-radius:50%;
   background:var(--accent);box-shadow:0 0 12px var(--accent-glow)}
-.hero__side{position:absolute;left:calc(var(--gutter) / 2);top:50%;z-index:4;
-  writing-mode:vertical-rl;transform:translateY(-50%);
-  font-family:var(--mono);font-size:11px;letter-spacing:.42em;text-transform:uppercase;
-  color:var(--text-faint)}
 
 /* ── ТИКЕР ─────────────────────────────────────────────────────── */
 .ticker{position:relative;z-index:5;border-top:1px solid var(--hairline);
@@ -206,29 +203,6 @@ ul{margin:0;padding:0;list-style:none}
 .moment__q{font-family:var(--display);font-weight:900;text-transform:uppercase;
   font-size:clamp(38px,6.6vw,124px);line-height:.9;letter-spacing:-.03em;max-width:16ch;margin:1.6rem auto 0}
 .moment__q em{font-style:normal;color:var(--accent)}
-
-/* ── живая сфера в хиро ───────────────────────────────────────── */
-.planet__canvas{position:absolute;inset:0;width:100%;height:100%;opacity:0;
-  transition:opacity .6s ease;cursor:grab;touch-action:pan-y}
-.planet__canvas:active{cursor:grabbing}
-.planet__canvas.is-hovering-node{cursor:pointer}
-.planet.is-live .planet__canvas{opacity:1}
-.planet.is-live{background-image:none}
-.hero__meta{margin-top:1rem;min-height:1.4em;font-family:var(--mono);font-size:11px;
-  letter-spacing:.18em;text-transform:uppercase;color:var(--text-faint);
-  opacity:0;transition:opacity .5s ease;text-align:center}
-.hero__meta.is-on{opacity:1}
-.hero__meta b{color:var(--accent);font-weight:400}
-
-/* Ярлыки узлов рисует CSS2DRenderer — стили взяты из style.css плагина, чтобы
-   подписи выглядели так же, как внутри Obsidian. */
-.graph-label-layer{position:absolute;z-index:2;inset:0;pointer-events:none;overflow:hidden}
-.graph-label-layer.is-hidden{visibility:hidden;opacity:0}
-.graph-label{display:block;padding:3px 5px;color:rgba(226,232,242,.9);font-size:10px;line-height:1;
-  white-space:nowrap;text-shadow:0 1px 4px #03050b,0 0 12px rgba(11,16,31,.94);
-  transition:opacity 120ms linear,color 160ms ease}
-.graph-label--cluster{color:#edf0f5;font-size:12px;font-weight:540}
-.graph-label.is-selected{color:#f5dfec}
 
 /* ── СТАТЫ ─────────────────────────────────────────────────────── */
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3vw,48px);
@@ -298,14 +272,10 @@ ul{margin:0;padding:0;list-style:none}
   .stats{grid-template-columns:1fr;gap:clamp(26px,5vw,40px)}
   .panels{grid-template-columns:1fr}
   .foot__cols{grid-template-columns:1fr 1fr}
-  .hero__meta{font-size:10px;letter-spacing:.12em}
-  .planet{width:126%;margin-left:-13%}
-  .hero{min-height:auto;padding-top:clamp(120px,16vh,170px)}
-  .hero__grid{grid-template-columns:1fr;gap:clamp(20px,5vw,40px)}
-  .hero__display{width:100%}
-  .hero__stage{justify-self:center;max-width:460px;margin-top:.5rem}
-  .hero__card{position:relative;right:0;bottom:0;width:100%;margin-top:-16%}
-  .hero__side{display:none}
+  .hero__app{min-height:70svh}
+  .hero__chip{font-size:10px;letter-spacing:.1em;white-space:normal;max-width:82%;text-align:center}
+  .intro__grid{grid-template-columns:1fr;gap:clamp(24px,6vw,44px)}
+  .hero__card{justify-self:stretch;width:100%}
   .row__body{grid-template-columns:1fr;gap:.5rem}
   .fade-text{background:linear-gradient(180deg,#fff 0%,#fff 58%,rgba(255,255,255,.42) 100%);
     -webkit-background-clip:text;background-clip:text}
@@ -320,18 +290,6 @@ ul{margin:0;padding:0;list-style:none}
 <div class="noise" aria-hidden="true"></div>
 
 <section class="hero" id="top">
-  <div class="glow hero__glow" aria-hidden="true"></div>
-  <div class="glow hero__glow2" aria-hidden="true"></div>
-  <div class="streaks" aria-hidden="true">
-    <i style="width:58%;top:16%;right:-6%;transform:rotate(-14deg);filter:blur(4px)"></i>
-    <i style="width:42%;top:31%;right:-4%;transform:rotate(-14deg);filter:blur(11px);opacity:.32"></i>
-    <i style="width:70%;top:8%;right:-14%;transform:rotate(-14deg);filter:blur(22px);opacity:.22"></i>
-  </div>
-  <div class="lines" aria-hidden="true">
-    <i style="left:9%;top:0;bottom:0;opacity:.14"></i>
-    <i style="left:22%;top:0;bottom:0;opacity:.07"></i>
-  </div>
-
   <header class="nav">
     <a class="brand" href="#top"><span class="brand__mark" aria-hidden="true"></span> CosmoGraph</a>
     <nav class="nav__menu">
@@ -343,10 +301,22 @@ ul{margin:0;padding:0;list-style:none}
     <a class="pill pill--outline nav__cta" href="https://obsidian.md/plugins?id=cosmograph" rel="noopener">Add to Obsidian ↗</a>
   </header>
 
-  <span class="hero__side" aria-hidden="true">Explore</span>
+  <div class="hero__app" id="appStage">
+    <img class="hero__poster" src="assets/img/planet.jpg" width="1280" height="720" alt="CosmoGraph 3D interface: folder list with note counts, a glowing spherical knowledge graph and a cluster details panel">
+    <iframe class="hero__frame" id="appFrame" title="CosmoGraph 3D — live demo of the plugin interface"></iframe>
+    <span class="hero__chip" id="appChip" hidden>Click the planet to interact</span>
+    <a class="pill pill--primary hero__open" id="appOpen" href="app/index.html" target="_blank" rel="noopener" hidden>Open the live demo ↗</a>
+  </div>
+</section>
 
-  <div class="hero__grid">
-    <div class="hero__col">
+<section class="section intro" id="intro">
+  <div class="glow" style="width:52vw;height:52vw;right:-10vw;top:-16vw;background:radial-gradient(circle,rgba(124,140,255,.26),transparent 68%)" aria-hidden="true"></div>
+  <div class="streaks" aria-hidden="true">
+    <i style="width:52%;top:18%;right:-6%;transform:rotate(-12deg);filter:blur(6px)"></i>
+    <i style="width:38%;top:30%;right:-4%;transform:rotate(-12deg);filter:blur(16px);opacity:.3"></i>
+  </div>
+  <div class="inner intro__grid">
+    <div>
       <p class="kicker">Obsidian community plugin — v0.2.2</p>
       <h1 class="display hero__display fade-text"><span>Your vault</span><span>has shape</span></h1>
       <p class="lead">Most knowledge graphs scatter notes across a flat canvas. CosmoGraph gives the vault a surface, depth and terrain: notes become luminous points on a procedural planet, wikilinks form a network across it, folders become visible clusters.</p>
@@ -356,22 +326,13 @@ ul{margin:0;padding:0;list-style:none}
       </div>
       <p class="hero__note">MIT licence · local-first · no account required</p>
     </div>
-
-    <div class="hero__stage">
-      <div class="planet" id="planet" role="img" aria-label="An Obsidian vault rendered as a glowing spherical knowledge graph with labelled note clusters">
-        <span class="planet__ring" aria-hidden="true"></span>
-        <canvas class="planet__canvas" id="heroCanvas"></canvas>
-      </div>
-      <p class="hero__meta" id="heroMeta" aria-live="polite"></p>
-      <div class="hero__card glass">
+    <div class="hero__card glass">
         <div class="stat-row"><span class="stat-row__label">Vault data on device</span><span class="stat-row__value">100%</span></div>
         <div class="bar"><i style="width:100%"></i></div>
         <div class="stat-row"><span class="stat-row__label">Uploads to any server</span><span class="stat-row__value">0</span></div>
         <div class="bar"><i style="width:0"></i></div>
       </div>
-    </div>
   </div>
-  <div class="vignette" aria-hidden="true"></div>
 </section>
 
 <div class="ticker">
@@ -599,46 +560,52 @@ document.fonts.ready.then(function(){
   items.forEach(function(el){io.observe(el)});
 })();
 
-/* Живая сфера в хиро: настоящий рендерер плагина + демо-граф из его репозитория.
-   Бандл ~900 КБ, поэтому подключается после загрузки страницы: сначала виден
-   постер-скриншот, затем он подменяется живой сценой. */
+/* В хиро встроен рабочий веб-прототип плагина (папка app/): тот же рендерер и
+   тот же интерфейс, что в Obsidian. Подключается после загрузки страницы —
+   сначала виден постер-скриншот. */
 (function(){
-  var planet = document.getElementById('planet');
-  var canvas = document.getElementById('heroCanvas');
-  var meta = document.getElementById('heroMeta');
-  if (!planet || !canvas) return;
+  var stage = document.getElementById('appStage');
+  var frame = document.getElementById('appFrame');
+  var chip  = document.getElementById('appChip');
+  if (!stage || !frame) return;
 
-  var HINT = 'Drag to rotate · click a node';
-  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduced) return;                       // остаётся статичный постер
+  var IDLE = 'Click the planet to interact';
+  var LIVE = 'Scroll zooms · move the cursor away to scroll the page';
 
-  // Рендерер гасит колесо через preventDefault. В хиро это превратило бы прокрутку
-  // страницы в зум, поэтому событие до него не доходит — страница листается как обычно.
-  planet.addEventListener('wheel', function(e){ e.stopPropagation(); }, { capture: true, passive: true });
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  function say(node){
-    if (!node) { meta.textContent = HINT; return; }
-    meta.innerHTML = '<b>' + node.title + '</b> · ' +
-      (node.kind === 'cluster' ? (node.noteCount || 0) + ' notes' : node.group);
-  }
+  // На тач-экранах встроенное приложение перехватывало бы свайпы и страницу
+  // нельзя было бы пролистать. Поэтому там — постер и кнопка: демо открывается
+  // отдельной вкладкой, во весь экран, где перехват уместен.
+  var touch = window.matchMedia('(max-width: 900px)').matches ||
+              window.matchMedia('(pointer: coarse)').matches;
+  if (touch) { document.getElementById('appOpen').hidden = false; return; }
 
-  function start(){
-    import('./assets/demo/cosmograph-demo.js').then(function(mod){
-      var graph = mod.mount(canvas, { onSelect: say });
-      if (window.matchMedia('(max-width: 700px)').matches) graph.setLabelMode('none');
-      planet.classList.add('is-live');
-      planet.removeAttribute('role');
-      meta.textContent = HINT;
-      meta.classList.add('is-on');
-    }).catch(function(err){
-      console.error('CosmoGraph demo failed to start:', err);
+  frame.addEventListener('load', function(){
+    frame.classList.add('is-ready');
+    chip.hidden = false;
+    guard();
+  });
+
+  // Приложение отдаётся с того же домена, поэтому в его документ можно повесить
+  // сторож колеса: пока по сцене не кликнули, wheel до графа не доходит и страница
+  // листается нормально. После клика колесо зумит — как в самом плагине.
+  function guard(){
+    var d;
+    try { d = frame.contentDocument; } catch (e) { return; }
+    if (!d) return;
+    var active = false;
+    d.addEventListener('wheel', function(e){ if (!active) e.stopPropagation(); },
+      { capture: true, passive: true });
+    d.addEventListener('pointerdown', function(){
+      active = true; chip.textContent = LIVE;
+    }, { capture: true });
+    stage.addEventListener('mouseleave', function(){
+      active = false; chip.textContent = IDLE;
     });
   }
 
-  // Небольшая задержка после load: первый экран успевает отрисоваться постером,
-  // и только потом подтягивается бандл. requestIdleCallback не используем — он
-  // не гарантирует срабатывания.
-  var kick = function(){ setTimeout(start, 250); };
+  var kick = function(){ setTimeout(function(){ frame.src = 'app/index.html'; }, 250); };
   if (document.readyState === 'complete') kick();
   else window.addEventListener('load', kick);
 })();
