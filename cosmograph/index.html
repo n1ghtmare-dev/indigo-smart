@@ -140,17 +140,18 @@ ul{margin:0;padding:0;list-style:none}
 .hero{position:relative;overflow:hidden;min-height:100svh;display:flex;flex-direction:column;
   background:#05070d}
 .hero__app{position:relative;flex:1;min-height:420px}
-.hero__poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.85}
 .hero__frame{position:absolute;inset:0;width:100%;height:100%;border:0;opacity:0;
   transition:opacity .5s ease;background:#05070d}
 .hero__frame.is-ready{opacity:1}
-.hero__chip{position:absolute;left:50%;bottom:1.1rem;transform:translateX(-50%);z-index:5;
+.hero__chip{position:absolute;left:1rem;bottom:1rem;z-index:5;
   font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
   color:var(--text-faint);background:rgba(5,7,13,.72);border:1px solid var(--glass-border);
   border-radius:999px;padding:.45rem 1rem;white-space:nowrap;pointer-events:none}
-.hero__chip[hidden],.hero__open[hidden]{display:none}
-.hero__open{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:6;
-  white-space:nowrap}
+.hero__chip[hidden],.hero__open[hidden],.hero__shield[hidden]{display:none}
+/* На тач-экранах щит пропускает вертикальный свайп странице: иначе приложение
+   перехватило бы жест и хиро стало бы ловушкой. Сфера при этом видна живая. */
+.hero__shield{position:absolute;inset:0;z-index:4;touch-action:pan-y;background:transparent}
+.hero__open{position:absolute;left:1rem;bottom:1rem;z-index:6;white-space:nowrap}
 
 /* ── INTRO: то, что раньше было текстовой половиной хиро ────────── */
 .intro__grid{display:grid;grid-template-columns:1.34fr .66fr;gap:clamp(24px,4vw,64px);
@@ -274,6 +275,8 @@ ul{margin:0;padding:0;list-style:none}
   .foot__cols{grid-template-columns:1fr 1fr}
   .hero__app{min-height:70svh}
   .hero__chip{font-size:10px;letter-spacing:.1em;white-space:normal;max-width:82%;text-align:center}
+  /* поднимаем над доком приложения, чтобы не перекрывать его кнопки */
+  .hero__open{bottom:4.8rem}
   .intro__grid{grid-template-columns:1fr;gap:clamp(24px,6vw,44px)}
   .hero__card{justify-self:stretch;width:100%}
   .row__body{grid-template-columns:1fr;gap:.5rem}
@@ -302,10 +305,10 @@ ul{margin:0;padding:0;list-style:none}
   </header>
 
   <div class="hero__app" id="appStage">
-    <img class="hero__poster" src="assets/img/planet.jpg" width="1280" height="720" alt="CosmoGraph 3D interface: folder list with note counts, a glowing spherical knowledge graph and a cluster details panel">
-    <iframe class="hero__frame" id="appFrame" title="CosmoGraph 3D — live demo of the plugin interface"></iframe>
+    <iframe class="hero__frame" id="appFrame" src="app/index.html" title="CosmoGraph 3D — the plugin interface, running live"></iframe>
+    <div class="hero__shield" id="appShield" hidden aria-hidden="true"></div>
     <span class="hero__chip" id="appChip" hidden>Click the planet to interact</span>
-    <a class="pill pill--primary hero__open" id="appOpen" href="app/index.html" target="_blank" rel="noopener" hidden>Open the live demo ↗</a>
+    <a class="pill pill--primary hero__open" id="appOpen" href="app/index.html" target="_blank" rel="noopener" hidden>Open full screen ↗</a>
   </div>
 </section>
 
@@ -560,36 +563,38 @@ document.fonts.ready.then(function(){
   items.forEach(function(el){io.observe(el)});
 })();
 
-/* В хиро встроен рабочий веб-прототип плагина (папка app/): тот же рендерер и
-   тот же интерфейс, что в Obsidian. Подключается после загрузки страницы —
-   сначала виден постер-скриншот. */
+/* В хиро работает сам веб-прототип плагина (папка app/): тот же рендерер и тот
+   же интерфейс, что в Obsidian. Грузится сразу, без картинки-заглушки. */
 (function(){
-  var stage = document.getElementById('appStage');
-  var frame = document.getElementById('appFrame');
-  var chip  = document.getElementById('appChip');
-  if (!stage || !frame) return;
+  var frame  = document.getElementById('appFrame');
+  var chip   = document.getElementById('appChip');
+  var shield = document.getElementById('appShield');
+  var open   = document.getElementById('appOpen');
+  var stage  = document.getElementById('appStage');
+  if (!frame) return;
 
   var IDLE = 'Click the planet to interact';
   var LIVE = 'Scroll zooms · move the cursor away to scroll the page';
 
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-  // На тач-экранах встроенное приложение перехватывало бы свайпы и страницу
-  // нельзя было бы пролистать. Поэтому там — постер и кнопка: демо открывается
-  // отдельной вкладкой, во весь экран, где перехват уместен.
-  var touch = window.matchMedia('(max-width: 900px)').matches ||
-              window.matchMedia('(pointer: coarse)').matches;
-  if (touch) { document.getElementById('appOpen').hidden = false; return; }
+  var touch = window.matchMedia('(pointer: coarse)').matches ||
+              window.matchMedia('(max-width: 900px)').matches;
 
   frame.addEventListener('load', function(){
     frame.classList.add('is-ready');
-    chip.hidden = false;
-    guard();
+    if (touch) {
+      // Приложение видно и живёт, но жесты забирает щит — страница листается.
+      // Полноценно потыкать можно в отдельной вкладке, во весь экран.
+      shield.hidden = false;
+      open.hidden = false;
+    } else {
+      chip.hidden = false;
+      guard();
+    }
   });
 
   // Приложение отдаётся с того же домена, поэтому в его документ можно повесить
-  // сторож колеса: пока по сцене не кликнули, wheel до графа не доходит и страница
-  // листается нормально. После клика колесо зумит — как в самом плагине.
+  // сторож колеса: пока по сцене не кликнули, wheel до графа не доходит и
+  // страница прокручивается нормально. После клика колесо зумит, как в плагине.
   function guard(){
     var d;
     try { d = frame.contentDocument; } catch (e) { return; }
@@ -604,10 +609,6 @@ document.fonts.ready.then(function(){
       active = false; chip.textContent = IDLE;
     });
   }
-
-  var kick = function(){ setTimeout(function(){ frame.src = 'app/index.html'; }, 250); };
-  if (document.readyState === 'complete') kick();
-  else window.addEventListener('load', kick);
 })();
 </script>
 </body>
