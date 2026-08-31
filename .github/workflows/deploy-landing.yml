@@ -132,11 +132,12 @@ jobs:
             landing-root/ \
             ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ env.SITE_ROOT }}/
 
+      # Корень закрыт basic-auth на уровне бэкенда, поэтому проверяем не содержимое
+      # страницы, а что защита на месте и файлы хаба доехали.
       - name: Smoke test
         run: |
-          body=$(curl -sfL -m 15 "https://indigosmart.ru/") || { echo "FAILED: корень недоступен (бэкенд лежит?)"; exit 1; }
-          printf '%s' "$body" | grep -q 'Рабочее пространство' || { echo "FAILED: на / отдаётся не панель-воркспейс"; exit 1; }
-          if printf '%s' "$body" | grep -q 'create-react-app'; then
-            echo "FAILED: на / всё ещё React-дашборд"; exit 1
-          fi
-          echo "OK: хаб на https://indigosmart.ru/"
+          code=$(curl -s -o /dev/null -w '%{http_code}' -m 15 https://indigosmart.ru/)
+          [ "$code" = "401" ] || { echo "FAILED: корень отдал $code вместо 401 — панель должна быть под паролем"; exit 1; }
+          curl -sI -m 15 https://indigosmart.ru/ | grep -qi 'www-authenticate: *basic'             || { echo "FAILED: нет заголовка WWW-Authenticate — браузер не покажет окно логина"; exit 1; }
+          curl -sf -m 15 -o /dev/null https://indigosmart.ru/thumbs/cosmograph.webp             || { echo "FAILED: файлы хаба не доехали"; exit 1; }
+          echo "OK: корень под basic-auth, файлы хаба на месте"
