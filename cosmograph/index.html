@@ -152,6 +152,25 @@ ul{margin:0;padding:0;list-style:none}
 
 .hero__stage{position:absolute;z-index:3;right:4%;top:50%;transform:translateY(-50%);
   height:min(92%,980px);aspect-ratio:1/1;width:auto}
+/* Пока грузится сцена (~563 КБ), на её месте вращается орбита-заглушка.
+   Когда приложение готово, стенд получает is-ready и она уходит. */
+.hero__loader{position:absolute;inset:0;z-index:2;display:grid;place-items:center;
+  transition:opacity .6s ease}
+.hero__stage.is-ready .hero__loader{opacity:0;pointer-events:none}
+.hero__loader-core{grid-area:1/1;width:20%;aspect-ratio:1;border-radius:50%;filter:blur(10px);
+  background:radial-gradient(circle at 50% 50%,rgba(172,162,255,.65),rgba(124,140,255,.16) 58%,transparent 72%);
+  animation:loader-pulse 2.4s ease-in-out infinite}
+.hero__loader-ring{grid-area:1/1;width:44%;aspect-ratio:1;border-radius:50%;
+  border:1px solid rgba(124,140,255,.28);border-top-color:rgba(176,166,255,.95);
+  box-shadow:0 0 34px rgba(124,140,255,.22),inset 0 0 46px rgba(124,140,255,.1);
+  animation:loader-spin 2.6s linear infinite}
+.hero__loader-ring--outer{width:62%;border-color:rgba(124,140,255,.14);
+  border-top-color:rgba(124,140,255,.5);animation-duration:5.4s;animation-direction:reverse}
+@keyframes loader-spin{to{transform:rotate(360deg)}}
+@keyframes loader-pulse{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.14);opacity:1}}
+@media(prefers-reduced-motion:reduce){
+  .hero__loader-ring,.hero__loader-core{animation:none}
+}
 .hero__frame{position:absolute;inset:0;width:100%;height:100%;border:0;background:transparent;
   opacity:0;transition:opacity .6s ease;
   -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 40%,rgba(0,0,0,.55) 55%,transparent 68%);
@@ -345,6 +364,11 @@ ul{margin:0;padding:0;list-style:none}
     </div>
 
     <div class="hero__stage" id="appStage">
+      <div class="hero__loader" aria-hidden="true">
+        <span class="hero__loader-core"></span>
+        <span class="hero__loader-ring"></span>
+        <span class="hero__loader-ring hero__loader-ring--outer"></span>
+      </div>
       <iframe class="hero__frame" id="appFrame" src="app/index.html?scene=1&v=3" title="CosmoGraph 3D — the plugin scene, running live"></iframe>
       <div class="hero__shield" id="appShield" hidden aria-hidden="true"></div>
     </div>
@@ -616,6 +640,7 @@ document.fonts.ready.then(function(){
 
   frame.addEventListener('load', function(){
     frame.classList.add('is-ready');
+    stage.classList.add('is-ready');
     if (touch) { shield.hidden = false; return; }
     chip.hidden = false;
     guard();
