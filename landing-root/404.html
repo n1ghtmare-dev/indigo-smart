@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>404 — page not found</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0B0C11">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='11' fill='none' stroke='%237C8CFF' stroke-width='2'/><circle cx='16' cy='16' r='3.5' fill='%237C8CFF'/></svg>">
+<link rel="preload" href="/cosmograph/assets/fonts/Unbounded.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="stylesheet" href="/cosmograph/assets/fonts/fonts.css">
+<style>
+  :root{
+    --bg:#0B0C11; --accent:#7C8CFF;
+    --text:#fff; --muted:rgba(255,255,255,.62); --faint:rgba(255,255,255,.42);
+    --display:'Unbounded',system-ui,sans-serif;
+    --sans:'Inter',system-ui,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  body{margin:0;min-height:100svh;background:var(--bg);color:var(--text);
+    font-family:var(--sans);display:grid;place-items:center;padding:clamp(20px,5vw,72px);
+    -webkit-font-smoothing:antialiased;overflow-x:hidden}
+  /* тот же матовый фон, что и на остальных страницах домена */
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(72vw 52vw at 72% 6%, rgba(158,172,224,.10), transparent 62%),
+      radial-gradient(64vw 64vw at 14% 88%, rgba(124,140,255,.055), transparent 64%),
+      radial-gradient(132% 104% at 50% 36%, transparent 58%, rgba(0,0,0,.5) 100%)}
+  .wrap{position:relative;z-index:1;text-align:center;max-width:44rem}
+  .code{font-family:var(--display);font-weight:900;letter-spacing:-.04em;line-height:.85;
+    font-size:clamp(96px,22vw,260px);
+    background:linear-gradient(180deg,#fff 6%,rgba(255,255,255,.1) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.42em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:1.4rem}
+  p{margin:1.2rem auto 0;color:var(--muted);font-size:clamp(15px,1.3vw,18px);max-width:34ch}
+  .go{display:inline-flex;align-items:center;gap:.5rem;margin-top:2.2rem;min-height:48px;
+    padding:0 1.5rem;border-radius:999px;background:#F4F2EE;color:#0b0c11;
+    text-decoration:none;font-weight:600;font-size:14px;transition:.25s}
+  .go:hover{background:#fff;transform:translateY(-2px)}
+  .ring{position:absolute;left:50%;top:50%;translate:-50% -50%;width:min(70vw,520px);aspect-ratio:1;
+    border-radius:50%;border:1px solid rgba(124,140,255,.16);
+    box-shadow:0 0 90px rgba(124,140,255,.14) inset;z-index:0;pointer-events:none}
+</style>
+</head>
+<body>
+  <span class="ring" aria-hidden="true"></span>
+  <div class="wrap">
+    <p class="kicker">Lost in orbit</p>
+    <div class="code">404</div>
+    <p>This address does not exist on indigosmart.ru. It may have been moved, renamed, or never existed at all.</p>
+    <a class="go" href="/cosmograph/">Go to CosmoGraph 3D →</a>
+  </div>
+</body>
+</html>

@@ -140,4 +140,8 @@ jobs:
           [ "$code" = "401" ] || { echo "FAILED: корень отдал $code вместо 401 — панель должна быть под паролем"; exit 1; }
           curl -sI -m 15 https://indigosmart.ru/ | grep -qi 'www-authenticate: *basic'             || { echo "FAILED: нет заголовка WWW-Authenticate — браузер не покажет окно логина"; exit 1; }
           curl -sf -m 15 -o /dev/null https://indigosmart.ru/thumbs/cosmograph.webp             || { echo "FAILED: файлы хаба не доехали"; exit 1; }
-          echo "OK: корень под basic-auth, файлы хаба на месте"
+          # Несуществующий путь обязан отдавать 404. Раньше catch-all подставлял
+          # сюда index.html панели — это обходило basic-auth и плодило дубли.
+          missing=$(curl -s -o /dev/null -w '%{http_code}' -m 15 https://indigosmart.ru/zzz-should-not-exist)
+          [ "$missing" = "404" ] || { echo "FAILED: несуществующий путь отдал $missing вместо 404"; exit 1; }
+          echo "OK: корень под basic-auth, 404 честная, файлы хаба на месте"
