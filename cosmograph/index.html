@@ -334,6 +334,12 @@ ul{margin:0;padding:0;list-style:none}
     width:164%;margin-left:-32%;max-width:none;aspect-ratio:1/.86;
     /* Края кадра — пустой фон, поэтому подтягиваем соседние блоки ближе. */
     margin-top:-3vh;margin-bottom:-7vh}
+  /* Кадр шире, чем высок, и свечение сцены упиралось в его нижнюю границу —
+     получалась прямая линия обрыва. closest-side гасит маску ровно к ближайшей
+     стороне, то есть к верху и низу: там, где раньше был срез, теперь ноль. */
+  .hero__frame{
+    -webkit-mask-image:radial-gradient(circle closest-side at 50% 50%,#000 46%,rgba(0,0,0,.42) 74%,transparent 100%);
+    mask-image:radial-gradient(circle closest-side at 50% 50%,#000 46%,rgba(0,0,0,.42) 74%,transparent 100%)}
   .hero__copy{position:relative;left:auto;top:auto;transform:none;width:auto;
     padding:0 var(--gutter)}
   .hero__display{-webkit-mask-image:none;mask-image:none}
