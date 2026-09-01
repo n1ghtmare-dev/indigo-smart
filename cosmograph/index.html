@@ -176,10 +176,7 @@ ul{margin:0;padding:0;list-style:none}
   -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 40%,rgba(0,0,0,.55) 55%,transparent 68%);
   mask-image:radial-gradient(circle at 50% 50%,#000 40%,rgba(0,0,0,.55) 55%,transparent 68%)}
 .hero__frame.is-ready{opacity:1}
-/* На тач-экранах щит пропускает вертикальный свайп странице: иначе сцена
-   перехватила бы жест и хиро стало бы ловушкой. Планета при этом живая. */
-.hero__shield{position:absolute;inset:0;z-index:4;touch-action:pan-y;background:transparent}
-.hero__shield[hidden],.hero__chip[hidden]{display:none}
+.hero__chip[hidden]{display:none}
 
 .hero__copy{position:absolute;z-index:2;top:50%;transform:translateY(-50%);
   left:max(var(--gutter),calc((100% - var(--maxw)) / 2));width:min(52%,860px)}
@@ -321,12 +318,17 @@ ul{margin:0;padding:0;list-style:none}
   .panels > *{order:0}
   .panel--win{transform:none}
   .foot__cols{grid-template-columns:1fr 1fr}
+  /* Секции на телефоне были слишком воздушными: 10vh сверху и снизу давали
+     между блоками больше 160px пустоты. */
+  .section{padding:clamp(52px,7vh,88px) var(--gutter)}
+  .moment{min-height:34vh}
+
   /* на узких экранах колонки складываются: текст сверху, планета под ним */
   .hero{min-height:auto}
   .hero__body{display:flex;flex-direction:column-reverse;min-height:0;
     padding:clamp(18px,4vw,32px) 0 clamp(28px,6vw,48px)}
-  .hero__stage{position:relative;right:auto;top:auto;transform:none;
-    width:118%;margin-left:-9%;max-width:none}
+  .hero__stage{position:relative;right:auto;top:auto;transform:none;height:auto;
+    width:116%;margin-left:-8%;max-width:none;aspect-ratio:1/.84}
   .hero__copy{position:relative;left:auto;top:auto;transform:none;width:auto;
     padding:0 var(--gutter)}
   .hero__display{-webkit-mask-image:none;mask-image:none}
@@ -337,7 +339,11 @@ ul{margin:0;padding:0;list-style:none}
     -webkit-background-clip:text;background-clip:text}
 }
 @media(max-width:860px){
-  .nav__menu{display:none}
+  /* Меню целиком пряталось, и попасть в разделы было нельзя. Кладём его
+     второй строкой: на 390px в одну строку с логотипом и кнопкой не влезает. */
+  .nav{flex-wrap:wrap;row-gap:.7rem;gap:1rem}
+  .nav__menu{order:3;width:100%;margin-left:0;justify-content:space-between;
+    gap:.5rem;font-size:10px;letter-spacing:.14em}
   .nav__cta{margin-left:auto}
 }
 </style>
@@ -369,8 +375,7 @@ ul{margin:0;padding:0;list-style:none}
         <span class="hero__loader-ring"></span>
         <span class="hero__loader-ring hero__loader-ring--outer"></span>
       </div>
-      <iframe class="hero__frame" id="appFrame" src="app/index.html?scene=1&v=3" title="CosmoGraph 3D — the plugin scene, running live"></iframe>
-      <div class="hero__shield" id="appShield" hidden aria-hidden="true"></div>
+      <iframe class="hero__frame" id="appFrame" src="app/index.html?scene=1&v=4" title="CosmoGraph 3D — the plugin scene, running live"></iframe>
     </div>
 
     <div class="hero__copy">
@@ -390,7 +395,7 @@ ul{margin:0;padding:0;list-style:none}
       </div>
       <div class="hero__links">
         <span class="hero__chip" id="appChip" hidden>Click the planet to interact</span>
-        <a class="hero__open" id="appOpen" href="app/index.html?v=3" target="_blank" rel="noopener">Open the full interface ↗</a>
+        <a class="hero__open" id="appOpen" href="app/index.html?v=4" target="_blank" rel="noopener">Open the full interface ↗</a>
       </div>
     </div>
   </div>
@@ -625,7 +630,6 @@ document.fonts.ready.then(function(){
 (function(){
   var frame  = document.getElementById('appFrame');
   var chip   = document.getElementById('appChip');
-  var shield = document.getElementById('appShield');
   var stage  = document.getElementById('appStage');
   if (!frame) return;
 
@@ -641,7 +645,9 @@ document.fonts.ready.then(function(){
   frame.addEventListener('load', function(){
     frame.classList.add('is-ready');
     stage.classList.add('is-ready');
-    if (touch) { shield.hidden = false; return; }
+    // На тач-экранах сторож колеса не нужен: вертикальный свайп уходит странице
+    // через touch-action: pan-y на холсте сцены, горизонтальный крутит планету.
+    if (touch) return;
     chip.hidden = false;
     guard();
   });
