@@ -327,8 +327,13 @@ ul{margin:0;padding:0;list-style:none}
   .hero{min-height:auto}
   .hero__body{display:flex;flex-direction:column-reverse;min-height:0;
     padding:clamp(18px,4vw,32px) 0 clamp(28px,6vw,48px)}
+  /* Размер сферы задаёт камера сцены — она занимает долю меньшей стороны кадра.
+     Поэтому «сделать планету больше» = увеличить сам кадр; лишнее по бокам
+     срезает overflow хиро, кадр остаётся отцентрованным по экрану. */
   .hero__stage{position:relative;right:auto;top:auto;transform:none;height:auto;
-    width:116%;margin-left:-8%;max-width:none;aspect-ratio:1/.84}
+    width:164%;margin-left:-32%;max-width:none;aspect-ratio:1/.86;
+    /* Края кадра — пустой фон, поэтому подтягиваем соседние блоки ближе. */
+    margin-top:-3vh;margin-bottom:-7vh}
   .hero__copy{position:relative;left:auto;top:auto;transform:none;width:auto;
     padding:0 var(--gutter)}
   .hero__display{-webkit-mask-image:none;mask-image:none}
