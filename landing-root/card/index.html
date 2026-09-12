@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#39232e">
-  <meta name="description" content="Кое-что тёплое.">
+  <meta name="description" content="Кое-что тёплое для тебя.">
   <meta name="robots" content="noindex, nofollow">
-  <title>❤</title>
+  <title>Для тебя</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%2339232e'/%3E%3Cpath d='M10 16Q20 33 30 16' fill='none' stroke='%23ffc994' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
   <link rel="preload" href="sunset.jpg" as="image">
   <style>
@@ -34,7 +34,7 @@
     .wave { position: absolute; z-index: 1; pointer-events: none; width: 30vmin; height: 30vmin; left: calc(50% - 15vmin); top: calc(57% - 15vmin); border-radius: 50%; border: 1px solid rgba(255,218,165,.65); box-shadow: 0 0 60px 20px rgba(255,144,70,.18), inset 0 0 45px rgba(255,192,120,.15); opacity: 0; }
     /* Layers: backdrop -2/-1, dust 1, mail stage 2, controls 3, entry gate 4.
        Within the mail stage: envelope back 1, photo 2, pocket 3, opening flap 4. */
-    .postcard { position: relative; isolation: isolate; min-height: 100svh; min-height: 100dvh; overflow: hidden; display: grid; grid-template-rows: auto 1fr auto; padding: max(30px, env(safe-area-inset-top)) 30px max(26px, env(safe-area-inset-bottom)); }
+    .postcard { position: relative; isolation: isolate; min-height: 100svh; min-height: 100dvh; overflow: hidden; display: grid; grid-template-rows: 1fr auto; padding: max(30px, env(safe-area-inset-top)) 30px max(26px, env(safe-area-inset-bottom)); }
     .scene { position: absolute; z-index: -2; inset: 0; overflow: hidden; background: var(--night); }
     .photo { width: 100%; height: 100%; object-fit: cover; object-position: 50% 54%; transform: scale(1.12); filter: blur(24px) saturate(.65); }
     .scrim { position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(38,20,34,.7), rgba(43,20,30,.46) 50%, rgba(23,15,21,.82)); }
@@ -58,6 +58,12 @@
     .fold-bottom { background: linear-gradient(175deg, #ead5b7, #ddc19f); clip-path: polygon(0 100%, 0 97%, 50% 42%, 100% 97%, 100% 100%); }
     .envelope-note { position: absolute; left: 0; right: 0; bottom: 16%; text-align: center; color: #84604f; font-size: clamp(1rem, 4vw, 1.375rem); font-style: italic; }
     .envelope-top { z-index: 4; perspective: 900px; }
+    .waiting .envelope { opacity: 1; }
+    .waiting .keepsake, .waiting .controls { visibility: hidden; }
+    .envelope-trigger { position: absolute; z-index: 5; width: min(88%, 440px); aspect-ratio: 1.65; top: 50%; left: 50%; transform: translate(-50%, -34%) rotate(-4deg); padding: 0; border: 0; border-radius: 3px; background: transparent; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .envelope-trigger:focus-visible { outline: 2px solid #ffdfbb; outline-offset: 10px; }
+    .envelope-trigger span { position: absolute; left: 0; right: 0; bottom: -48px; color: #ffedda; font: .875rem/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; transform: rotate(4deg); }
+    .envelope-trigger:hover span { text-decoration: underline; text-underline-offset: 4px; }
     .flap { position: absolute; inset: 0 0 auto; height: 61%; background: linear-gradient(165deg, #efddc1, #ceb091); clip-path: polygon(0 0, 100% 0, 50% 100%); transform-origin: 50% 0; backface-visibility: visible; }
     .line { display: block; }
     .second { margin-top: .13em; font-style: italic; font-size: 1.09em; letter-spacing: -.045em; padding-bottom: .18em; }
@@ -71,7 +77,9 @@
     .replay:focus-visible { outline: 2px solid var(--glow); outline-offset: 5px; }
     .replay svg { height: 15px; width: 15px; }
     .dust { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
-    .mote { position: absolute; left: var(--x); top: var(--y); height: var(--size); width: var(--size); border-radius: 50%; background: #ffe2ba; box-shadow: 0 0 8px #ff9b65; opacity: 0; }
+    .mote { position: absolute; left: var(--x); top: 100%; height: var(--size); width: var(--size); border-radius: 45% 55% 35% 65%; background: var(--tint); box-shadow: 0 0 7px rgba(255,171,110,.38); opacity: 0; }
+    .mote:nth-child(3n) { filter: blur(.65px); }
+    .mote:nth-child(7n) { height: calc(var(--size) * 1.8); box-shadow: 0 0 10px rgba(255,175,108,.6); }
     @media (prefers-reduced-motion: no-preference) {
       .gate { animation: reveal 1.3s cubic-bezier(.16,1,.3,1) both; }
       .gate.leaving { animation: gate-out .9s cubic-bezier(.4,0,.2,1) both; pointer-events: none; }
@@ -90,12 +98,11 @@
       .playing .flap { animation: flap-open 1.2s cubic-bezier(.4,0,.2,1) 1.5s both; }
       .playing .keepsake { animation: photo-emerge 6s cubic-bezier(.4,0,.2,1) both; }
       .playing .caption { animation: reveal 1.6s ease-out 7s both; }
-      .playing .mote { animation: drift 8s ease-out 3 both; animation-delay: var(--delay); }
+      .unlocked .mote { animation: ash-rise var(--duration) linear infinite; animation-delay: var(--delay); }
       .spark { animation: spark-out 1.3s cubic-bezier(.1,.5,.3,1) both; }
     }
     @keyframes envelope-open {
-      0% { opacity: 0; transform: translate(-50%,-10%) rotate(-7deg) scale(.93); }
-      16%, 64% { opacity: 1; transform: translate(-50%,-34%) rotate(-4deg) scale(1); }
+      0%, 16%, 64% { opacity: 1; transform: translate(-50%,-34%) rotate(-4deg) scale(1); }
       85%, 100% { opacity: 0; transform: translate(-50%,90%) rotate(8deg) scale(.92); }
     }
     @keyframes flap-open { from { transform: rotateX(0deg); } to { transform: rotateX(180deg); } }
@@ -119,7 +126,14 @@
     @keyframes warmth { 0%,100% { opacity: 0; } 40% { opacity: .85; } }
     @keyframes light { 0%,100% { opacity: 0; transform: scale(.84); } 45% { opacity: .58; transform: scale(1.07); } }
     @keyframes breathe { from { transform: scale(1.095); } to { transform: scale(1.035); } }
-    @keyframes drift { 0% { opacity: 0; transform: translate3d(0,24px,0); } 25% { opacity: .65; } 100% { opacity: 0; transform: translate3d(22px,-100px,0); } }
+    @keyframes ash-rise {
+      0% { opacity: 0; transform: translate3d(0, 5svh, 0) rotate(0deg); }
+      12% { opacity: var(--brightness); }
+      34% { opacity: calc(var(--brightness) * .55); transform: translate3d(var(--sway), -34svh, 0) rotate(75deg); }
+      56% { opacity: var(--brightness); transform: translate3d(var(--drift), -62svh, 0) rotate(145deg); }
+      80% { opacity: calc(var(--brightness) * .7); }
+      100% { opacity: 0; transform: translate3d(var(--sway), -118svh, 0) rotate(250deg); }
+    }
     @media (max-width: 767px) {
       .postcard { padding-left: 22px; padding-right: 22px; }
       .photo { object-position: 50% 55%; }
@@ -141,6 +155,7 @@
     <div class="wave" aria-hidden="true"></div>
     <div class="gate-shade" id="gate-shade" aria-hidden="true"></div>
     <form class="gate" id="gate">
+      <p class="gate-kicker">кое-что для тебя</p>
       <label for="answer">Я у тебя записан - </label>
       <input class="answer" id="answer" name="answer" type="text" placeholder="Как в твоих контактах" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="80" aria-describedby="answer-error" required>
       <p class="error" id="answer-error" role="status" aria-live="polite"></p>
@@ -149,7 +164,7 @@
     </form>
     <div class="mail-stage" data-reveal hidden>
       <div class="envelope envelope-back" aria-hidden="true"></div>
-      <figure class="keepsake">
+      <figure class="keepsake" id="keepsake" inert>
         <div class="print">
           <img class="print-photo" src="sunset.jpg" alt="" width="1200" height="1500">
           <section class="message" aria-label="Послание" tabindex="-1">
@@ -161,10 +176,11 @@
         </div>
         <figcaption class="caption">на память о тёплом</figcaption>
       </figure>
-      <div class="envelope envelope-front" aria-hidden="true"><div class="fold-left"></div><div class="fold-right"></div><div class="fold-bottom"></div></div>
+      <div class="envelope envelope-front" aria-hidden="true"><div class="fold-left"></div><div class="fold-right"></div><div class="fold-bottom"></div><span class="envelope-note">Тыкни ;)</span></div>
       <div class="envelope envelope-top" aria-hidden="true"><div class="flap"></div></div>
+      <button class="envelope-trigger" id="envelope-trigger" type="button" aria-label="Открыть конверт"></button>
     </div>
-    <div class="controls" data-reveal hidden><button class="replay" id="replay" type="button" aria-label="Повторить анимацию открытки"><span aria-hidden="true">↻</span> Ещё раз</button></div>
+    <div class="controls" id="controls" data-reveal hidden inert><button class="replay" id="replay" type="button" aria-label="Вернуть закрытый конверт"><span aria-hidden="true">↻</span> Ещё раз</button></div>
   </main>
   <script>
     const card = document.getElementById('postcard');
@@ -173,6 +189,9 @@
     const answer = document.getElementById('answer');
     const error = document.getElementById('answer-error');
     const shade = document.getElementById('gate-shade');
+    const envelopeTrigger = document.getElementById('envelope-trigger');
+    const keepsake = document.getElementById('keepsake');
+    const controls = document.getElementById('controls');
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
     let unlocked = false;
     // This is a playful reveal, not an authentication or data-security boundary.
@@ -188,10 +207,12 @@
         word.appendChild(letter);
       });
     });
-    for (let i = 0; i < 34; i++) {
+    for (let i = 0; i < 52; i++) {
       const mote = document.createElement('i');
       mote.className = 'mote';
-      mote.style.cssText = `--x:${12 + (i * 17 % 78)}%;--y:${34 + (i * 13 % 52)}%;--size:${i % 3 === 0 ? 3 : 2}px;--delay:${.8 + (i % 7) * .42}s`;
+      const duration = 12 + (i * 7 % 15);
+      const tint = ['#ffc691', '#d9b6a2', '#f7d5ab', '#c1a6a0'][i % 4];
+      mote.style.cssText = `--x:${(i * 37 % 104) - 2}%;--size:${1.2 + (i % 5) * .48}px;--duration:${duration}s;--delay:${-(i * 3.73 % duration)}s;--brightness:${.22 + (i % 6) * .065};--sway:${-28 + (i * 11 % 85)}px;--drift:${-48 + (i * 17 % 130)}px;--tint:${tint}`;
       dust.appendChild(mote);
     }
     answer.addEventListener('input', () => {
@@ -218,14 +239,22 @@
       gate.classList.add('leaving');
       shade.classList.add('leaving');
       document.querySelectorAll('[data-reveal]').forEach(element => { element.hidden = false; });
-      card.classList.add('playing', 'unlocked');
-      document.querySelector('.message').focus({ preventScroll: true });
-      const finishOpening = () => { gate.hidden = true; shade.hidden = true; };
+      card.classList.add('waiting', 'unlocked');
+      const finishOpening = () => { gate.hidden = true; shade.hidden = true; envelopeTrigger.focus({ preventScroll: true }); };
       if (reduced.matches) finishOpening();
       else window.setTimeout(finishOpening, 1450);
     });
+    envelopeTrigger.addEventListener('click', () => {
+      if (!unlocked || !card.classList.contains('waiting')) return;
+      envelopeTrigger.hidden = true;
+      keepsake.inert = false;
+      controls.inert = false;
+      card.classList.remove('waiting');
+      card.classList.add('playing');
+      document.querySelector('.message').focus({ preventScroll: true });
+    });
     card.addEventListener('pointerdown', event => {
-      if (!unlocked || reduced.matches || event.target.closest('button') || document.querySelectorAll('.spark').length > 70) return;
+      if (!card.classList.contains('playing') || reduced.matches || event.target.closest('button') || document.querySelectorAll('.spark').length > 70) return;
       const bounds = card.getBoundingClientRect();
       for (let i = 0; i < 12; i++) {
         const spark = document.createElement('i');
@@ -241,8 +270,11 @@
     });
     document.getElementById('replay').addEventListener('click', () => {
       card.classList.remove('playing');
-      void card.offsetWidth;
-      card.classList.add('playing');
+      card.classList.add('waiting');
+      keepsake.inert = true;
+      controls.inert = true;
+      envelopeTrigger.hidden = false;
+      envelopeTrigger.focus({ preventScroll: true });
     });
   </script>
 </body>
