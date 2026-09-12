@@ -336,6 +336,7 @@
     <nav class="nav" id="nav" aria-label="Основная навигация">
       <a class="nav__item" data-route="overview" href="#/overview"><span class="glyph">◍</span>Обзор</a>
       <a class="nav__item" data-route="plans" href="#/plans"><span class="glyph">◷</span>Планы</a>
+      <a class="nav__item" data-route="learn" href="#/learn"><span class="glyph">✎</span>Обучение</a>
       <a class="nav__item" data-route="schemes" href="#/schemes"><span class="glyph">▧</span>Схемы</a>
       <a class="nav__item" data-route="portfolio" href="#/portfolio"><span class="glyph">✦</span>Портфолио</a>
       <a class="nav__item" data-route="projects" href="#/projects"><span class="glyph">◆</span>Проекты</a>
@@ -372,6 +373,7 @@
     <nav class="nav" id="navMobile" aria-label="Мобильная навигация">
       <a class="nav__item" data-route="overview" href="#/overview"><span class="glyph">◍</span>Обзор</a>
       <a class="nav__item" data-route="plans" href="#/plans"><span class="glyph">◷</span>Планы</a>
+      <a class="nav__item" data-route="learn" href="#/learn"><span class="glyph">✎</span>Обучение</a>
       <a class="nav__item" data-route="schemes" href="#/schemes"><span class="glyph">▧</span>Схемы</a>
       <a class="nav__item" data-route="portfolio" href="#/portfolio"><span class="glyph">✦</span>Портфолио</a>
       <a class="nav__item" data-route="projects" href="#/projects"><span class="glyph">◆</span>Проекты</a>
@@ -394,6 +396,11 @@
           <span class="tile__glyph">◷</span>
           <span class="tile__name">Планы</span>
           <span class="tile__status">2 карты продвижения</span>
+        </a>
+        <a class="tile glass" href="#/learn">
+          <span class="tile__glyph">✎</span>
+          <span class="tile__name">Обучение</span>
+          <span class="tile__status">Road to Senior</span>
         </a>
         <a class="tile glass" href="#/schemes">
           <span class="tile__glyph">▧</span>
@@ -420,6 +427,7 @@
       <div class="glass recent">
         <h2>Недавнее</h2>
         <ul>
+          <li>Обучение — подключён трекер Road to Senior</li>
           <li>Проекты — CosmoGraph 3D выкачен в прод</li>
           <li>Планы — добавлен план продвижения Cubanoid</li>
           <li>Планы — карта продвижения подключена</li>
@@ -443,6 +451,12 @@
         </div>
         <iframe class="plan-frame" id="planFrame" title="Интерактивная карта плана"></iframe>
       </div>
+    </section>
+
+    <section class="view" id="view-learn" data-view="learn">
+      <h1 class="page-title">Обучение</h1>
+      <p class="page-sub">Личные программы роста и трекеры. Открываются на всю страницу.</p>
+      <div class="cards" id="learnGrid"></div>
     </section>
 
     <section class="view" id="view-schemes" data-view="schemes">
@@ -551,8 +565,34 @@
       '</div>' +
     '</a>').join("");
 
+  const LEARN = [
+    {
+      title: "Road to Senior — кампания до Senior",
+      category: "Кампания",
+      path: "/learn/road-to-senior/",
+      thumb: "/thumbs/learn-road-to-senior.webp",
+      note: "Геймифицированная гекс-карта роста Python/AI-разработчика: недели, темы, подтемы, домашки и тесты. Прогресс сохраняется (localStorage + серверное облако)."
+    }
+  ];
+  document.getElementById("learnGrid").innerHTML = LEARN.map(function (x) {
+    return '<a class="card glass" href="' + x.path + '">' +
+        '<div class="card__preview">' +
+          '<img src="' + x.thumb + '" alt="Превью: ' + x.title + '" loading="lazy" decoding="async">' +
+          '<span class="card__cat">' + x.category + '</span>' +
+        '</div>' +
+        '<div class="card__body">' +
+          '<h2 class="card__name">' + x.title + '</h2>' +
+          '<p class="card__note">' + x.note + '</p>' +
+          '<div class="card__foot">' +
+            '<span class="card__path">' + x.path + '</span>' +
+            '<span class="card__go">Открыть <i aria-hidden="true">&#8594;</i></span>' +
+          '</div>' +
+        '</div>' +
+      '</a>';
+  }).join("");
+
   /* ── Routing ── */
-  const ROUTES = ["overview","plans","schemes","portfolio","projects","landings"];
+  const ROUTES = ["overview","plans","learn","schemes","portfolio","projects","landings"];
   const views = {};
   ROUTES.forEach(r => { views[r] = document.getElementById("view-" + r); });
   const navItems = document.querySelectorAll(".nav__item");
