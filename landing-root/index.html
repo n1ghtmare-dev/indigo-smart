@@ -341,6 +341,7 @@
       <a class="nav__item" data-route="portfolio" href="#/portfolio"><span class="glyph">✦</span>Портфолио</a>
       <a class="nav__item" data-route="projects" href="#/projects"><span class="glyph">◆</span>Проекты</a>
       <a class="nav__item" data-route="landings" href="#/landings"><span class="glyph">❏</span>Лендинги</a>
+      <a class="nav__item" data-route="card" href="#/card"><span class="glyph">&#9829;</span>Открытка</a>
     </nav>
 
     <div class="sidebar__spacer"></div>
@@ -378,6 +379,7 @@
       <a class="nav__item" data-route="portfolio" href="#/portfolio"><span class="glyph">✦</span>Портфолио</a>
       <a class="nav__item" data-route="projects" href="#/projects"><span class="glyph">◆</span>Проекты</a>
       <a class="nav__item" data-route="landings" href="#/landings"><span class="glyph">❏</span>Лендинги</a>
+      <a class="nav__item" data-route="card" href="#/card"><span class="glyph">&#9829;</span>Открытка</a>
     </nav>
     <div class="sidebar__spacer"></div>
     <span class="lock-pill">🔒 приватная зона</span>
@@ -491,6 +493,12 @@
       <div class="cards" id="cardsGrid"></div>
     </section>
 
+    <section class="view" id="view-card" data-view="card">
+      <h1 class="page-title">Открытка</h1>
+      <p class="page-sub">Маленький личный сюрприз. Открывается на всю страницу (лучше с телефона).</p>
+      <div class="cards" id="cardGrid"></div>
+    </section>
+
   </main>
 </div>
 
@@ -591,8 +599,34 @@
       '</a>';
   }).join("");
 
+  const CARD_TAB = [
+    {
+      title: "Для тебя ❤",
+      category: "Сюрприз",
+      path: "/card/",
+      thumb: "/thumbs/card.webp",
+      note: "Милая открытка. Скажи кодовое слово — и она откроется."
+    }
+  ];
+  document.getElementById("cardGrid").innerHTML = CARD_TAB.map(function (x) {
+    return '<a class="card glass" href="' + x.path + '">' +
+        '<div class="card__preview">' +
+          '<img src="' + x.thumb + '" alt="Превью: ' + x.title + '" loading="lazy" decoding="async">' +
+          '<span class="card__cat">' + x.category + '</span>' +
+        '</div>' +
+        '<div class="card__body">' +
+          '<h2 class="card__name">' + x.title + '</h2>' +
+          '<p class="card__note">' + x.note + '</p>' +
+          '<div class="card__foot">' +
+            '<span class="card__path">' + x.path + '</span>' +
+            '<span class="card__go">Открыть <i aria-hidden="true">&#8594;</i></span>' +
+          '</div>' +
+        '</div>' +
+      '</a>';
+  }).join("");
+
   /* ── Routing ── */
-  const ROUTES = ["overview","plans","learn","schemes","portfolio","projects","landings"];
+  const ROUTES = ["overview","plans","learn","schemes","portfolio","projects","landings","card"];
   const views = {};
   ROUTES.forEach(r => { views[r] = document.getElementById("view-" + r); });
   const navItems = document.querySelectorAll(".nav__item");

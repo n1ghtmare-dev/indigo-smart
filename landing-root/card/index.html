@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#39232e">
+  <meta name="description" content="Кое-что тёплое.">
+  <meta name="robots" content="noindex, nofollow">
+  <title>❤</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%2339232e'/%3E%3Cpath d='M10 16Q20 33 30 16' fill='none' stroke='%23ffc994' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="preload" href="sunset.jpg" as="image">
+  <style>
+    :root { color-scheme: dark; --ink: #fff6e9; --glow: #ffc994; --night: #39232e; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--night); }
+    body { color: var(--ink); font-family: Georgia, 'Times New Roman', serif; }
+    button { font: inherit; }
+    [hidden] { display: none !important; }
+    .gate { position: absolute; z-index: 4; inset: 0; height: fit-content; width: min(calc(100% - 44px), 430px); margin: auto; text-align: center; padding: 32px 0; }
+    .gate-shade { position: absolute; inset: 0; z-index: 3; background: rgba(35,20,35,.56); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); pointer-events: none; }
+    .gate-kicker { margin: 0 0 24px; font: .875rem/1.6 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; letter-spacing: .16em; color: #ffdfc4; }
+    .gate label { display: block; font-size: clamp(2.05rem, 6vw, 2.9rem); line-height: 1.15; letter-spacing: -.035em; margin-bottom: 30px; }
+    .answer { width: 100%; min-height: 62px; background: rgba(38,22,33,.72); border: 1px solid rgba(255,220,197,.55); border-radius: 15px; padding: 16px 20px; color: var(--ink); text-align: center; font: 1.125rem/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; caret-color: var(--glow); transition: border-color .2s, box-shadow .2s; }
+    .answer::placeholder { color: #d7c2cb; }
+    .answer:focus { outline: 2px solid #ffcb9f; outline-offset: 4px; box-shadow: 0 0 30px rgba(255,147,96,.15); }
+    .answer[aria-invalid="true"] { border-color: #ffa8a1; }
+    .error { margin: 16px 0; min-height: 44px; color: #ffe0d4; font: .875rem/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    .open-card { min-height: 52px; width: 100%; border: 1px solid #ffdfbb; border-radius: 999px; background: #ffdbb5; color: #462735; font: 500 1rem/1.4 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; cursor: pointer; box-shadow: 0 8px 40px rgba(255,153,99,.18); transition: transform .2s, background .2s; }
+    .open-card:hover { background: #ffe7cc; transform: translateY(-2px); }
+    .open-card:active { transform: scale(.98); }
+    .open-card:focus-visible { outline: 2px solid #ffe7cc; outline-offset: 5px; }
+    .letter { display: inline-block; white-space: pre; }
+    .message:focus { outline: none; }
+    .wave { position: absolute; z-index: 1; pointer-events: none; width: 30vmin; height: 30vmin; left: calc(50% - 15vmin); top: calc(57% - 15vmin); border-radius: 50%; border: 1px solid rgba(255,218,165,.65); box-shadow: 0 0 60px 20px rgba(255,144,70,.18), inset 0 0 45px rgba(255,192,120,.15); opacity: 0; }
+    /* Layers: backdrop -2/-1, dust 1, mail stage 2, controls 3, entry gate 4.
+       Within the mail stage: envelope back 1, photo 2, pocket 3, opening flap 4. */
+    .postcard { position: relative; isolation: isolate; min-height: 100svh; min-height: 100dvh; overflow: hidden; display: grid; grid-template-rows: auto 1fr auto; padding: max(30px, env(safe-area-inset-top)) 30px max(26px, env(safe-area-inset-bottom)); }
+    .scene { position: absolute; z-index: -2; inset: 0; overflow: hidden; background: var(--night); }
+    .photo { width: 100%; height: 100%; object-fit: cover; object-position: 50% 54%; transform: scale(1.12); filter: blur(24px) saturate(.65); }
+    .scrim { position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(38,20,34,.7), rgba(43,20,30,.46) 50%, rgba(23,15,21,.82)); }
+    .exposure { position: absolute; z-index: 1; pointer-events: none; inset: -20%; opacity: 0; background: radial-gradient(ellipse at 53% 57%, rgba(255,211,121,.6), rgba(249,95,44,.22) 25%, transparent 55%); mix-blend-mode: screen; }
+    .dedication { text-align: center; margin: 0; font: 400 .8125rem/1.6 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; letter-spacing: .19em; color: #fff0e6; }
+    .mail-stage { position: relative; z-index: 2; align-self: stretch; display: grid; place-items: center; width: 100%; min-height: 310px; perspective: 1200px; }
+    .keepsake { position: relative; z-index: 2; width: min(78vw, 400px, calc(72svh - 122px)); aspect-ratio: .72; margin: 24px 0; padding: 14px 14px 62px; background: #eadfc7; border: 1px solid #dacbb2; border-radius: 2px; transform: rotate(-3deg); box-shadow: 0 24px 60px rgba(20,12,20,.5), 0 2px 4px rgba(20,12,20,.3), inset 0 0 22px rgba(126,79,45,.09); container-type: inline-size; }
+    .print { position: relative; height: 100%; overflow: hidden; background: #76515f; box-shadow: 0 0 0 1px rgba(91,57,42,.17); }
+    .print-photo { width: 100%; height: 100%; object-fit: cover; display: block; filter: sepia(.19) saturate(.83) contrast(.93); }
+    .print::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(145deg, rgba(255,233,182,.14), transparent 55%, rgba(84,40,28,.16)); box-shadow: inset 0 0 28px rgba(57,29,27,.22); }
+    .message { position: absolute; z-index: 1; inset: 0; padding: 10% 6% 0; text-align: center; background: linear-gradient(180deg, rgba(57,27,42,.4), transparent 52%); }
+    h1 { margin: 0; font-size: clamp(1.15rem, 6.7cqw, 1.7rem); line-height: 1.2; font-weight: 400; letter-spacing: -.036em; text-shadow: 0 1px 12px rgba(50,23,34,.55); }
+    .caption { position: absolute; bottom: 20px; left: 14px; right: 14px; margin: 0; color: #745446; text-align: center; font-size: 1.0625rem; font-style: italic; letter-spacing: .015em; }
+    /* The folded geometry forms the functional animated envelope container. */
+    .envelope { position: absolute; width: min(88%, 440px); aspect-ratio: 1.65; top: 50%; left: 50%; transform: translate(-50%, -34%) rotate(-4deg); opacity: 0; pointer-events: none; }
+    .envelope-back { z-index: 1; background: #bd967f; border-radius: 3px; box-shadow: 0 22px 55px rgba(20,12,20,.4), inset 0 0 32px rgba(80,44,28,.18); }
+    .envelope-front { z-index: 3; overflow: hidden; border-radius: 3px; }
+    .fold-left, .fold-right, .fold-bottom { position: absolute; inset: 0; }
+    .fold-left { background: linear-gradient(120deg, #ead7ba, #d8bea0); clip-path: polygon(0 0, 56% 55%, 0 100%); }
+    .fold-right { background: linear-gradient(240deg, #dfc7a9, #cfaf8e); clip-path: polygon(100% 0, 44% 55%, 100% 100%); }
+    .fold-bottom { background: linear-gradient(175deg, #ead5b7, #ddc19f); clip-path: polygon(0 100%, 0 97%, 50% 42%, 100% 97%, 100% 100%); }
+    .envelope-note { position: absolute; left: 0; right: 0; bottom: 16%; text-align: center; color: #84604f; font-size: clamp(1rem, 4vw, 1.375rem); font-style: italic; }
+    .envelope-top { z-index: 4; perspective: 900px; }
+    .flap { position: absolute; inset: 0 0 auto; height: 61%; background: linear-gradient(165deg, #efddc1, #ceb091); clip-path: polygon(0 0, 100% 0, 50% 100%); transform-origin: 50% 0; backface-visibility: visible; }
+    .line { display: block; }
+    .second { margin-top: .13em; font-style: italic; font-size: 1.09em; letter-spacing: -.045em; padding-bottom: .18em; }
+    .word { display: inline-block; position: relative; }
+    .smile { color: #fff0d7; }
+    .smile::after { content: attr(data-word); position: absolute; inset: 0; color: #ffebb6; text-shadow: 0 0 13px #ffbb63, 0 0 34px #ff7132, 0 0 60px #e96b48; opacity: 0; }
+    .controls { position: relative; z-index: 3; display: flex; justify-content: center; align-items: center; padding-top: 8px; }
+    .replay { display: inline-flex; align-items: center; gap: 9px; min-height: 44px; padding: 11px 18px; border: 1px solid rgba(255,242,227,.32); border-radius: 999px; background: rgba(38,23,30,.64); color: #fff2e2; font: 400 .875rem/1.3 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; cursor: pointer; white-space: nowrap; transition: background .2s, transform .2s; }
+    .replay:hover { background: rgba(86,47,46,.88); }
+    .replay:active { transform: scale(.97); }
+    .replay:focus-visible { outline: 2px solid var(--glow); outline-offset: 5px; }
+    .replay svg { height: 15px; width: 15px; }
+    .dust { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+    .mote { position: absolute; left: var(--x); top: var(--y); height: var(--size); width: var(--size); border-radius: 50%; background: #ffe2ba; box-shadow: 0 0 8px #ff9b65; opacity: 0; }
+    @media (prefers-reduced-motion: no-preference) {
+      .gate { animation: reveal 1.3s cubic-bezier(.16,1,.3,1) both; }
+      .gate.leaving { animation: gate-out .9s cubic-bezier(.4,0,.2,1) both; pointer-events: none; }
+      .gate-shade.leaving { animation: veil-out 1.4s ease both; }
+      .gate.invalid .answer { animation: shake .4s ease; }
+      .playing .word { animation: reveal 1.9s cubic-bezier(.16,1,.3,1) both; animation-delay: var(--delay); }
+      .playing .letter { animation: letter-in 1.5s cubic-bezier(.16,1,.3,1) both; animation-delay: calc(var(--delay) + var(--i) * .045s); }
+      .playing .wave { animation: wave-out 3s cubic-bezier(.16,.5,.3,1) 4.2s both; }
+      .playing .smile::after { animation: warmth 2.7s ease-in-out 6.2s both; }
+      .playing .exposure { animation: light 5.5s ease-in-out 3s both; }
+      .playing .photo { animation: breathe 16s cubic-bezier(.2,.55,.5,1) both; }
+      .playing .dedication { animation: reveal 1.6s ease-out both; }
+      .playing .controls { animation: reveal 1.8s ease-out 7.8s both; }
+      .playing .envelope { animation: envelope-open 6s cubic-bezier(.4,0,.2,1) both; }
+      .playing .envelope-top { animation: envelope-open 6s cubic-bezier(.4,0,.2,1) both, flap-layer 1.2s step-end 1.5s both; }
+      .playing .flap { animation: flap-open 1.2s cubic-bezier(.4,0,.2,1) 1.5s both; }
+      .playing .keepsake { animation: photo-emerge 6s cubic-bezier(.4,0,.2,1) both; }
+      .playing .caption { animation: reveal 1.6s ease-out 7s both; }
+      .playing .mote { animation: drift 8s ease-out 3 both; animation-delay: var(--delay); }
+      .spark { animation: spark-out 1.3s cubic-bezier(.1,.5,.3,1) both; }
+    }
+    @keyframes envelope-open {
+      0% { opacity: 0; transform: translate(-50%,-10%) rotate(-7deg) scale(.93); }
+      16%, 64% { opacity: 1; transform: translate(-50%,-34%) rotate(-4deg) scale(1); }
+      85%, 100% { opacity: 0; transform: translate(-50%,90%) rotate(8deg) scale(.92); }
+    }
+    @keyframes flap-open { from { transform: rotateX(0deg); } to { transform: rotateX(180deg); } }
+    /* Discrete layer change when the flap passes vertical: the photo exits in front. */
+    @keyframes flap-layer { 0% { z-index: 4; } 50%, 100% { z-index: 1; } }
+    @keyframes photo-emerge {
+      0%, 34% { opacity: 0; transform: translateY(8%) rotate(-4deg) scale(.48); }
+      39% { opacity: 1; transform: translateY(8%) rotate(-4deg) scale(.48); }
+      62% { opacity: 1; transform: translateY(-28%) rotate(1deg) scale(.66); }
+      78% { opacity: 1; transform: translateY(-20%) rotate(1deg) scale(.66); }
+      100% { opacity: 1; transform: translateY(0) rotate(-3deg) scale(1); }
+    }
+    @keyframes gate-out { to { opacity: 0; transform: translateY(-30px) scale(.95); } }
+    @keyframes veil-out { to { opacity: 0; } }
+    @keyframes letter-in { from { opacity: 0; transform: translateY(35px) rotate(7deg) scale(.91); } to { opacity: 1; transform: translateY(0) rotate(0) scale(1); } }
+    @keyframes wave-out { 0% { opacity: 0; transform: scale(.15); } 20% { opacity: .65; } 100% { opacity: 0; transform: scale(9); } }
+    @keyframes shake { 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-3px); } }
+    @keyframes spark-out { 0% { opacity: .95; transform: translate(-50%,-50%) scale(1); } 100% { opacity: 0; transform: translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.1); } }
+    .spark { position: absolute; z-index: 2; pointer-events: none; width: 4px; height: 4px; border-radius: 50%; background: #ffe7b9; box-shadow: 0 0 12px #ffb779; }
+    @keyframes reveal { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes warmth { 0%,100% { opacity: 0; } 40% { opacity: .85; } }
+    @keyframes light { 0%,100% { opacity: 0; transform: scale(.84); } 45% { opacity: .58; transform: scale(1.07); } }
+    @keyframes breathe { from { transform: scale(1.095); } to { transform: scale(1.035); } }
+    @keyframes drift { 0% { opacity: 0; transform: translate3d(0,24px,0); } 25% { opacity: .65; } 100% { opacity: 0; transform: translate3d(22px,-100px,0); } }
+    @media (max-width: 767px) {
+      .postcard { padding-left: 22px; padding-right: 22px; }
+      .photo { object-position: 50% 55%; }
+      .keepsake { padding: 11px 11px 53px; }
+      .caption { bottom: 17px; font-size: 1rem; }
+      .first { margin: auto; }
+      .second { font-size: 1.02em; margin: .19em auto 0; }
+    }
+    @media (max-height: 560px) { .postcard { padding-top: 14px; padding-bottom: 12px; } .keepsake { width: min(62vw, 290px); margin: 18px 0; } .mail-stage { min-height: 390px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <main class="postcard" id="postcard">
+    <div class="scene" aria-hidden="true"><img class="photo" src="sunset.jpg" alt="" fetchpriority="high" width="1200" height="1500"></div>
+    <div class="scrim" aria-hidden="true"></div>
+    <div class="exposure" aria-hidden="true"></div>
+    <div class="dust" id="dust" aria-hidden="true"></div>
+    <div class="wave" aria-hidden="true"></div>
+    <div class="gate-shade" id="gate-shade" aria-hidden="true"></div>
+    <form class="gate" id="gate">
+      <label for="answer">Я у тебя записан - </label>
+      <input class="answer" id="answer" name="answer" type="text" placeholder="Как в твоих контактах" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="80" aria-describedby="answer-error" required>
+      <p class="error" id="answer-error" role="status" aria-live="polite"></p>
+      <button class="open-card" type="submit">Открыть</button>
+      <noscript><p class="error">Чтобы открыть открытку, включи JavaScript в браузере.</p></noscript>
+    </form>
+    <div class="mail-stage" data-reveal hidden>
+      <div class="envelope envelope-back" aria-hidden="true"></div>
+      <figure class="keepsake">
+        <div class="print">
+          <img class="print-photo" src="sunset.jpg" alt="" width="1200" height="1500">
+          <section class="message" aria-label="Послание" tabindex="-1">
+      <h1 aria-label="Я люблю твою улыбку, она заразительна">
+        <span class="line first" aria-hidden="true"><span class="word" style="--delay:5.1s">Я люблю</span> <span class="word" style="--delay:5.4s">твою</span> <span class="word smile" data-word="улыбку," style="--delay:5.8s">улыбку,</span></span>
+        <span class="line second" aria-hidden="true"><span class="word" style="--delay:6.5s">она</span> <span class="word" style="--delay:6.8s">заразительна</span></span>
+      </h1>
+          </section>
+        </div>
+        <figcaption class="caption">на память о тёплом</figcaption>
+      </figure>
+      <div class="envelope envelope-front" aria-hidden="true"><div class="fold-left"></div><div class="fold-right"></div><div class="fold-bottom"></div></div>
+      <div class="envelope envelope-top" aria-hidden="true"><div class="flap"></div></div>
+    </div>
+    <div class="controls" data-reveal hidden><button class="replay" id="replay" type="button" aria-label="Повторить анимацию открытки"><span aria-hidden="true">↻</span> Ещё раз</button></div>
+  </main>
+  <script>
+    const card = document.getElementById('postcard');
+    const dust = document.getElementById('dust');
+    const gate = document.getElementById('gate');
+    const answer = document.getElementById('answer');
+    const error = document.getElementById('answer-error');
+    const shade = document.getElementById('gate-shade');
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let unlocked = false;
+    // This is a playful reveal, not an authentication or data-security boundary.
+    const matchesAnswer = value => value.normalize('NFC').trim() === 'Олег 😇😈';
+    document.querySelectorAll('.word').forEach(word => {
+      const letters = Array.from(word.textContent);
+      word.textContent = '';
+      letters.forEach((character, i) => {
+        const letter = document.createElement('span');
+        letter.className = 'letter';
+        letter.style.setProperty('--i', i);
+        letter.textContent = character;
+        word.appendChild(letter);
+      });
+    });
+    for (let i = 0; i < 34; i++) {
+      const mote = document.createElement('i');
+      mote.className = 'mote';
+      mote.style.cssText = `--x:${12 + (i * 17 % 78)}%;--y:${34 + (i * 13 % 52)}%;--size:${i % 3 === 0 ? 3 : 2}px;--delay:${.8 + (i % 7) * .42}s`;
+      dust.appendChild(mote);
+    }
+    answer.addEventListener('input', () => {
+      answer.removeAttribute('aria-invalid');
+      error.textContent = '';
+      gate.classList.remove('invalid');
+    });
+    gate.addEventListener('submit', event => {
+      event.preventDefault();
+      if (unlocked) return;
+      if (!matchesAnswer(answer.value)) {
+        error.textContent = 'Пока не совпало. Вспомни имя и оба эмодзи.';
+        answer.setAttribute('aria-invalid', 'true');
+        gate.classList.remove('invalid');
+        void gate.offsetWidth;
+        gate.classList.add('invalid');
+        answer.focus();
+        return;
+      }
+      unlocked = true;
+      answer.blur();
+      gate.inert = true;
+      gate.setAttribute('aria-hidden', 'true');
+      gate.classList.add('leaving');
+      shade.classList.add('leaving');
+      document.querySelectorAll('[data-reveal]').forEach(element => { element.hidden = false; });
+      card.classList.add('playing', 'unlocked');
+      document.querySelector('.message').focus({ preventScroll: true });
+      const finishOpening = () => { gate.hidden = true; shade.hidden = true; };
+      if (reduced.matches) finishOpening();
+      else window.setTimeout(finishOpening, 1450);
+    });
+    card.addEventListener('pointerdown', event => {
+      if (!unlocked || reduced.matches || event.target.closest('button') || document.querySelectorAll('.spark').length > 70) return;
+      const bounds = card.getBoundingClientRect();
+      for (let i = 0; i < 12; i++) {
+        const spark = document.createElement('i');
+        spark.className = 'spark';
+        spark.setAttribute('aria-hidden', 'true');
+        const angle = i * Math.PI / 6;
+        const distance = 45 + (i % 3) * 20;
+        spark.style.cssText = `left:${event.clientX - bounds.left}px;top:${event.clientY - bounds.top}px;--dx:${Math.cos(angle) * distance}px;--dy:${Math.sin(angle) * distance - 20}px`;
+        spark.addEventListener('animationend', () => spark.remove(), { once: true });
+        card.appendChild(spark);
+        window.setTimeout(() => spark.remove(), 1600);
+      }
+    });
+    document.getElementById('replay').addEventListener('click', () => {
+      card.classList.remove('playing');
+      void card.offsetWidth;
+      card.classList.add('playing');
+    });
+  </script>
+</body>
+</html>
