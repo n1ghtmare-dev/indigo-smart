@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>English Map | Карта обучения</title>
+  <meta name="description" content="Личная карта изучения английского. Один час практики открывает одну клетку территории.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#091017">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="back-link" href="/#/learn" aria-label="Вернуться в раздел обучения">←</a>
+
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">EN</span>
+        <div>
+          <strong>English Map</strong>
+        </div>
+      </div>
+
+      <div class="mobile-balance" aria-label="Текущий баланс">
+        <span>Баланс</span>
+        <strong id="mobileBalanceValue">0 ч 00 м</strong>
+      </div>
+
+      <dl class="header-stats" aria-label="Общий прогресс">
+        <div>
+          <dt>Баланс</dt>
+          <dd id="balanceValue">0 ч 00 м</dd>
+        </div>
+        <div>
+          <dt>Изучено</dt>
+          <dd id="studiedValue">0 минут</dd>
+        </div>
+        <div>
+          <dt>Территория</dt>
+          <dd id="claimedValue">0 клеток</dd>
+        </div>
+      </dl>
+
+      <div class="top-actions">
+        <button class="timer-button" id="timerButton" type="button">Начать занятие</button>
+        <button class="primary-button" id="openTimeDialog" type="button">Добавить время</button>
+      </div>
+    </header>
+
+    <main class="map-stage">
+      <canvas
+        id="mapCanvas"
+        tabindex="0"
+        role="img"
+        aria-label="Карта английского с островами из квадратных клеток. Клик по свободной клетке захватывает её за один час."
+      ></canvas>
+
+      <aside class="island-panel" aria-live="polite">
+        <span class="island-kicker">Выбранный остров</span>
+        <h2 id="islandName">Vocabulary</h2>
+        <p id="islandDescription">Слова, устойчивые выражения и активный словарь.</p>
+        <div class="island-progress">
+          <strong id="islandClaimed">0</strong>
+          <span>из <b id="islandTotal">0</b> клеток захвачено</span>
+        </div>
+        <button class="claim-button" id="claimNext" type="button">Захватить клетку за 1 час</button>
+      </aside>
+
+      <div class="map-controls" aria-label="Масштаб карты">
+        <button type="button" id="zoomOut" aria-label="Уменьшить масштаб">−</button>
+        <button type="button" id="fitMap" aria-label="Показать всю карту">⌂</button>
+        <button type="button" id="zoomIn" aria-label="Увеличить масштаб">+</button>
+      </div>
+
+      <section class="time-dock" aria-label="Быстрое добавление времени">
+        <span>Добавить после занятия</span>
+        <div class="quick-time">
+          <button type="button" data-add-minutes="15">+15 мин</button>
+          <button type="button" data-add-minutes="30">+30 мин</button>
+          <button type="button" data-add-minutes="45">+45 мин</button>
+          <button type="button" data-add-minutes="60">+1 час</button>
+        </div>
+      </section>
+
+      <p class="map-hint" id="mapHint">Перетаскивай карту и выбирай любую свободную клетку</p>
+
+    </main>
+  </div>
+
+  <dialog class="time-dialog" id="timeDialog" aria-labelledby="timeDialogTitle">
+    <form id="timeForm">
+      <div class="dialog-head">
+        <div>
+          <span>Новая запись</span>
+          <h2 id="timeDialogTitle">Сколько занимался?</h2>
+        </div>
+        <button class="dialog-close" id="closeTimeDialog" type="button" aria-label="Закрыть">×</button>
+      </div>
+
+      <label for="timeAmount">Продолжительность</label>
+      <div class="amount-row">
+        <input id="timeAmount" name="amount" type="number" inputmode="decimal" min="1" max="1440" step="1" value="30" required>
+        <div class="unit-switch" role="group" aria-label="Единица времени">
+          <button type="button" data-unit="minutes" aria-pressed="true">Минуты</button>
+          <button type="button" data-unit="hours" aria-pressed="false">Часы</button>
+        </div>
+      </div>
+      <p class="form-help" id="timeHelp">Можно добавить от 1 до 1440 минут.</p>
+      <p class="form-error" id="timeError" role="alert" hidden></p>
+
+      <button class="dialog-submit" type="submit">Зачислить время</button>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true">
+    <span id="toastMessage"></span>
+    <button id="toastAction" type="button" hidden>Отменить</button>
+  </div>
+
+  <script src="./script.js" defer></script>
+</body>
+</html>
