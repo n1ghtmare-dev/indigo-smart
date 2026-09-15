@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const STORAGE_KEY = "english-map-v1";
+  const ACTIVE_MAP_KEY = "learning-map-active-v1";
   const CELL_COST = 60;
   const CELL_SIZE = 13;
   const PITCH = 16;
@@ -11,11 +11,9 @@
   const WORLD_HEIGHT = GRID_HEIGHT * PITCH;
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  const islandSpecs = [
+  const englishIslandSpecs = [
     {
       id: "pronunciation",
-      name: "Pronunciation",
-      description: "Звуки, ритм речи, связки слов и понятное произношение.",
       cx: 11,
       cy: 13,
       seed: 11,
@@ -23,8 +21,6 @@
     },
     {
       id: "vocabulary",
-      name: "Vocabulary",
-      description: "Слова, устойчивые выражения и активный словарь.",
       cx: 31,
       cy: 8,
       seed: 23,
@@ -32,8 +28,6 @@
     },
     {
       id: "grammar",
-      name: "Grammar",
-      description: "Конструкции, времена и точность без заучивания правил в вакууме.",
       cx: 53,
       cy: 14,
       seed: 37,
@@ -41,8 +35,6 @@
     },
     {
       id: "listening",
-      name: "Listening",
-      description: "Подкасты, диалоги и понимание естественной речи на слух.",
       cx: 78,
       cy: 8,
       seed: 41,
@@ -50,7 +42,7 @@
     },
     {
       id: "speaking",
-      name: "Speaking",
+      label: "Speaking",
       description: "Разговорная практика, скорость ответа и уверенность в диалоге.",
       cx: 94,
       cy: 18,
@@ -59,8 +51,6 @@
     },
     {
       id: "reading",
-      name: "Reading",
-      description: "Статьи, книги и чтение без постоянного перевода.",
       cx: 18,
       cy: 35,
       seed: 67,
@@ -68,8 +58,6 @@
     },
     {
       id: "writing",
-      name: "Writing",
-      description: "Переписка, заметки и ясные тексты на английском.",
       cx: 42,
       cy: 33,
       seed: 79,
@@ -77,8 +65,6 @@
     },
     {
       id: "idioms",
-      name: "Idioms",
-      description: "Фразовые глаголы, идиомы и живая повседневная речь.",
       cx: 65,
       cy: 35,
       seed: 83,
@@ -86,8 +72,6 @@
     },
     {
       id: "media",
-      name: "Films & Media",
-      description: "Фильмы, видео, музыка и английский в привычном контексте.",
       cx: 91,
       cy: 35,
       seed: 97,
@@ -95,8 +79,6 @@
     },
     {
       id: "work",
-      name: "English at Work",
-      description: "Созвоны, документация, презентации и рабочая переписка.",
       cx: 11,
       cy: 57,
       seed: 101,
@@ -104,8 +86,6 @@
     },
     {
       id: "travel",
-      name: "Travel",
-      description: "Ситуации в поездках, навигация и лёгкие разговоры с людьми.",
       cx: 35,
       cy: 56,
       seed: 107,
@@ -113,8 +93,6 @@
     },
     {
       id: "culture",
-      name: "Culture",
-      description: "Контекст, юмор и культурные детали, которые делают язык живым.",
       cx: 59,
       cy: 57,
       seed: 109,
@@ -122,14 +100,133 @@
     },
     {
       id: "fluency",
-      name: "Fluency",
-      description: "Свободная речь, сложные темы и автоматизм во всех навыках.",
       cx: 91,
       cy: 57,
       seed: 127,
       blobs: [[0, 0, 7.8, 5.7], [-6.3, 2.7, 3.9, 3.2], [6.2, -2.6, 4.0, 3.2], [1.5, -5.7, 3.0, 2.4]]
     }
   ];
+
+  const itIslandSpecs = [
+    {
+      id: "it-01",
+      cx: 10,
+      cy: 11,
+      seed: 151,
+      blobs: [[0, 0, 5.5, 4.4], [4.3, 2.0, 3.0, 2.5], [-2.6, -3.8, 2.2, 1.9]]
+    },
+    {
+      id: "it-02",
+      cx: 30,
+      cy: 17,
+      seed: 163,
+      blobs: [[0, 0, 6.8, 4.7], [-5.0, 1.6, 3.2, 2.6], [4.8, -2.7, 3.1, 2.4]]
+    },
+    {
+      id: "it-03",
+      cx: 50,
+      cy: 8,
+      seed: 173,
+      blobs: [[0, 0, 6.0, 4.1], [4.8, 1.5, 3.1, 2.5], [-3.9, -2.8, 2.5, 2.0]]
+    },
+    {
+      id: "it-04",
+      cx: 73,
+      cy: 15,
+      seed: 181,
+      blobs: [[0, 0, 7.2, 5.4], [-5.6, -2.1, 3.5, 2.8], [5.8, 2.2, 3.7, 3.0]]
+    },
+    {
+      id: "it-05",
+      cx: 98,
+      cy: 10,
+      seed: 191,
+      blobs: [[0, 0, 5.8, 4.3], [-4.2, 2.4, 2.8, 2.3], [3.8, -3.1, 2.6, 2.1]]
+    },
+    {
+      id: "it-06",
+      cx: 17,
+      cy: 37,
+      seed: 199,
+      blobs: [[0, 0, 6.5, 5.0], [5.0, -1.8, 3.2, 2.7], [-4.8, 2.7, 3.0, 2.5]]
+    },
+    {
+      id: "it-07",
+      cx: 42,
+      cy: 33,
+      seed: 211,
+      blobs: [[0, 0, 7.5, 5.8], [-5.8, -2.5, 3.6, 3.0], [5.6, 2.5, 3.7, 3.1]]
+    },
+    {
+      id: "it-08",
+      cx: 67,
+      cy: 38,
+      seed: 223,
+      blobs: [[0, 0, 5.4, 4.2], [4.4, -2.0, 2.8, 2.3], [-3.7, 2.6, 2.6, 2.2]]
+    },
+    {
+      id: "it-09",
+      cx: 94,
+      cy: 34,
+      seed: 227,
+      blobs: [[0, 0, 7.0, 4.9], [5.6, 2.1, 3.6, 2.9], [-5.5, -2.4, 3.5, 2.8]]
+    },
+    {
+      id: "it-10",
+      cx: 10,
+      cy: 59,
+      seed: 233,
+      blobs: [[0, 0, 5.3, 3.9], [4.1, 1.7, 2.7, 2.2], [-3.5, -2.5, 2.5, 2.0]]
+    },
+    {
+      id: "it-11",
+      cx: 34,
+      cy: 57,
+      seed: 239,
+      blobs: [[0, 0, 6.0, 4.1], [-4.4, 2.2, 2.9, 2.3], [4.9, -2.1, 3.2, 2.4]]
+    },
+    {
+      id: "it-12",
+      cx: 60,
+      cy: 60,
+      seed: 251,
+      blobs: [[0, 0, 6.7, 4.7], [5.2, 1.8, 3.4, 2.8], [-4.9, -2.7, 3.1, 2.5]]
+    },
+    {
+      id: "it-13",
+      cx: 88,
+      cy: 57,
+      seed: 263,
+      blobs: [[0, 0, 7.8, 5.8], [-6.2, 2.7, 3.9, 3.2], [6.1, -2.6, 4.0, 3.2], [1.4, -5.8, 3.0, 2.4]]
+    }
+  ];
+
+  const mapConfigs = {
+    english: {
+      storageKey: "english-map-v1",
+      code: "EN",
+      title: "English Map",
+      kicker: "Территория английского",
+      genericName: "English island",
+      genericDescription: "Часть общей территории английского. Засчитывается любая практика.",
+      ariaName: "английского",
+      claimName: "английской карты",
+      defaultIsland: "speaking",
+      islandSpecs: englishIslandSpecs
+    },
+    it: {
+      storageKey: "it-map-v1",
+      code: "IT",
+      title: "IT Map",
+      kicker: "Территория IT",
+      genericName: "IT island",
+      genericDescription: "Часть общей территории IT. Засчитывается обучение, код и практика.",
+      ariaName: "IT",
+      claimName: "IT-карты",
+      defaultIsland: "it-07",
+      islandSpecs: itIslandSpecs
+    }
+  };
 
   const canvas = document.getElementById("mapCanvas");
   const context = canvas.getContext("2d", { alpha: false });
@@ -151,6 +248,10 @@
   const toast = document.getElementById("toast");
   const toastMessage = document.getElementById("toastMessage");
   const toastAction = document.getElementById("toastAction");
+  const brandMark = document.getElementById("brandMark");
+  const brandTitle = document.getElementById("brandTitle");
+  const islandKicker = document.getElementById("islandKicker");
+  const mapSwitchButtons = Array.from(document.querySelectorAll("[data-map]"));
 
   function noise(x, y, seed) {
     let value = Math.imul(x + seed * 17, 374761393) + Math.imul(y - seed * 11, 668265263);
@@ -193,13 +294,34 @@
     });
   }
 
-  const islands = islandSpecs.map(function (spec) {
-    return Object.assign({}, spec, { cells: buildCells(spec) });
-  });
-  const islandById = new Map(islands.map(function (island) { return [island.id, island]; }));
-  const allCells = islands.flatMap(function (island) { return island.cells; });
-  const cellById = new Map(allCells.map(function (cell) { return [cell.id, cell]; }));
-  const cellAtGrid = new Map(allCells.map(function (cell) { return [cell.gx + "," + cell.gy, cell]; }));
+  const mapDataById = Object.keys(mapConfigs).reduce(function (result, mapId) {
+    const islandsForMap = mapConfigs[mapId].islandSpecs.map(function (spec) {
+      return Object.assign({}, spec, { cells: buildCells(spec) });
+    });
+    const cellsForMap = islandsForMap.flatMap(function (island) { return island.cells; });
+    result[mapId] = {
+      islands: islandsForMap,
+      islandById: new Map(islandsForMap.map(function (island) { return [island.id, island]; })),
+      allCells: cellsForMap,
+      cellById: new Map(cellsForMap.map(function (cell) { return [cell.id, cell]; })),
+      cellAtGrid: new Map(cellsForMap.map(function (cell) { return [cell.gx + "," + cell.gy, cell]; }))
+    };
+    return result;
+  }, {});
+
+  let savedMapId = null;
+  try {
+    savedMapId = localStorage.getItem(ACTIVE_MAP_KEY);
+  } catch (error) {
+    savedMapId = null;
+  }
+  let activeMapId = Object.prototype.hasOwnProperty.call(mapConfigs, savedMapId) ? savedMapId : "english";
+  let mapConfig = mapConfigs[activeMapId];
+  let islands = mapDataById[activeMapId].islands;
+  let islandById = mapDataById[activeMapId].islandById;
+  let allCells = mapDataById[activeMapId].allCells;
+  let cellById = mapDataById[activeMapId].cellById;
+  let cellAtGrid = mapDataById[activeMapId].cellAtGrid;
 
   function safeNumber(value) {
     const number = Number(value);
@@ -211,13 +333,13 @@
       balanceMinutes: 0,
       totalMinutes: 0,
       captured: [],
-      selectedIsland: "vocabulary",
+      selectedIsland: mapConfig.defaultIsland,
       timerStartedAt: null,
       sessions: []
     };
 
     try {
-      const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+      const parsed = JSON.parse(localStorage.getItem(mapConfig.storageKey) || "null");
       if (!parsed || typeof parsed !== "object") return fallback;
       const captured = Array.isArray(parsed.captured)
         ? parsed.captured.filter(function (id) { return cellById.has(id); })
@@ -226,7 +348,7 @@
         balanceMinutes: Math.floor(Number.isFinite(parsed.balanceMinutes) ? safeNumber(parsed.balanceMinutes) : safeNumber(parsed.balanceSeconds) / 60),
         totalMinutes: Math.floor(Number.isFinite(parsed.totalMinutes) ? safeNumber(parsed.totalMinutes) : safeNumber(parsed.totalSeconds) / 60),
         captured: Array.from(new Set(captured)),
-        selectedIsland: islandById.has(parsed.selectedIsland) ? parsed.selectedIsland : "vocabulary",
+        selectedIsland: islandById.has(parsed.selectedIsland) ? parsed.selectedIsland : mapConfig.defaultIsland,
         timerStartedAt: Number.isFinite(parsed.timerStartedAt) && parsed.timerStartedAt <= Date.now() ? parsed.timerStartedAt : null,
         sessions: Array.isArray(parsed.sessions) ? parsed.sessions.slice(-120) : []
       };
@@ -250,11 +372,56 @@
 
   const camera = { x: 0, y: 0, zoom: 0.65 };
 
+  function syncMapChrome() {
+    document.body.dataset.map = activeMapId;
+    document.title = mapConfig.title + " | Карта обучения";
+    brandMark.textContent = mapConfig.code;
+    brandTitle.textContent = mapConfig.title;
+    islandKicker.textContent = mapConfig.kicker;
+    mapSwitchButtons.forEach(function (button) {
+      button.setAttribute("aria-pressed", String(button.dataset.map === activeMapId));
+    });
+  }
+
+  function activateMap(mapId, announce) {
+    if (!Object.prototype.hasOwnProperty.call(mapConfigs, mapId) || mapId === activeMapId) return;
+
+    clearTimeout(toastTimer);
+    toastCallback = null;
+    toast.classList.remove("is-visible");
+    if (animationFrame) cancelAnimationFrame(animationFrame);
+    animationFrame = null;
+    claimPulse = null;
+    hoverCellId = null;
+
+    activeMapId = mapId;
+    mapConfig = mapConfigs[activeMapId];
+    islands = mapDataById[activeMapId].islands;
+    islandById = mapDataById[activeMapId].islandById;
+    allCells = mapDataById[activeMapId].allCells;
+    cellById = mapDataById[activeMapId].cellById;
+    cellAtGrid = mapDataById[activeMapId].cellAtGrid;
+    state = readState();
+    captured = new Set(state.captured);
+    selectedIslandId = state.selectedIsland;
+
+    try {
+      localStorage.setItem(ACTIVE_MAP_KEY, activeMapId);
+    } catch (error) {
+      // The active map still works for this session when storage is unavailable.
+    }
+
+    syncMapChrome();
+    updateInterface();
+    if (viewportWidth && viewportHeight) fitCamera(false);
+    if (announce) showToast(mapConfig.title + " открыта.");
+  }
+
   function persist() {
     state.captured = Array.from(captured);
     state.selectedIsland = selectedIslandId;
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      localStorage.setItem(mapConfig.storageKey, JSON.stringify(state));
     } catch (error) {
       showToast("Не удалось сохранить прогресс в этом браузере.");
     }
@@ -306,8 +473,8 @@
     mobileBalanceValue.textContent = formatBalance(state.balanceMinutes);
     studiedValue.textContent = formatDuration(state.totalMinutes);
     claimedValue.textContent = totalCaptured + " " + plural(totalCaptured, ["клетка", "клетки", "клеток"]);
-    islandName.textContent = selected.name;
-    islandDescription.textContent = selected.description;
+    islandName.textContent = selected.label || mapConfig.genericName;
+    islandDescription.textContent = selected.description || mapConfig.genericDescription;
     islandClaimed.textContent = islandCount;
     islandTotal.textContent = selected.cells.length;
 
@@ -325,7 +492,7 @@
 
     canvas.setAttribute(
       "aria-label",
-      "Карта английского. Захвачено " + totalCaptured + " из " + allCells.length + " клеток. Доступно " + available + " " + plural(available, ["клетка", "клетки", "клеток"]) + "."
+      "Карта " + mapConfig.ariaName + ". Захвачено " + totalCaptured + " из " + allCells.length + " клеток. Доступно " + available + " " + plural(available, ["клетка", "клетки", "клеток"]) + "."
     );
     updateTimerButton();
   }
@@ -352,7 +519,7 @@
     persist();
     updateInterface();
     render();
-    showToast(formatDuration(amount) + " добавлено на баланс.");
+    showToast(formatDuration(amount) + " добавлено на баланс " + mapConfig.title + ".");
   }
 
   function beginPulse(cell) {
@@ -398,7 +565,9 @@
     updateInterface();
     beginPulse(cell);
 
-    showToast("Клетка острова " + islandById.get(cell.islandId).name + " захвачена.", "Отменить", function () {
+    const island = islandById.get(cell.islandId);
+    const claimMessage = island.label ? "Клетка " + island.label + " захвачена." : "Клетка " + mapConfig.claimName + " захвачена.";
+    showToast(claimMessage, "Отменить", function () {
       if (!captured.has(cell.id)) return;
       captured.delete(cell.id);
       state.balanceMinutes += CELL_COST;
@@ -502,7 +671,7 @@
     const x = island.cx * PITCH;
     const y = island.cy * PITCH;
     const claimedCount = capturedOnIsland(island);
-    const title = island.name.toUpperCase();
+    const title = island.label ? island.label.toUpperCase() : mapConfig.code;
     const subline = claimedCount + " / " + island.cells.length + " H";
     const titleSize = 15 / Math.max(camera.zoom, 0.48);
     const subSize = 9 / Math.max(camera.zoom, 0.48);
@@ -709,6 +878,12 @@
     render();
   });
 
+  mapSwitchButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      activateMap(button.dataset.map, true);
+    });
+  });
+
   function updateTimerButton() {
     if (!state.timerStartedAt) {
       timerButton.classList.remove("is-running");
@@ -833,7 +1008,11 @@
   });
 
   window.addEventListener("storage", function (event) {
-    if (event.key !== STORAGE_KEY) return;
+    if (event.key === ACTIVE_MAP_KEY && Object.prototype.hasOwnProperty.call(mapConfigs, event.newValue)) {
+      activateMap(event.newValue, false);
+      return;
+    }
+    if (event.key !== mapConfig.storageKey) return;
     state = readState();
     captured = new Set(state.captured);
     selectedIslandId = state.selectedIsland;
@@ -844,5 +1023,6 @@
   const observer = new ResizeObserver(resizeCanvas);
   observer.observe(canvas);
   document.fonts.ready.then(render);
+  syncMapChrome();
   updateInterface();
 })();

@@ -288,11 +288,53 @@ button:active {
 }
 
 .island-panel,
+.map-switcher,
 .map-controls,
 .time-dock,
 .map-hint {
   position: absolute;
   z-index: 3;
+}
+
+.map-switcher {
+  top: clamp(20px, 3vw, 38px);
+  left: clamp(18px, 3vw, 42px);
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 5px;
+  padding: 5px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.map-switcher button {
+  min-width: 48px;
+  min-height: 38px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  padding: 0 14px;
+  background: transparent;
+  color: var(--muted);
+  font-family: "English Mono", monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.map-switcher button:hover {
+  color: var(--text);
+}
+
+.map-switcher button[aria-pressed="true"] {
+  border-color: rgba(166, 205, 119, 0.34);
+  background: rgba(166, 205, 119, 0.11);
+  color: var(--accent-strong);
 }
 
 .island-kicker,
@@ -633,6 +675,7 @@ button:active {
 
 @media (prefers-reduced-motion: no-preference) {
   .island-panel,
+  .map-switcher,
   .time-dock,
   .map-controls {
     animation: arrive 560ms cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -640,6 +683,10 @@ button:active {
 
   .island-panel {
     animation-delay: 80ms;
+  }
+
+  .map-switcher {
+    animation-delay: 40ms;
   }
 
   .time-dock,
@@ -757,6 +804,17 @@ button:active {
     left: 12px;
     width: auto;
     padding: 13px 14px;
+  }
+
+  .map-switcher {
+    top: 16px;
+    left: 12px;
+  }
+
+  .map-switcher button {
+    min-height: 32px;
+    padding: 0 10px;
+    font-size: 9px;
   }
 
   .island-kicker,
@@ -887,6 +945,7 @@ button:active {
 @media (prefers-reduced-transparency: reduce) {
   .topbar,
   .island-panel,
+  .map-switcher,
   .time-dock,
   .map-controls {
     background: var(--surface-solid);

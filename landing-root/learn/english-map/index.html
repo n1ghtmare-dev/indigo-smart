@@ -3,10 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>English Map | Карта обучения</title>
-  <meta name="description" content="Личная карта изучения английского. Один час практики открывает одну клетку территории.">
+  <title>Learning Map | English + IT</title>
+  <meta name="description" content="Личные карты изучения английского и IT. Один час практики открывает одну клетку территории.">
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#091017">
+  <link rel="icon" href="data:,">
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -15,9 +16,9 @@
       <a class="back-link" href="/#/learn" aria-label="Вернуться в раздел обучения">←</a>
 
       <div class="brand">
-        <span class="brand-mark" aria-hidden="true">EN</span>
+        <span class="brand-mark" id="brandMark" aria-hidden="true">EN</span>
         <div>
-          <strong>English Map</strong>
+          <strong id="brandTitle">English Map</strong>
         </div>
       </div>
 
@@ -52,13 +53,18 @@
         id="mapCanvas"
         tabindex="0"
         role="img"
-        aria-label="Карта английского с островами из квадратных клеток. Клик по свободной клетке захватывает её за один час."
+        aria-label="Карта обучения с островами из квадратных клеток. Клик по свободной клетке захватывает её за один час."
       ></canvas>
 
+      <div class="map-switcher" role="group" aria-label="Выбрать карту обучения">
+        <button type="button" data-map="english" aria-pressed="true">English</button>
+        <button type="button" data-map="it" aria-pressed="false">IT</button>
+      </div>
+
       <aside class="island-panel" aria-live="polite">
-        <span class="island-kicker">Выбранный остров</span>
-        <h2 id="islandName">Vocabulary</h2>
-        <p id="islandDescription">Слова, устойчивые выражения и активный словарь.</p>
+        <span class="island-kicker" id="islandKicker">Территория английского</span>
+        <h2 id="islandName">Speaking</h2>
+        <p id="islandDescription">Разговорная практика, скорость ответа и уверенность в диалоге.</p>
         <div class="island-progress">
           <strong id="islandClaimed">0</strong>
           <span>из <b id="islandTotal">0</b> клеток захвачено</span>
