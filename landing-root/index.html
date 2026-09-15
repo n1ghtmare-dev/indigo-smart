@@ -504,10 +504,10 @@
 
 <script>
   const SITES = [
-    { name:"Школа-студия красоты — тёмный", category:"Красота", path:"/landing/index.html", thumb:"/thumbs/landing.webp", note:"Тёмный атмосферный лендинг: почти чёрный фон, золото, кинокадры." },
-    { name:"Школа-студия красоты — зелёный", category:"Красота", path:"/landing2/index.html", thumb:"/thumbs/landing2.webp", note:"Тёмно-зелёный вариант с реальными фото студии, упор на обучение." },
-    { name:"DarFit — женская фитнес-студия", category:"Фитнес", path:"/landing3/index.html", thumb:"/thumbs/landing3.webp", note:"Тёмный атмосферный лендинг: фиолетовый неон, кольцо-портал и свечения, плотная вёрстка." },
-    { name:"New home — агентство недвижимости", category:"Недвижимость", path:"/landing4/index.html", thumb:"/thumbs/landing4.webp", note:"Светлый премиум-лендинг: бело-чёрно-зелёная палитра, дома-выезды (breakout) и воздушная вёрстка." }
+    { name:"Школа-студия красоты — тёмный", category:"Красота", path:"/landing/", thumb:"/thumbs/landing.webp", note:"Тёмный атмосферный лендинг: почти чёрный фон, золото, кинокадры." },
+    { name:"Школа-студия красоты — зелёный", category:"Красота", path:"/landing2/", thumb:"/thumbs/landing2.webp", note:"Тёмно-зелёный вариант с реальными фото студии, упор на обучение." },
+    { name:"DarFit — женская фитнес-студия", category:"Фитнес", path:"/landing3/", thumb:"/thumbs/landing3.webp", note:"Тёмный атмосферный лендинг: фиолетовый неон, кольцо-портал и свечения, плотная вёрстка." },
+    { name:"New home — агентство недвижимости", category:"Недвижимость", path:"/landing4/", thumb:"/thumbs/landing4.webp", note:"Светлый премиум-лендинг: бело-чёрно-зелёная палитра, дома-выезды (breakout) и воздушная вёрстка." }
   ];
 
   /* Карточка сайта: одна разметка на «Проекты» и «Лендинги». */
@@ -531,7 +531,7 @@
 
   /* Боевые сайты: живут вдолгую, индексируются, продвигаются владельцем. */
   const PROJECTS = [
-    { name:"CosmoGraph 3D — плагин для Obsidian", category:"Плагин", path:"/cosmograph/index.html", thumb:"/thumbs/cosmograph.webp", note:"Хранилище заметок как трёхмерная планета знаний. Лендинг на английском под каталог плагинов Obsidian: canonical, Open Graph, JSON-LD, в карте сайта." }
+    { name:"CosmoGraph 3D — плагин для Obsidian", category:"Плагин", path:"/cosmograph/", thumb:"/thumbs/cosmograph.webp", note:"Хранилище заметок как трёхмерная планета знаний. Лендинг на английском под каталог плагинов Obsidian: canonical, Open Graph, JSON-LD, в карте сайта." }
   ];
   document.getElementById("projectsGrid").innerHTML = PROJECTS.map(siteCard).join("");
 
@@ -540,7 +540,7 @@
       id: "cubanoid",
       title: "Cubanoid — план продвижения",
       category: "Игра",
-      path: "/plans/project-promotion-map/index.html?project=cubanoid",
+      path: "/plans/project-promotion-map/?project=cubanoid",
       label: "/plans/project-promotion-map/ · cubanoid",
       thumb: "/plans/project-promotion-map/assets/cubanoid-hero.jpg",
       note: "Два контура на одну воронку: игроки (DTF, itch.io, Reddit) и инженерное портфолио (Habr, GitHub, three.js)."
@@ -549,7 +549,7 @@
       id: "cosmograph",
       title: "CosmoGraph 3D — карта продвижения",
       category: "Продвижение",
-      path: "/plans/project-promotion-map/index.html?project=cosmograph",
+      path: "/plans/project-promotion-map/?project=cosmograph",
       label: "/plans/project-promotion-map/ · cosmograph",
       thumb: "/plans/project-promotion-map/assets/cosmograph-hero.jpg",
       note: "Интерактивная карта площадок и форматов: Habr, vc.ru, GitHub, Telegram и др."

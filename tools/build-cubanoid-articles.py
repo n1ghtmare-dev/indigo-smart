@@ -357,7 +357,7 @@ def main():
 
     index_top = (
         '<div class="top">'
-        '<a class="pill" href="/plans/project-promotion-map/index.html?project=cubanoid">← К карте плана</a>'
+        '<a class="pill" href="/plans/project-promotion-map/?project=cubanoid">← К карте плана</a>'
         '<a class="pill" href="https://habr.com/ru/publication/new/" target="_blank" rel="noopener">Редактор Хабра ↗</a>'
         '<span class="top__spacer"></span>'
         '<span class="top__tag">Cubanoid · черновики</span>'

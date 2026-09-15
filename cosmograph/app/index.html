@@ -3,6 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      if (location.pathname === "/cosmograph/app" || location.pathname === "/cosmograph/app/index.html") {
+        location.replace("/cosmograph/app/" + location.search + location.hash);
+      }
+    </script>
     <meta name="theme-color" content="#090c12" />
     <meta name="description" content="Local spherical knowledge graph for Obsidian notes" />
     <title>CosmoGraph</title>
@@ -10,6 +15,6 @@
     <link rel="stylesheet" crossorigin href="./assets/index-CIB6xmq2.css">
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app"></div>
   </body>
 </html>

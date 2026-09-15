@@ -3,6 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+  if (location.pathname === "/cosmograph" || location.pathname === "/cosmograph/index.html") {
+    location.replace("/cosmograph/" + location.search + location.hash);
+  }
+</script>
 <title>CosmoGraph 3D — a living 3D knowledge planet for Obsidian</title>
 <meta name="description" content="CosmoGraph 3D turns an Obsidian vault into an interactive 3D spherical knowledge graph: notes as luminous points on a procedural planet, wikilinks as a network, folders as clusters. Local-first, MIT, built with Three.js and WebGL.">
 <link rel="canonical" href="https://indigosmart.ru/cosmograph/">
@@ -386,7 +391,7 @@ ul{margin:0;padding:0;list-style:none}
         <span class="hero__loader-ring"></span>
         <span class="hero__loader-ring hero__loader-ring--outer"></span>
       </div>
-      <iframe class="hero__frame" id="appFrame" src="app/index.html?scene=1&v=4" title="CosmoGraph 3D — the plugin scene, running live"></iframe>
+      <iframe class="hero__frame" id="appFrame" src="/cosmograph/app/?scene=1&v=4" title="CosmoGraph 3D — the plugin scene, running live"></iframe>
     </div>
 
     <div class="hero__copy">
@@ -406,7 +411,7 @@ ul{margin:0;padding:0;list-style:none}
       </div>
       <div class="hero__links">
         <span class="hero__chip" id="appChip" hidden>Click the planet to interact</span>
-        <a class="hero__open" id="appOpen" href="app/index.html?v=4" target="_blank" rel="noopener">Open the full interface ↗</a>
+        <a class="hero__open" id="appOpen" href="/cosmograph/app/?v=4" target="_blank" rel="noopener">Open the full interface ↗</a>
       </div>
     </div>
   </div>

@@ -17,9 +17,8 @@ on:
 # catch-all в main.py: файл из docroot отдаётся как есть, для каталога — index.html.
 # nginx лишь проксирует всё на :8000. Поэтому:
 #   - хаб живёт в docroot/index.html (страница-выбор шаблонов),
-#   - лендинги — в docroot/<slug>/, доступны по /<slug>/index.html,
-#   - «голый» /<slug>/ отдаёт index.html этого каталога (проверено на проде),
-#     поэтому канонические адреса вида /cosmograph/ рабочие.
+#   - лендинги — в docroot/<slug>/, а публичные ссылки имеют вид /<slug>/,
+#   - каталог /<slug>/ отдаёт свой index.html (проверено на проде).
 # Бэкенд обязан работать, иначе сайт вернёт 502. Он сохранён в `pm2 save`.
 env:
   SITE_ROOT: /var/www/indigosmart/data/www/indigosmart.ru
@@ -92,10 +91,10 @@ jobs:
             ${{ matrix.dir }}/ \
             ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ env.SITE_ROOT }}/${{ matrix.slug }}/
 
-      # Лендинг живёт по /<slug>/index.html (голый каталог отдаёт хаб).
+      # Проверяем канонический публичный URL каталога без index.html.
       - name: Smoke test
         run: |
-          url="https://indigosmart.ru/${{ matrix.slug }}/index.html"
+          url="https://indigosmart.ru/${{ matrix.slug }}/"
           body=$(curl -sfL -m 15 "$url") || { echo "FAILED: $url недоступен (бэкенд лежит?)"; exit 1; }
           if ! printf '%s' "$body" | grep -q '${{ matrix.marker }}'; then
             echo "FAILED: по $url не найден маркер '${{ matrix.marker }}' — отдалась не та страница."
