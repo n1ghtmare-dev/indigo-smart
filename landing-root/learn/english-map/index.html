@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Learning Map | English + IT</title>
-  <meta name="description" content="Личные карты изучения английского и IT. Один час практики открывает одну клетку территории.">
+  <meta name="description" content="Личные карты изучения английского и IT: время практики, территория, словарь и повторение английских слов.">
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#091017">
   <link rel="icon" href="data:,">
@@ -61,6 +61,18 @@
         <button type="button" data-map="it" aria-pressed="false">IT</button>
       </div>
 
+      <button class="vocabulary-launcher" id="openVocabulary" type="button" aria-haspopup="dialog">
+        <span>
+          <small>Vocabulary</small>
+          <b>Мои слова</b>
+        </span>
+        <span class="vocabulary-launcher__score">
+          <strong id="vocabularyLearnedValue">0</strong>
+          <small>выучено</small>
+        </span>
+        <i aria-hidden="true">→</i>
+      </button>
+
       <aside class="island-panel" aria-live="polite">
         <span class="island-kicker" id="islandKicker">Территория английского</span>
         <h2 id="islandName">Speaking</h2>
@@ -116,6 +128,115 @@
 
       <button class="dialog-submit" type="submit">Зачислить время</button>
     </form>
+  </dialog>
+
+  <dialog class="vocabulary-dialog" id="vocabularyDialog" aria-labelledby="vocabularyDialogTitle">
+    <div class="vocabulary-shell">
+      <header class="vocabulary-head">
+        <div>
+          <span>Personal vocabulary</span>
+          <h2 id="vocabularyDialogTitle">Мои слова</h2>
+          <p>Добавляй слова из жизни и возвращайся к ним по расписанию.</p>
+        </div>
+        <button class="dialog-close" id="closeVocabularyDialog" type="button" aria-label="Закрыть словарь">×</button>
+      </header>
+
+      <div class="vocabulary-tabs" role="tablist" aria-label="Раздел словаря">
+        <button id="vocabularyListTab" type="button" role="tab" data-vocabulary-view="list" aria-selected="true" aria-controls="vocabularyListPanel">Словарь</button>
+        <button id="vocabularyReviewTab" type="button" role="tab" data-vocabulary-view="review" aria-selected="false" aria-controls="vocabularyReviewPanel">
+          Повторение <span id="vocabularyDueBadge">0</span>
+        </button>
+      </div>
+
+      <section class="vocabulary-panel" id="vocabularyListPanel" role="tabpanel" aria-labelledby="vocabularyListTab">
+        <div class="vocabulary-stats" aria-label="Прогресс словаря">
+          <div><span>Всего слов</span><strong id="vocabularyTotal">0</strong></div>
+          <div><span>Выучено</span><strong id="vocabularyLearned">0</strong></div>
+          <div><span>Повторить</span><strong id="vocabularyDue">0</strong></div>
+        </div>
+
+        <div class="vocabulary-layout">
+          <aside class="word-compose">
+            <div class="word-compose__intro">
+              <span>Новое слово</span>
+              <h3>Запомни то, что встретил сегодня</h3>
+            </div>
+            <form id="wordForm" autocomplete="off">
+              <label for="wordTerm">Слово или фраза</label>
+              <input id="wordTerm" name="term" type="text" maxlength="80" placeholder="breakthrough" lang="en" required>
+
+              <label for="wordTranslation">Перевод</label>
+              <input id="wordTranslation" name="translation" type="text" maxlength="140" placeholder="прорыв" required>
+
+              <label for="wordExample">Пример <span>необязательно</span></label>
+              <textarea id="wordExample" name="example" maxlength="240" rows="3" placeholder="This could be a real breakthrough." lang="en"></textarea>
+              <p class="form-error" id="wordError" role="alert" hidden></p>
+              <button class="dialog-submit" type="submit">Добавить в словарь</button>
+            </form>
+
+            <div class="review-callout">
+              <span>На повторение</span>
+              <strong><b id="reviewCalloutCount">0</b> сегодня</strong>
+              <button id="startDueReview" type="button">Начать повторение →</button>
+            </div>
+          </aside>
+
+          <div class="word-library">
+            <div class="word-library__toolbar">
+              <label class="word-search" for="wordSearch">
+                <span aria-hidden="true">⌕</span>
+                <input id="wordSearch" type="search" placeholder="Найти слово" aria-label="Найти слово" autocomplete="off">
+              </label>
+              <div class="word-filters" role="group" aria-label="Фильтр слов">
+                <button type="button" data-word-filter="all" aria-pressed="true">Все</button>
+                <button type="button" data-word-filter="learning" aria-pressed="false">Учу</button>
+                <button type="button" data-word-filter="learned" aria-pressed="false">Выучено</button>
+              </div>
+            </div>
+            <div class="word-list" id="wordList"></div>
+            <div class="word-empty" id="wordEmpty">
+              <span aria-hidden="true">Aa</span>
+              <h3>Первое слово задаст ритм</h3>
+              <p>Добавь слово слева. Оно сразу появится в режиме повторения.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="vocabulary-panel vocabulary-review" id="vocabularyReviewPanel" role="tabpanel" aria-labelledby="vocabularyReviewTab" hidden>
+        <div class="review-topline">
+          <button class="review-back" id="reviewBack" type="button">← К словарю</button>
+          <span id="reviewProgress">0 / 0</span>
+        </div>
+
+        <div class="review-stage" id="reviewStage">
+          <div class="review-card" id="reviewCard">
+            <span class="review-card__eyebrow">Как переводится?</span>
+            <h3 id="reviewTerm" lang="en"></h3>
+            <p class="review-card__example" id="reviewExample" lang="en"></p>
+            <div class="review-answer" id="reviewAnswer" hidden>
+              <span>Перевод</span>
+              <strong id="reviewTranslation"></strong>
+            </div>
+          </div>
+          <button class="review-reveal" id="reviewReveal" type="button">Показать перевод</button>
+          <div class="review-ratings" id="reviewRatings" hidden>
+            <button class="is-forgotten" type="button" data-review-result="forgot">Не помню</button>
+            <button class="is-remembered" type="button" data-review-result="remember">Помню</button>
+          </div>
+        </div>
+
+        <div class="review-finish" id="reviewFinish" hidden>
+          <span class="review-finish__mark" aria-hidden="true">✓</span>
+          <h3 id="reviewFinishTitle">На сегодня всё</h3>
+          <p id="reviewFinishText">Добавь новые слова или возвращайся завтра.</p>
+          <div class="review-finish__actions">
+            <button id="reviewAllWords" type="button">Повторить все слова</button>
+            <button id="reviewFinishBack" type="button">Вернуться в словарь</button>
+          </div>
+        </div>
+      </section>
+    </div>
   </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true">

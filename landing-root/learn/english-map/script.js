@@ -2,6 +2,10 @@
   "use strict";
 
   const ACTIVE_MAP_KEY = "learning-map-active-v1";
+  const VOCABULARY_STORAGE_KEY = "english-vocabulary-v1";
+  const LEARNED_LEVEL = 3;
+  const DAY = 24 * 60 * 60 * 1000;
+  const REVIEW_INTERVALS = [0, DAY, 3 * DAY, 7 * DAY, 14 * DAY, 30 * DAY];
   const CELL_COST = 60;
   const CELL_SIZE = 13;
   const PITCH = 16;
@@ -21,6 +25,8 @@
     },
     {
       id: "vocabulary",
+      label: "Vocabulary",
+      description: "Личный словарь, интервальные повторения и запас активных слов.",
       cx: 31,
       cy: 8,
       seed: 23,
@@ -252,6 +258,323 @@
   const brandTitle = document.getElementById("brandTitle");
   const islandKicker = document.getElementById("islandKicker");
   const mapSwitchButtons = Array.from(document.querySelectorAll("[data-map]"));
+  const vocabularyDialog = document.getElementById("vocabularyDialog");
+  const vocabularyLearnedValue = document.getElementById("vocabularyLearnedValue");
+  const vocabularyTotal = document.getElementById("vocabularyTotal");
+  const vocabularyLearned = document.getElementById("vocabularyLearned");
+  const vocabularyDue = document.getElementById("vocabularyDue");
+  const vocabularyDueBadge = document.getElementById("vocabularyDueBadge");
+  const reviewCalloutCount = document.getElementById("reviewCalloutCount");
+  const startDueReviewButton = document.getElementById("startDueReview");
+  const wordForm = document.getElementById("wordForm");
+  const wordTerm = document.getElementById("wordTerm");
+  const wordTranslation = document.getElementById("wordTranslation");
+  const wordExample = document.getElementById("wordExample");
+  const wordError = document.getElementById("wordError");
+  const wordSearch = document.getElementById("wordSearch");
+  const wordList = document.getElementById("wordList");
+  const wordEmpty = document.getElementById("wordEmpty");
+  const vocabularyListPanel = document.getElementById("vocabularyListPanel");
+  const vocabularyReviewPanel = document.getElementById("vocabularyReviewPanel");
+  const vocabularyViewButtons = Array.from(document.querySelectorAll("[data-vocabulary-view]"));
+  const wordFilterButtons = Array.from(document.querySelectorAll("[data-word-filter]"));
+  const reviewStage = document.getElementById("reviewStage");
+  const reviewFinish = document.getElementById("reviewFinish");
+  const reviewProgress = document.getElementById("reviewProgress");
+  const reviewTerm = document.getElementById("reviewTerm");
+  const reviewExample = document.getElementById("reviewExample");
+  const reviewAnswer = document.getElementById("reviewAnswer");
+  const reviewTranslation = document.getElementById("reviewTranslation");
+  const reviewReveal = document.getElementById("reviewReveal");
+  const reviewRatings = document.getElementById("reviewRatings");
+  const reviewFinishTitle = document.getElementById("reviewFinishTitle");
+  const reviewFinishText = document.getElementById("reviewFinishText");
+
+  function clampLevel(value) {
+    const number = Math.floor(Number(value));
+    return Number.isFinite(number) ? Math.max(0, Math.min(REVIEW_INTERVALS.length - 1, number)) : 0;
+  }
+
+  function makeWordId() {
+    if (window.crypto && typeof window.crypto.randomUUID === "function") return window.crypto.randomUUID();
+    return Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 9);
+  }
+
+  function normalizeWord(item, index) {
+    if (!item || typeof item !== "object") return null;
+    const term = String(item.term || "").trim().slice(0, 80);
+    const translation = String(item.translation || "").trim().slice(0, 140);
+    if (!term || !translation) return null;
+    const now = Date.now();
+    return {
+      id: typeof item.id === "string" && item.id ? item.id : makeWordId(),
+      term: term,
+      translation: translation,
+      example: String(item.example || "").trim().slice(0, 240),
+      createdAt: Number.isFinite(item.createdAt) ? item.createdAt : now - index,
+      level: clampLevel(item.level),
+      streak: Math.max(0, Math.floor(Number(item.streak) || 0)),
+      reviewCount: Math.max(0, Math.floor(Number(item.reviewCount) || 0)),
+      nextReviewAt: Number.isFinite(item.nextReviewAt) ? item.nextReviewAt : 0,
+      lastReviewedAt: Number.isFinite(item.lastReviewedAt) ? item.lastReviewedAt : null
+    };
+  }
+
+  function readVocabulary() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(VOCABULARY_STORAGE_KEY) || "null");
+      const source = Array.isArray(parsed) ? parsed : parsed && Array.isArray(parsed.words) ? parsed.words : [];
+      return source.map(normalizeWord).filter(Boolean).slice(0, 5000);
+    } catch (error) {
+      return [];
+    }
+  }
+
+  let vocabulary = readVocabulary();
+  let wordFilter = "all";
+  let reviewQueue = [];
+  let reviewIndex = 0;
+  let reviewRemembered = 0;
+  let reviewForgotten = 0;
+  let reviewStartLearned = 0;
+  let reviewPracticeOnly = false;
+  let pendingDeleteWordId = null;
+  let pendingDeleteTimer = null;
+
+  function persistVocabulary() {
+    try {
+      localStorage.setItem(VOCABULARY_STORAGE_KEY, JSON.stringify({ version: 1, words: vocabulary }));
+    } catch (error) {
+      if (!vocabularyDialog.open) showToast("Не удалось сохранить словарь в этом браузере.");
+    }
+  }
+
+  function wordIsLearned(word) {
+    return word.level >= LEARNED_LEVEL;
+  }
+
+  function wordIsDue(word) {
+    return !word.nextReviewAt || word.nextReviewAt <= Date.now();
+  }
+
+  function vocabularyStats() {
+    return vocabulary.reduce(function (result, word) {
+      if (wordIsLearned(word)) result.learned += 1;
+      if (wordIsDue(word)) result.due += 1;
+      return result;
+    }, { total: vocabulary.length, learned: 0, due: 0 });
+  }
+
+  function formatNextReview(word) {
+    if (wordIsDue(word)) return "сейчас";
+    const delta = word.nextReviewAt - Date.now();
+    if (delta < 60 * 60 * 1000) return "через " + Math.max(1, Math.ceil(delta / 60000)) + " мин";
+    if (delta < DAY) return "через " + Math.ceil(delta / (60 * 60 * 1000)) + " ч";
+    return new Intl.DateTimeFormat("ru", { day: "numeric", month: "short" }).format(new Date(word.nextReviewAt));
+  }
+
+  function wordStatus(word) {
+    if (wordIsLearned(word)) return { label: "Выучено", className: "is-learned" };
+    if (!word.reviewCount) return { label: "Новое", className: "" };
+    return { label: "Учу " + word.level + "/" + LEARNED_LEVEL, className: "" };
+  }
+
+  function renderWordList() {
+    const query = wordSearch.value.trim().toLocaleLowerCase("ru");
+    const visibleWords = vocabulary.filter(function (word) {
+      const matchesFilter = wordFilter === "all" ||
+        (wordFilter === "learned" && wordIsLearned(word)) ||
+        (wordFilter === "learning" && !wordIsLearned(word));
+      if (!matchesFilter) return false;
+      if (!query) return true;
+      return [word.term, word.translation, word.example].some(function (value) {
+        return value.toLocaleLowerCase("ru").includes(query);
+      });
+    }).sort(function (a, b) {
+      if (wordIsDue(a) !== wordIsDue(b)) return wordIsDue(a) ? -1 : 1;
+      return b.createdAt - a.createdAt;
+    });
+
+    wordList.replaceChildren();
+    wordEmpty.hidden = visibleWords.length > 0;
+    const emptyTitle = wordEmpty.querySelector("h3");
+    const emptyText = wordEmpty.querySelector("p");
+    if (!visibleWords.length && vocabulary.length) {
+      emptyTitle.textContent = "По этому фильтру пусто";
+      emptyText.textContent = "Попробуй другой запрос или покажи все слова.";
+    } else {
+      emptyTitle.textContent = "Первое слово задаст ритм";
+      emptyText.textContent = "Добавь слово слева. Оно сразу появится в режиме повторения.";
+    }
+
+    visibleWords.forEach(function (word) {
+      const item = document.createElement("article");
+      item.className = "word-item";
+
+      const copy = document.createElement("div");
+      copy.className = "word-item__copy";
+      const term = document.createElement("strong");
+      term.lang = "en";
+      term.textContent = word.term;
+      const translation = document.createElement("span");
+      translation.textContent = word.translation;
+      copy.append(term, translation);
+      if (word.example) {
+        const example = document.createElement("small");
+        example.lang = "en";
+        example.textContent = word.example;
+        copy.append(example);
+      }
+
+      const status = wordStatus(word);
+      const statusBox = document.createElement("div");
+      statusBox.className = "word-status";
+      const statusLabel = document.createElement("b");
+      statusLabel.className = status.className;
+      statusLabel.textContent = status.label;
+      const nextReview = document.createElement("small");
+      nextReview.textContent = formatNextReview(word);
+      statusBox.append(statusLabel, nextReview);
+
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "word-delete";
+      remove.dataset.wordDelete = word.id;
+      remove.setAttribute("aria-label", "Удалить " + word.term);
+      if (pendingDeleteWordId === word.id) {
+        remove.classList.add("is-confirm");
+        remove.textContent = "✓";
+        remove.title = "Нажми ещё раз, чтобы удалить";
+      } else {
+        remove.textContent = "×";
+        remove.title = "Удалить слово";
+      }
+
+      item.append(copy, statusBox, remove);
+      wordList.append(item);
+    });
+  }
+
+  function updateVocabularyInterface() {
+    const stats = vocabularyStats();
+    vocabularyLearnedValue.textContent = stats.learned;
+    vocabularyTotal.textContent = stats.total;
+    vocabularyLearned.textContent = stats.learned;
+    vocabularyDue.textContent = stats.due;
+    vocabularyDueBadge.textContent = stats.due;
+    reviewCalloutCount.textContent = stats.due;
+    startDueReviewButton.disabled = stats.total === 0;
+    startDueReviewButton.textContent = stats.due ? "Начать повторение →" : "Открыть режим →";
+    renderWordList();
+  }
+
+  function setVocabularyView(view) {
+    const showList = view === "list";
+    vocabularyListPanel.hidden = !showList;
+    vocabularyReviewPanel.hidden = showList;
+    vocabularyViewButtons.forEach(function (button) {
+      button.setAttribute("aria-selected", String(button.dataset.vocabularyView === view));
+    });
+    document.querySelector(".vocabulary-shell").scrollTop = 0;
+    if (showList) renderWordList();
+  }
+
+  function showReviewFinish(hadSession) {
+    reviewStage.hidden = true;
+    reviewFinish.hidden = false;
+    reviewProgress.textContent = reviewQueue.length ? reviewQueue.length + " / " + reviewQueue.length : "0 / 0";
+    const learnedNow = vocabularyStats().learned;
+    const learnedGain = Math.max(0, learnedNow - reviewStartLearned);
+    const reviewAllWords = document.getElementById("reviewAllWords");
+    reviewAllWords.hidden = vocabulary.length === 0;
+
+    if (hadSession) {
+      reviewFinishTitle.textContent = reviewPracticeOnly ? "Свободное повторение завершено" : "Повторение завершено";
+      reviewFinishText.textContent = "Помнишь: " + reviewRemembered + ". Повторить раньше: " + reviewForgotten +
+        (learnedGain ? ". Новых выученных: " + learnedGain + "." : ".");
+    } else if (!vocabulary.length) {
+      reviewFinishTitle.textContent = "Слов пока нет";
+      reviewFinishText.textContent = "Добавь первое слово, и оно сразу появится здесь.";
+    } else {
+      reviewFinishTitle.textContent = "На сегодня всё";
+      reviewFinishText.textContent = "По расписанию слов нет. Можно повторить весь словарь без изменения очереди.";
+    }
+  }
+
+  function showCurrentReviewWord() {
+    if (reviewIndex >= reviewQueue.length) {
+      showReviewFinish(reviewQueue.length > 0);
+      return;
+    }
+    const word = vocabulary.find(function (item) { return item.id === reviewQueue[reviewIndex]; });
+    if (!word) {
+      reviewIndex += 1;
+      showCurrentReviewWord();
+      return;
+    }
+
+    reviewStage.hidden = false;
+    reviewFinish.hidden = true;
+    reviewProgress.textContent = reviewIndex + 1 + " / " + reviewQueue.length;
+    reviewTerm.textContent = word.term;
+    reviewTranslation.textContent = word.translation;
+    reviewExample.textContent = word.example;
+    reviewExample.hidden = !word.example;
+    reviewAnswer.hidden = true;
+    reviewRatings.hidden = true;
+    reviewReveal.hidden = false;
+    reviewReveal.focus({ preventScroll: true });
+  }
+
+  function startReview(includeAll) {
+    const candidates = vocabulary.filter(function (word) { return includeAll || wordIsDue(word); });
+    candidates.sort(function (a, b) {
+      return (a.nextReviewAt || 0) - (b.nextReviewAt || 0) || a.level - b.level || a.createdAt - b.createdAt;
+    });
+    reviewQueue = candidates.map(function (word) { return word.id; });
+    reviewIndex = 0;
+    reviewRemembered = 0;
+    reviewForgotten = 0;
+    reviewStartLearned = vocabularyStats().learned;
+    reviewPracticeOnly = Boolean(includeAll);
+    setVocabularyView("review");
+    if (reviewQueue.length) showCurrentReviewWord();
+    else showReviewFinish(false);
+  }
+
+  function recordReview(result) {
+    const word = vocabulary.find(function (item) { return item.id === reviewQueue[reviewIndex]; });
+    if (!word) {
+      reviewIndex += 1;
+      showCurrentReviewWord();
+      return;
+    }
+
+    const now = Date.now();
+    if (result === "remember") {
+      reviewRemembered += 1;
+    } else {
+      reviewForgotten += 1;
+    }
+
+    if (!reviewPracticeOnly) {
+      word.lastReviewedAt = now;
+      word.reviewCount += 1;
+      if (result === "remember") {
+        word.level = Math.min(REVIEW_INTERVALS.length - 1, word.level + 1);
+        word.streak += 1;
+        word.nextReviewAt = now + REVIEW_INTERVALS[word.level];
+      } else {
+        word.level = Math.max(0, word.level - 1);
+        word.streak = 0;
+        word.nextReviewAt = now + 10 * 60 * 1000;
+      }
+      persistVocabulary();
+      updateVocabularyInterface();
+    }
+    reviewIndex += 1;
+    showCurrentReviewWord();
+  }
 
   function noise(x, y, seed) {
     let value = Math.imul(x + seed * 17, 374761393) + Math.imul(y - seed * 11, 668265263);
@@ -413,6 +736,7 @@
 
     syncMapChrome();
     updateInterface();
+    if (activeMapId !== "english" && vocabularyDialog.open) vocabularyDialog.close();
     if (viewportWidth && viewportHeight) fitCamera(false);
     if (announce) showToast(mapConfig.title + " открыта.");
   }
@@ -884,6 +1208,132 @@
     });
   });
 
+  document.getElementById("openVocabulary").addEventListener("click", function () {
+    wordError.hidden = true;
+    wordForm.reset();
+    updateVocabularyInterface();
+    setVocabularyView("list");
+    vocabularyDialog.showModal();
+    window.setTimeout(function () { wordTerm.focus(); }, 0);
+  });
+
+  document.getElementById("closeVocabularyDialog").addEventListener("click", function () {
+    vocabularyDialog.close();
+  });
+
+  vocabularyDialog.addEventListener("click", function (event) {
+    const rect = vocabularyDialog.getBoundingClientRect();
+    const outside = event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom;
+    if (outside) vocabularyDialog.close();
+  });
+
+  vocabularyViewButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      if (button.dataset.vocabularyView === "review") startReview(false);
+      else setVocabularyView("list");
+    });
+  });
+
+  wordFilterButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      wordFilter = button.dataset.wordFilter;
+      wordFilterButtons.forEach(function (item) {
+        item.setAttribute("aria-pressed", String(item === button));
+      });
+      renderWordList();
+    });
+  });
+
+  wordSearch.addEventListener("input", renderWordList);
+
+  wordForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    const term = wordTerm.value.trim();
+    const translation = wordTranslation.value.trim();
+    const example = wordExample.value.trim();
+    const duplicate = vocabulary.find(function (word) {
+      return word.term.toLocaleLowerCase("en") === term.toLocaleLowerCase("en");
+    });
+
+    if (!term || !translation) {
+      wordError.textContent = "Заполни слово и перевод.";
+      wordError.hidden = false;
+      return;
+    }
+    if (duplicate) {
+      wordError.textContent = "Такое слово уже есть в словаре.";
+      wordError.hidden = false;
+      wordTerm.focus();
+      return;
+    }
+
+    vocabulary.unshift({
+      id: makeWordId(),
+      term: term.slice(0, 80),
+      translation: translation.slice(0, 140),
+      example: example.slice(0, 240),
+      createdAt: Date.now(),
+      level: 0,
+      streak: 0,
+      reviewCount: 0,
+      nextReviewAt: 0,
+      lastReviewedAt: null
+    });
+    persistVocabulary();
+    wordError.hidden = true;
+    wordForm.reset();
+    wordFilter = "all";
+    wordFilterButtons.forEach(function (button) {
+      button.setAttribute("aria-pressed", String(button.dataset.wordFilter === "all"));
+    });
+    wordSearch.value = "";
+    updateVocabularyInterface();
+
+    const submitButton = wordForm.querySelector("button[type='submit']");
+    submitButton.textContent = "Добавлено ✓";
+    window.setTimeout(function () { submitButton.textContent = "Добавить в словарь"; }, 900);
+    wordTerm.focus();
+  });
+
+  wordList.addEventListener("click", function (event) {
+    const button = event.target.closest("[data-word-delete]");
+    if (!button) return;
+    const wordId = button.dataset.wordDelete;
+    if (pendingDeleteWordId !== wordId) {
+      pendingDeleteWordId = wordId;
+      clearTimeout(pendingDeleteTimer);
+      pendingDeleteTimer = window.setTimeout(function () {
+        pendingDeleteWordId = null;
+        renderWordList();
+      }, 2600);
+      renderWordList();
+      return;
+    }
+
+    clearTimeout(pendingDeleteTimer);
+    pendingDeleteWordId = null;
+    vocabulary = vocabulary.filter(function (word) { return word.id !== wordId; });
+    persistVocabulary();
+    updateVocabularyInterface();
+  });
+
+  startDueReviewButton.addEventListener("click", function () { startReview(false); });
+  document.getElementById("reviewBack").addEventListener("click", function () { setVocabularyView("list"); });
+  document.getElementById("reviewFinishBack").addEventListener("click", function () { setVocabularyView("list"); });
+  document.getElementById("reviewAllWords").addEventListener("click", function () { startReview(true); });
+
+  reviewReveal.addEventListener("click", function () {
+    reviewAnswer.hidden = false;
+    reviewReveal.hidden = true;
+    reviewRatings.hidden = false;
+    reviewRatings.querySelector("[data-review-result='remember']").focus({ preventScroll: true });
+  });
+
+  reviewRatings.addEventListener("click", function (event) {
+    const button = event.target.closest("[data-review-result]");
+    if (button) recordReview(button.dataset.reviewResult);
+  });
+
   function updateTimerButton() {
     if (!state.timerStartedAt) {
       timerButton.classList.remove("is-running");
@@ -1008,6 +1458,11 @@
   });
 
   window.addEventListener("storage", function (event) {
+    if (event.key === VOCABULARY_STORAGE_KEY) {
+      vocabulary = readVocabulary();
+      updateVocabularyInterface();
+      return;
+    }
     if (event.key === ACTIVE_MAP_KEY && Object.prototype.hasOwnProperty.call(mapConfigs, event.newValue)) {
       activateMap(event.newValue, false);
       return;
@@ -1024,5 +1479,6 @@
   observer.observe(canvas);
   document.fonts.ready.then(render);
   syncMapChrome();
+  updateVocabularyInterface();
   updateInterface();
 })();
