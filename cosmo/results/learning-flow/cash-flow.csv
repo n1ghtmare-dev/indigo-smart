@@ -1,0 +1,6 @@
+id,at,category,amount_mln,attribution_year,subject
+UPGRADE:payment,180,capex,10,2035,UPGRADE
+TEST-2035:procurement,365,procurement,80,2035,TEST-2035
+TEST-2035:reservation,365,reservation,16.0,2035,TEST-2035
+UPGRADE:opex:2035,365,fixed_opex,1.808219178082191780821917808,2035,UPGRADE
+holding:2035,365,holding,7.422016438356164383561643836,2035,storage

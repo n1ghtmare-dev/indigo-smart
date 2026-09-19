@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cosmo · Планирование снабжения</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#f4f6f9">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232f63a8'/%3E%3Cpath d='M21.5 11.2a7 7 0 1 0 0 9.6' fill='none' stroke='white' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+  <script src="runtime-client.js" defer></script>
+  <script src="forms.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#workspace">К рабочей области</a>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="Cosmo, главная">
+      <span class="brand-icon" aria-hidden="true">C</span>
+      <span class="brand-name">cosmo</span>
+      <span class="brand-sub">Планирование снабжения</span>
+    </a>
+    <nav aria-label="Справочные материалы">
+      <a href="docs/operator.html" target="_blank" rel="noopener"><span class="nav-label nav-label-full">Гайд по сайту</span><span class="nav-label nav-label-short">Гайд</span> <span aria-hidden="true">↗</span></a>
+      <a href="docs/delivery.html" target="_blank" rel="noopener"><span class="nav-label nav-label-full">Материалы проекта</span><span class="nav-label nav-label-short">Файлы</span> <span aria-hidden="true">↗</span></a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="page-title">
+      <div>
+        <p class="eyebrow">ТОПЛИВНАЯ ЛОГИСТИКА / <span id="horizon">2035-2040</span></p>
+        <h1>План снабжения орбитального топливного узла</h1>
+        <p class="lead">Соберите график, проверьте его в разных условиях и сравните стоимость решений.</p>
+      </div>
+    </div>
+
+    <section class="planbar" aria-label="Текущий план">
+      <div class="plan-identity">
+        <div class="plan-title-row">
+          <strong id="plan-name">Загружаем план…</strong>
+          <span id="scope" class="badge">Исходный кейс</span>
+        </div>
+      </div>
+      <div class="toolbar-actions">
+        <span id="save-status" role="status"></span>
+        <div class="file-actions" aria-label="Работа с файлом">
+          <button id="save" class="secondary compact">Скачать</button>
+          <button id="open-button" class="secondary compact">Открыть</button>
+          <input id="open" hidden type="file" accept="application/json,.json">
+        </div>
+        <button id="back-base" class="quiet compact" hidden>К исходному плану</button>
+        <button id="reset" class="quiet compact">Сбросить к базовому плану</button>
+      </div>
+    </section>
+
+    <p id="message" class="notice toast" role="status" aria-live="polite" hidden></p>
+    <div id="calculation-status" class="calculation-status" role="status" aria-live="polite" hidden></div>
+
+    <div class="workspace" id="workspace">
+      <aside class="sidebar">
+        <label class="mobile-section-control" for="mobile-section-nav"><span>Раздел</span><select id="mobile-section-nav"><option value="overview">Обзор и расчёт</option><optgroup label="Данные"><option value="demand">Спрос</option><option value="sources">Поставщики</option><option value="contracts">Контракты</option><option value="orders">Поставки</option><option value="investments">Инвестиции</option></optgroup><option value="history">Сравнение</option></select></label>
+        <nav aria-label="Разделы плана" id="section-nav">
+          <button data-panel="overview" aria-current="page"><b>Обзор и расчёт</b></button>
+          <details class="data-nav" open>
+            <summary>Данные</summary>
+            <div>
+              <button data-panel="demand"><b>Спрос</b></button>
+              <button data-panel="sources"><b>Поставщики</b></button>
+              <button data-panel="contracts"><b>Контракты</b></button>
+              <button data-panel="orders"><b>Поставки</b></button>
+              <button data-panel="investments"><b>Инвестиции</b></button>
+            </div>
+          </details>
+          <button data-panel="history"><b>Сравнение</b><small id="history-count">0</small></button>
+        </nav>
+      </aside>
+
+      <div class="content">
+        <section id="panel-overview" class="panel" aria-labelledby="title-overview">
+          <div class="section-heading overview-heading">
+            <div class="heading-title-row">
+              <h2 id="title-overview">Настройте основу плана</h2>
+              <span class="help-wrap">
+                <button class="help-trigger" type="button" aria-label="О настройках плана" aria-expanded="false" aria-controls="help-plan-settings">?</button>
+                <span class="help-popover" id="help-plan-settings" role="note" hidden>Эти параметры определяют контракты, поставки и инвестиции нового плана.</span>
+              </span>
+            </div>
+          </div>
+
+          <section class="card planner-card" aria-label="Настройки построения плана">
+            <div class="planner-main">
+              <div class="control control-wide">
+                <div class="control-label-row">
+                  <label class="control-label" for="strategy">Шаблон автопостроения</label>
+                  <span class="help-wrap">
+                    <button class="help-trigger" type="button" aria-label="О шаблоне автопостроения" aria-expanded="false" aria-controls="help-strategy">?</button>
+                    <span class="help-popover" id="help-strategy" role="note" hidden>Шаблон создаёт только начальный график. После построения можно сочетать A, B, C, D, E и пользовательские источники в одном плане.</span>
+                  </span>
+                </div>
+                <select id="strategy">
+                  <option value="EARTH_NEW">Начальный график A + B + C + E</option>
+                  <option value="EARTH_ONLY">Начальный график A + B + E</option>
+                  <option value="LUNAR">Начальный график A + B + D + E</option>
+                  <option value="HYBRID">Начальный график A + B + C + D + E</option>
+                </select>
+              </div>
+              <div class="control">
+                <div class="control-label-row">
+                  <label class="control-label" for="profile">Профиль спроса</label>
+                  <span class="help-wrap">
+                    <button class="help-trigger" type="button" aria-label="О профиле спроса" aria-expanded="false" aria-controls="help-profile">?</button>
+                    <span class="help-popover" id="help-profile" role="note" hidden>Профиль спроса, под который будут рассчитаны объёмы и даты поставок нового плана.</span>
+                  </span>
+                </div>
+                <select id="profile">
+                  <option value="BASE">Базовый</option>
+                  <option value="LOW">Низкий</option>
+                  <option value="HIGH">Высокий</option>
+                </select>
+              </div>
+              <div class="control">
+                <div class="control-label-row">
+                  <label class="control-label" for="reserve">Страховой запас</label>
+                  <span class="help-wrap">
+                    <button class="help-trigger" type="button" aria-label="О страховом запасе" aria-expanded="false" aria-controls="help-reserve">?</button>
+                    <span class="help-popover" id="help-reserve" role="note" hidden>Допустимый диапазон: 45-120 дней.</span>
+                  </span>
+                </div>
+                <span class="stepper">
+                  <button id="reserve-minus" type="button" aria-label="Уменьшить страховой запас">−</button>
+                  <input id="reserve" type="text" inputmode="numeric" pattern="[0-9]+" min="45" max="120" value="60" aria-valuetext="60 дней" required>
+                  <span class="stepper-unit">дней</span>
+                  <button id="reserve-plus" type="button" aria-label="Увеличить страховой запас">+</button>
+                </span>
+              </div>
+              <div class="toggle-field">
+                <label class="toggle-main" for="zbo">
+                  <input id="zbo" type="checkbox" checked>
+                  <span class="toggle-ui" aria-hidden="true"></span>
+                  <strong>Система хранения ZBO</strong>
+                </label>
+                <span class="help-wrap">
+                  <button class="help-trigger" type="button" aria-label="О системе хранения ZBO" aria-expanded="false" aria-controls="help-zbo">?</button>
+                  <span class="help-popover help-popover-right" id="help-zbo" role="note" hidden>Снижает потери топлива, но требует инвестиций.</span>
+                </span>
+              </div>
+              <div class="toggle-field">
+                <label class="toggle-main" for="e-insurance">
+                  <input id="e-insurance" type="checkbox" checked>
+                  <span class="toggle-ui" aria-hidden="true"></span>
+                  <strong>Страховой резерв E</strong>
+                </label>
+                <span class="help-wrap">
+                  <button class="help-trigger" type="button" aria-label="О страховом резерве E" aria-expanded="false" aria-controls="help-e-insurance">?</button>
+                  <span class="help-popover help-popover-right" id="help-e-insurance" role="note" hidden>Резервирует 80 т/год в 2038-2040; в базовом тесте стоит 84 млн и позволяет активировать 42-дневный мост при задержке A.</span>
+                </span>
+              </div>
+            </div>
+            <div class="planner-footer">
+              <p id="build-hint" class="hint" aria-live="polite"></p>
+              <button id="build" class="primary">Построить план</button>
+            </div>
+          </section>
+
+          <section class="card supply-matrix-card" aria-labelledby="supply-matrix-title">
+            <div class="card-heading matrix-heading">
+              <div><h3 id="supply-matrix-title">Годовой план поставок</h3><p>Задайте валовой объём по источникам и годам. Применение создаст подробные контракты и партии, не меняя спрос и цены.</p></div>
+              <button id="apply-supply-matrix" class="secondary">Применить таблицу</button>
+            </div>
+            <div id="supply-matrix" class="scroll" tabindex="0" aria-label="Годовой план поставок по источникам"></div>
+          </section>
+
+          <div class="flow-connector" aria-hidden="true"><span></span></div>
+
+          <div class="section-heading overview-heading">
+            <div class="heading-title-row">
+              <h2>Проверьте устойчивость</h2>
+              <span class="help-wrap">
+                <button class="help-trigger" type="button" aria-label="О проверке устойчивости" aria-expanded="false" aria-controls="help-scenario-section">?</button>
+                <span class="help-popover" id="help-scenario-section" role="note" hidden>Сценарий меняет условия расчёта, но не исходные обязательства.</span>
+              </span>
+            </div>
+          </div>
+
+          <section class="card scenario-card" aria-label="Проверка сценария">
+            <div class="scenario-control">
+              <div class="control">
+                <div class="control-label-row">
+                  <label class="control-label" for="scenario">Условия расчёта</label>
+                  <span class="help-wrap">
+                    <button class="help-trigger" type="button" aria-label="О выбранных условиях расчёта" aria-expanded="false" aria-controls="scenario-help">?</button>
+                    <span class="help-popover" id="scenario-help" role="note" hidden></span>
+                  </span>
+                </div>
+                <select id="scenario">
+                  <option value="BASE">Базовый тест / обычные условия</option>
+                  <option value="MANDATORY_STRESS">Стресс / рост спроса и цен</option>
+                  <option value="LOW">Низкий спрос / текущий план</option>
+                  <option value="HIGH">Высокий спрос / текущий план</option>
+                  <option value="SAVED">Условия из открытого файла</option>
+                </select>
+              </div>
+            </div>
+            <div class="scenario-actions">
+              <button id="evaluate" class="primary primary-large">Рассчитать план</button>
+              <div class="button-with-help">
+                <button id="adapt" class="secondary">Добавить реакцию B/E</button>
+                <span class="help-wrap">
+                  <button class="help-trigger" type="button" aria-label="О реакции B/E" aria-expanded="false" aria-controls="adapt-help">?</button>
+                  <span class="help-popover help-popover-right" id="adapt-help" role="note" hidden>Реакция доступна для стресса, высокого спроса и сохранённого сценария.</span>
+                </span>
+              </div>
+            </div>
+          </section>
+
+          <div id="result-empty" class="empty">
+            <span class="empty-icon" aria-hidden="true">↗</span>
+            <div><h3>Здесь появится результат проверки</h3><p>Рассчитаем стоимость, дефицит, сервис и годовой баланс плана.</p></div>
+          </div>
+
+          <section id="result" hidden aria-labelledby="result-title">
+            <div class="section-heading result-heading">
+              <div>
+                <h2 id="result-title">Расчёт плана</h2>
+                <p id="result-meta"></p>
+                <details id="result-meta-details" class="result-meta-details">
+                  <summary>Подробности расчёта</summary>
+                  <p id="result-meta-technical"></p>
+                </details>
+              </div>
+              <span id="result-badge" class="badge"></span>
+            </div>
+            <p id="stale" class="notice warning stale-notice" role="status" aria-live="polite" hidden>Исходные данные или сценарий изменились. Показатели ниже относятся к прежнему набору входов. Адаптация и экспорт результата доступны только после пересчёта.</p>
+            <div id="result-explanation" class="result-summary" role="status"></div>
+            <div id="result-actions" class="result-actions" hidden>
+              <button id="result-primary-action" class="primary"></button>
+              <button id="result-secondary-action" class="secondary"></button>
+            </div>
+            <div id="inventory-chart-card" class="card result-card chart-card" hidden>
+              <div class="card-heading"><h3>Запас и ограничения</h3><p>Поставки, вместимость склада и норматив на начало года.</p></div>
+              <div id="inventory-chart" class="chart-root" role="img" aria-label="Динамика запаса топлива"></div>
+            </div>
+            <div id="kpis" class="kpis"></div>
+            <div id="alternatives-card" class="card result-card" hidden>
+              <div class="card-heading"><h3>Лучшие допустимые варианты</h3><p id="alternatives-summary">Лучшие планы для выбранных условий.</p></div>
+              <div id="alternatives-chart" class="pv-chart" role="img" aria-label="Сравнение приведённой стоимости вариантов" hidden></div>
+              <div id="alternatives"></div>
+            </div>
+            <div id="annual-card" class="card result-card">
+              <div class="card-heading heading-title-row">
+                <h3>Годовой баланс</h3>
+                <span class="help-wrap">
+                  <button class="help-trigger" type="button" aria-label="О годовом балансе" aria-expanded="false" aria-controls="help-annual">?</button>
+                  <span class="help-popover" id="help-annual" role="note" hidden>Объёмы указаны в тоннах. Показаны общий и критический сервис, оба дефицита и обязательный запас на начало года.</span>
+                </span>
+              </div>
+              <div id="annual" class="scroll" tabindex="0" aria-label="Годовой баланс"></div>
+            </div>
+            <div id="cost-card" class="card result-card" hidden>
+              <div class="card-heading"><h3>Структура затрат</h3><p>Закупки с TOP, резервирование, хранение, OPEX и CAPEX.</p></div>
+              <div id="cost-breakdown" class="scroll" tabindex="0" aria-label="Структура затрат"></div>
+            </div>
+            <div id="violations-card" class="card result-card">
+              <div class="card-heading"><h3 id="violations-title">Ограничения текущего плана</h3><p id="violations-summary" class="violation-severity">Влияет на результат</p></div>
+              <div id="violations"></div>
+            </div>
+            <details class="card disclosure-card">
+              <summary>Скачать отчёт и подробные таблицы</summary>
+              <div id="downloads" class="download-list"></div>
+            </details>
+          </section>
+
+          <details class="card disclosure-card assumptions">
+            <summary>Допущения и границы модели</summary>
+            <p>Рекомендация условна: без подтверждённой поставки B в 2034 текущий план не разрешается; при доставке C за 6 месяцев вместо 4 нужен полный пересчёт и иной пакет. Поле C допускает 2-6 месяцев, ноль запрещён. Надёжность не умножается на объём.</p>
+            <a href="docs/open-questions.html" target="_blank" rel="noopener">Все допущения <span aria-hidden="true">↗</span></a>
+          </details>
+        </section>
+
+        <section id="panel-demand" class="panel" hidden>
+          <div class="section-heading">
+            <div class="heading-title-row">
+              <h2>Спрос на топливо</h2>
+              <span class="help-wrap">
+                <button class="help-trigger" type="button" aria-label="О данных спроса" aria-expanded="false" aria-controls="help-demand">?</button>
+                <span class="help-popover" id="help-demand" role="note" hidden>Критический спрос получает приоритет при дефиците. Низкий и высокий критический спрос масштабируются пропорционально базовому. Правки создают исследовательскую копию, не меняя исходные данные.</span>
+              </span>
+            </div>
+          </div>
+          <div class="card table-card"><div id="demand-form" class="scroll"></div></div>
+          <div class="data-calc-actions" data-rebuild="true"></div>
+        </section>
+
+        <section id="panel-sources" class="panel" hidden>
+          <div class="section-heading">
+            <div class="heading-title-row">
+              <h2>Поставщики</h2>
+              <span class="help-wrap">
+                <button class="help-trigger" type="button" aria-label="О данных поставщиков" aria-expanded="false" aria-controls="help-sources">?</button>
+                <span class="help-popover" id="help-sources" role="note" hidden>Цены указаны в млн у.е. 2035 года. Надёжность служит справочной характеристикой и не умножается на объём. Сроки C и D зависят от ввода проектов. После правок постройте план заново.</span>
+              </span>
+            </div>
+            <button id="add-source" class="secondary">Добавить поставщика</button>
+          </div>
+          <div id="sources-form" class="source-grid source-list"></div>
+          <div class="data-calc-actions" data-rebuild="true"></div>
+        </section>
+
+        <section id="panel-contracts" class="panel" hidden>
+          <div class="section-heading">
+            <div class="heading-title-row">
+              <h2>Контракты</h2>
+              <span class="help-wrap">
+                <button class="help-trigger" type="button" aria-label="О контрактах" aria-expanded="false" aria-controls="help-contracts">?</button>
+                <span class="help-popover" id="help-contracts" role="note" hidden>Резерв мощности оплачивается отдельно от поставок. Контракт с поставками нельзя удалить, пока связанные поставки не перенесены или удалены.</span>
+              </span>
+            </div>
+            <button id="add-contract" class="secondary">Добавить контракт</button>
+          </div>
+          <div class="filters">
+            <label class="control filter-control"><span class="control-label">Год</span><select id="contract-year"></select></label>
+            <span id="contract-count" class="record-count"></span>
+          </div>
+          <div class="card table-card"><div id="contracts-form" class="scroll"></div></div>
+          <div class="data-calc-actions"></div>
+        </section>
+
+        <section id="panel-orders" class="panel" hidden>
+          <div class="section-heading">
+            <div class="heading-title-row">
+              <h2>Поставки топлива</h2>
+              <span class="help-wrap">
+                <button class="help-trigger" type="button" aria-label="О графике поставок" aria-expanded="false" aria-controls="help-orders">?</button>
+                <span class="help-popover" id="help-orders" role="note" hidden>Поставка связана с контрактом, а дата заказа учитывает срок доставки. В модельном году 365 дней, без 29 февраля. Заказы 2034 года формируют начальный запас.</span>
+              </span>
+            </div>
+            <button id="add-order" class="secondary">Добавить поставку</button>
+          </div>
+          <div class="filters">
+            <label class="control filter-control"><span class="control-label">Год поступления</span><select id="order-year"></select></label>
+            <label class="control filter-control"><span class="control-label">Поставщик</span><select id="order-source"></select></label>
+            <label class="control filter-control filter-search"><span class="control-label">Поиск по ID</span><input id="order-search" type="search" placeholder="Например, C-2038"></label>
+            <label class="control filter-control"><span class="control-label">Группировка</span><select id="order-group"><option value="contract">По контракту</option><option value="source">По поставщику</option><option value="none">Без группировки</option></select></label>
+            <label class="control filter-control filter-small"><span class="control-label">Строк на странице</span><select id="order-page-size"><option value="25">25</option><option value="50">50</option><option value="100">100</option></select></label>
+            <span id="order-count" class="record-count"></span>
+          </div>
+          <div class="bulkbar" aria-label="Массовое редактирование поставок">
+            <span id="order-selected">Ничего не выбрано</span>
+            <label class="control"><span class="control-label">Новый контракт</span><select id="order-bulk-contract"><option value="">Не менять контракт</option></select></label>
+            <label class="control bulk-shift"><span class="control-label">Сдвиг обеих дат, дней</span><input id="order-bulk-shift" type="text" inputmode="numeric" value="0" aria-valuetext="0 дней"></label>
+            <button id="order-bulk-apply" class="secondary compact" disabled>Применить к выбранным</button>
+            <button id="order-bulk-delete" class="danger-button" disabled>Удалить выбранные</button>
+          </div>
+          <div class="card table-card"><div id="orders-form" class="scroll"></div></div>
+          <div class="pagination" aria-label="Страницы поставок"><button id="order-prev" class="secondary compact">Назад</button><span id="order-page">Страница 1 из 1</span><button id="order-next" class="secondary compact">Далее</button></div>
+          <div class="data-calc-actions"></div>
+        </section>
+
+        <section id="panel-investments" class="panel" hidden>
+          <div class="section-heading">
+            <div class="heading-title-row">
+              <h2>Инвестиции и допущения</h2>
+              <span class="help-wrap">
+                <button class="help-trigger" type="button" aria-label="Об инвестициях" aria-expanded="false" aria-controls="help-investments">?</button>
+                <span class="help-popover" id="help-investments" role="note" hidden>Здесь задаются проекты, финансирование и ввод. Отключение инвестиции не удаляет контракты, но следующий расчёт покажет недоступные мощности.</span>
+              </span>
+            </div>
+          </div>
+          <div id="investments-form" class="source-grid investment-grid"></div>
+          <div class="card policy-card">
+            <div class="card-heading heading-title-row">
+              <h3>Параметры расчёта</h3>
+              <span class="help-wrap">
+                <button class="help-trigger" type="button" aria-label="О параметрах расчёта" aria-expanded="false" aria-controls="help-policy">?</button>
+                <span class="help-popover" id="help-policy" role="note" hidden>Командные допущения, которые влияют на сроки и приведённую стоимость.</span>
+              </span>
+            </div>
+            <div id="policy-form" class="form-grid"></div>
+          </div>
+          <details class="card disclosure-card advanced-card">
+            <summary>Расширенные возможности</summary>
+            <div class="advanced-content">
+              <p>Для обычной работы JSON не нужен. Здесь можно открыть синтетический пример или изменить редкие поля пакета.</p>
+              <button id="extension" class="secondary">Открыть пример: 2041 + источник X</button>
+              <hr>
+              <label class="control"><span class="control-label">Пакет расчёта JSON</span><textarea id="json" rows="14" spellcheck="false"></textarea></label>
+              <div class="actions"><button id="apply" class="primary">Применить JSON</button><button id="research" class="quiet">Создать исследовательскую копию</button></div>
+              <p class="hint">Для правок контрольных данных сначала создайте исследовательскую копию.</p>
+            </div>
+          </details>
+          <div class="data-calc-actions" data-rebuild="true"></div>
+        </section>
+
+        <section id="panel-history" class="panel" hidden>
+          <div class="section-heading history-heading">
+            <div class="heading-title-row">
+              <h2>Сравнение планов</h2>
+              <span class="help-wrap">
+                <button class="help-trigger" type="button" aria-label="О сравнении расчётов" aria-expanded="false" aria-controls="help-history">?</button>
+                <span class="help-popover" id="help-history" role="note" hidden>Выберите до четырёх планов и сравните их в одном сценарии. Значения на графиках открывают картину целиком, а точный запуск можно открыть кнопкой сценария рядом с планом.</span>
+              </span>
+            </div>
+            <div class="history-actions"><button id="export-history" class="secondary">История CSV</button><a class="button secondary" href="results/project/risk-results.csv" download>Риски CSV</a><button id="cleanup-runs" class="danger-button">Очистить</button></div>
+          </div>
+          <div id="history-empty" class="card history-empty" hidden>
+            <h3>Пока нечего сравнивать</h3>
+            <p>Выполните расчёт на вкладке «Обзор и расчёт». Здесь появятся планы, сценарии и графики.</p>
+          </div>
+          <div id="history-dashboard">
+            <div id="history-summary" class="history-summary" role="list" aria-label="Сводка истории расчётов"></div>
+            <section class="card history-workbench" aria-labelledby="history-workbench-title">
+              <div class="history-workbench-head">
+                <div>
+                  <h3 id="history-workbench-title">Что лучше в выбранном сценарии</h3>
+                  <p>Сравнивайте только сопоставимые результаты. Лучшее значение отмечается среди планов, которые покрывают условия.</p>
+                </div>
+                <div class="history-scenario-switch" aria-label="Сценарий для графиков">
+                  <button type="button" data-history-scenario="BASE" aria-pressed="false">База</button>
+                  <button type="button" data-history-scenario="MANDATORY_STRESS" aria-pressed="false">Стресс</button>
+                </div>
+              </div>
+              <div id="history-insight" class="history-insight" role="status"></div>
+              <div class="history-workbench-body">
+                <section class="history-plan-panel" aria-labelledby="history-plan-picker-title">
+                  <div class="history-panel-title">
+                    <h4 id="history-plan-picker-title">Планы</h4>
+                    <span id="history-selection-count"></span>
+                  </div>
+                  <p>Выберите до четырёх. Цвет плана одинаков на всех графиках.</p>
+                  <div id="history-plan-picker" class="history-plan-list"></div>
+                </section>
+                <div id="history-charts" class="history-chart-grid" aria-live="polite"></div>
+              </div>
+            </section>
+            <details id="history-table-details" class="card history-table-card">
+              <summary><span>Полная история и точные запуски</span><span id="history-table-count"></span></summary>
+              <div id="comparison" class="scroll" tabindex="0" aria-label="Полная история расчётов"></div>
+            </details>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <span>Cosmo / расчётное ядро 1.0</span>
+    <span>млн у.е. / тонны / модельные даты</span>
+    <a href="docs/index.html" target="_blank" rel="noopener">Вся документация <span aria-hidden="true">↗</span></a>
+  </footer>
+
+  <dialog id="confirm-dialog" aria-labelledby="confirm-title" aria-describedby="confirm-text">
+    <form method="dialog">
+      <span class="dialog-mark" aria-hidden="true">!</span>
+      <h2 id="confirm-title">Заменить текущий план?</h2>
+      <p id="confirm-text"></p>
+      <div class="actions">
+        <button value="cancel" class="secondary" autofocus>Отмена</button>
+        <button value="confirm" class="primary">Продолжить</button>
+      </div>
+    </form>
+  </dialog>
+</body>
+</html>

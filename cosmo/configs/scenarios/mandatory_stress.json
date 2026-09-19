@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "scenario_id": "MANDATORY_STRESS",
+  "status": "CASE_INPUT",
+  "input_version": "case-v1",
+  "demand_profile": "base",
+  "demand_multiplier_default": 1,
+  "demand_multipliers_by_year": {"2038": 1.15, "2039": 1.15, "2040": 1.15},
+  "apply_demand_multiplier_to": ["total", "critical"],
+  "variable_price_multiplier_default": 1,
+  "variable_price_multipliers_by_source_year": {
+    "A": {"2038": 1.25, "2039": 1.25},
+    "B": {"2038": 1.25, "2039": 1.25}
+  },
+  "actual_delivery_share_default": 1,
+  "actual_delivery_shares_by_source_year": {
+    "D": {"2038": 0.55, "2039": 0.75, "2040": 1}
+  },
+  "loss_ceiling": {"enabled": true, "from_year": 2038, "through_year": 2040, "max_losses_divided_by_throughput": 0.02},
+  "service_threshold_mode": "target",
+  "apply_reliability_to_deliveries": false,
+  "reservation_tariff_multiplier": 1,
+  "capex_multiplier": 1,
+  "combine_with_other_scenarios": false
+}

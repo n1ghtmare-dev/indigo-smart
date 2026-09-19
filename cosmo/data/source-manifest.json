@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "input_version": "case-v1",
+  "captured_on": "2026-09-18",
+  "repository": "https://github.com/SpaceEconomyPolicy/test_oil",
+  "commit": "cec6de1950276091689e71a67f9a875fb4ca6213",
+  "files": [
+    {
+      "path": "data/original/organizer/README.md",
+      "sha256": "c8d70de40e74bd3450d39c28d6ee04f8ecb428c147570f1030485ad6d48f7916",
+      "source_url": "https://raw.githubusercontent.com/SpaceEconomyPolicy/test_oil/cec6de1950276091689e71a67f9a875fb4ca6213/README.md",
+      "origin": "organizer_repository"
+    },
+    {
+      "path": "data/original/organizer/data/README.md",
+      "sha256": "07adb666407da4373b6aab3414c06b95040d53a32d9c861db1c160c82635bb2f",
+      "source_url": "https://raw.githubusercontent.com/SpaceEconomyPolicy/test_oil/cec6de1950276091689e71a67f9a875fb4ca6213/data/README.md",
+      "origin": "organizer_repository"
+    },
+    {
+      "path": "data/original/organizer/data/constraints.csv",
+      "sha256": "9af0a70b445ee1c451b5dc368237b7727ed2923b89565f357dff61a21d4f4dc8",
+      "source_url": "https://raw.githubusercontent.com/SpaceEconomyPolicy/test_oil/cec6de1950276091689e71a67f9a875fb4ca6213/data/constraints.csv",
+      "origin": "organizer_repository"
+    },
+    {
+      "path": "data/original/organizer/data/demand.csv",
+      "sha256": "a3049bd3ff3b9e7102858be94476a0f356be3027790382d3761be7745f82a1c1",
+      "source_url": "https://raw.githubusercontent.com/SpaceEconomyPolicy/test_oil/cec6de1950276091689e71a67f9a875fb4ca6213/data/demand.csv",
+      "origin": "organizer_repository"
+    },
+    {
+      "path": "data/original/organizer/data/investment_options.csv",
+      "sha256": "922c92bc0a70ab6e837e51a3017d4cde5b9a55baa51602132d21f4131d4b034c",
+      "source_url": "https://raw.githubusercontent.com/SpaceEconomyPolicy/test_oil/cec6de1950276091689e71a67f9a875fb4ca6213/data/investment_options.csv",
+      "origin": "organizer_repository"
+    },
+    {
+      "path": "data/original/organizer/data/storage_options.csv",
+      "sha256": "81c764ba07efae2860b72defff70b80ed6280a8243ec36a5ec5e8690187ed202",
+      "source_url": "https://raw.githubusercontent.com/SpaceEconomyPolicy/test_oil/cec6de1950276091689e71a67f9a875fb4ca6213/data/storage_options.csv",
+      "origin": "organizer_repository"
+    },
+    {
+      "path": "data/original/organizer/data/supply_sources.csv",
+      "sha256": "182139c4870402024f540d0f010b4396db2fad77bf5a35449e04cbe584ef0977",
+      "source_url": "https://raw.githubusercontent.com/SpaceEconomyPolicy/test_oil/cec6de1950276091689e71a67f9a875fb4ca6213/data/supply_sources.csv",
+      "origin": "organizer_repository"
+    },
+    {
+      "path": "data/original/organizer/docs/CALCULATION_RULES.md",
+      "sha256": "639b9de750aa282bd1f2af434810eeb4814f86bb15615ea692c641dc24d663a2",
+      "source_url": "https://raw.githubusercontent.com/SpaceEconomyPolicy/test_oil/cec6de1950276091689e71a67f9a875fb4ca6213/docs/CALCULATION_RULES.md",
+      "origin": "organizer_repository"
+    },
+    {
+      "path": "data/original/organizer/docs/CASE_RULES.md",
+      "sha256": "435bdfd6f13b2560a68065d6e3b7f6093de23893d51823d0b3bbac0e2d107de0",
+      "source_url": "https://raw.githubusercontent.com/SpaceEconomyPolicy/test_oil/cec6de1950276091689e71a67f9a875fb4ca6213/docs/CASE_RULES.md",
+      "origin": "organizer_repository"
+    },
+    {
+      "path": "data/original/organizer/docs/DATA_DICTIONARY.md",
+      "sha256": "3470582df353a8dc4c665d2b02df044270ddaae3f68fac0b2b5e631457bd114f",
+      "source_url": "https://raw.githubusercontent.com/SpaceEconomyPolicy/test_oil/cec6de1950276091689e71a67f9a875fb4ca6213/docs/DATA_DICTIONARY.md",
+      "origin": "organizer_repository"
+    },
+    {
+      "path": "data/original/organizer/docs/FAQ.md",
+      "sha256": "a67501dc9d85a18c64161c3f53b40933346f7132539dfca97468816f27db54cb",
+      "source_url": "https://raw.githubusercontent.com/SpaceEconomyPolicy/test_oil/cec6de1950276091689e71a67f9a875fb4ca6213/docs/FAQ.md",
+      "origin": "organizer_repository"
+    },
+    {
+      "path": "data/original/organizer/docs/SCIENTIFIC_BASIS.md",
+      "sha256": "f314a79a6b7907c873fecb7056728b5152bfb56d28d0e52be9411e3aa5a03be5",
+      "source_url": "https://raw.githubusercontent.com/SpaceEconomyPolicy/test_oil/cec6de1950276091689e71a67f9a875fb4ca6213/docs/SCIENTIFIC_BASIS.md",
+      "origin": "organizer_repository"
+    },
+    {
+      "path": "data/original/organizer/docs/STRESS_PROTOCOL.md",
+      "sha256": "ed43dcc5a05ae7d6405f3385da51a92daaa9f135586eea4020320b80163cad8f",
+      "source_url": "https://raw.githubusercontent.com/SpaceEconomyPolicy/test_oil/cec6de1950276091689e71a67f9a875fb4ca6213/docs/STRESS_PROTOCOL.md",
+      "origin": "organizer_repository"
+    },
+    {
+      "path": "data/original/organizer/scenarios/README.md",
+      "sha256": "2e6f955f47992dbb12df901ec3359442ce2b0b1f3342454bdf79ddaf78cd2cb6",
+      "source_url": "https://raw.githubusercontent.com/SpaceEconomyPolicy/test_oil/cec6de1950276091689e71a67f9a875fb4ca6213/scenarios/README.md",
+      "origin": "organizer_repository"
+    },
+    {
+      "path": "data/original/organizer/scenarios/base.yaml",
+      "sha256": "f16f46e3b291365051543f7ef9874f4ed5a295beb589af1c095e78b706bcac3a",
+      "source_url": "https://raw.githubusercontent.com/SpaceEconomyPolicy/test_oil/cec6de1950276091689e71a67f9a875fb4ca6213/scenarios/base.yaml",
+      "origin": "organizer_repository"
+    },
+    {
+      "path": "data/original/organizer/scenarios/mandatory_stress.yaml",
+      "sha256": "312b097486d7940c92f70f9180b5d32141d27f1a9a7294f166f6bfeb5ca6a7f7",
+      "source_url": "https://raw.githubusercontent.com/SpaceEconomyPolicy/test_oil/cec6de1950276091689e71a67f9a875fb4ca6213/scenarios/mandatory_stress.yaml",
+      "origin": "organizer_repository"
+    },
+    {
+      "path": "data/original/organizer/validation/control_cases.md",
+      "sha256": "945f32aa1d2fe1c3e7bfa25ee5d2c6256ccd1d66621f757c0a34ed2df096ba27",
+      "source_url": "https://raw.githubusercontent.com/SpaceEconomyPolicy/test_oil/cec6de1950276091689e71a67f9a875fb4ca6213/validation/control_cases.md",
+      "origin": "organizer_repository"
+    },
+    {
+      "path": "data/original/organizer/validation/expected_checks.json",
+      "sha256": "00713cb5cb9ddb62b0d6077fa7573b8d296945f6fe455cc1a0052e2613d644c5",
+      "source_url": "https://raw.githubusercontent.com/SpaceEconomyPolicy/test_oil/cec6de1950276091689e71a67f9a875fb4ca6213/validation/expected_checks.json",
+      "origin": "organizer_repository"
+    },
+    {
+      "path": "data/original/pdf/additional.pdf",
+      "sha256": "b10c187b14b72b4c07dcebb770df69f046bbf97f223be48553028acaae2a7a66",
+      "provided_filename": "Дополнительно.pdf",
+      "pages": 1,
+      "origin": "user_provided_pdf"
+    },
+    {
+      "path": "data/original/pdf/case-statement.pdf",
+      "sha256": "9bfdbd7082d810616b5ce6de4794dd2fd60944901be9d3e5aa9ed5747f0b3b8a",
+      "provided_filename": "Постановка_кейса_—_Топливный_космоконтур_2035_КосмоХакатон_2026.pdf",
+      "pages": 14,
+      "origin": "user_provided_pdf"
+    },
+    {
+      "path": "data/original/pdf/evaluation-criteria.pdf",
+      "sha256": "7b12ebc5eb2ee2892854d730fd6ed6b3923d350b2e67c864f9cc0e604fa6295f",
+      "provided_filename": "Критерии_оценки_—_Топливный_космоконтур_2035_КосмоХакатон_2026.pdf",
+      "pages": 5,
+      "origin": "user_provided_pdf"
+    }
+  ],
+  "limitations": [
+    "Первичный XLSX не предоставлен; числовая сверка выполнена между PDF пользователя и CSV этой версии репозитория.",
+    "Упомянутый в репозитории docs/ERRATA_AND_PROVENANCE.md отсутствует в дереве зафиксированного коммита.",
+    "Подборка научных публикаций сохранена как материал организатора; независимая проверка публикаций ещё не выполнена."
+  ]
+}

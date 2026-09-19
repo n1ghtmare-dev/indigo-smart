@@ -1,0 +1,1662 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Понятный разбор кейса КосмоХакатона 2026 «Топливный космоконтур 2035»: задача, данные, ограничения, стресс-сценарий и критерии оценки.">
+  <title>Топливный космоконтур 2035 | Понятный разбор кейса</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f4f6f8;
+      --surface: #ffffff;
+      --surface-2: #e9edf1;
+      --surface-3: #dde3e8;
+      --text: #15191d;
+      --muted: #59636c;
+      --line: #cbd2d8;
+      --accent: #d84d22;
+      --accent-strong: #ad3211;
+      --accent-soft: #fbe5dc;
+      --accent-ink: #74220c;
+      --action-bg: #ad3211;
+      --action-hover: #8f260c;
+      --action-ink: #ffffff;
+      --action-subtle: #ffe2d8;
+      --good: #23764f;
+      --warning: #985914;
+      --danger: #a73333;
+      --hero-overlay: linear-gradient(90deg, rgba(8, 12, 16, .96) 0%, rgba(8, 12, 16, .82) 39%, rgba(8, 12, 16, .18) 72%, rgba(8, 12, 16, .08) 100%);
+      --shadow: 0 24px 70px rgba(20, 33, 45, .12);
+      --radius: 20px;
+      --radius-small: 12px;
+      --page: 1180px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0d1115;
+      --surface: #151b20;
+      --surface-2: #1d252b;
+      --surface-3: #273139;
+      --text: #f1f4f6;
+      --muted: #adb6bd;
+      --line: #354049;
+      --accent: #f16d42;
+      --accent-strong: #ff8a64;
+      --accent-soft: #3b241d;
+      --accent-ink: #ffc4b0;
+      --action-bg: #ff8a64;
+      --action-hover: #ffc4b0;
+      --action-ink: #1a0c07;
+      --action-subtle: #3d160c;
+      --good: #72d6a3;
+      --warning: #eab978;
+      --danger: #f19a9a;
+      --shadow: 0 24px 70px rgba(0, 0, 0, .34);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0d1115;
+        --surface: #151b20;
+        --surface-2: #1d252b;
+        --surface-3: #273139;
+        --text: #f1f4f6;
+        --muted: #adb6bd;
+        --line: #354049;
+        --accent: #f16d42;
+        --accent-strong: #ff8a64;
+        --accent-soft: #3b241d;
+        --accent-ink: #ffc4b0;
+        --action-bg: #ff8a64;
+        --action-hover: #ffc4b0;
+        --action-ink: #1a0c07;
+        --action-subtle: #3d160c;
+        --good: #72d6a3;
+        --warning: #eab978;
+        --danger: #f19a9a;
+        --shadow: 0 24px 70px rgba(0, 0, 0, .34);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Aptos", "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
+      line-height: 1.55;
+      text-rendering: optimizeLegibility;
+    }
+
+    a { color: inherit; }
+    button, select, input { font: inherit; }
+    button { color: inherit; }
+    img { display: block; max-width: 100%; }
+    code, .mono {
+      font-family: "SFMono-Regular", "Cascadia Code", "Roboto Mono", monospace;
+    }
+
+    .skip-link {
+      position: fixed;
+      left: 16px;
+      top: -80px;
+      z-index: 100;
+      padding: 10px 14px;
+      background: var(--action-bg);
+      color: var(--action-ink);
+      border-radius: 999px;
+      text-decoration: none;
+      transition: top .2s ease;
+    }
+    .skip-link:focus { top: 16px; }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+      background: color-mix(in srgb, var(--bg) 90%, transparent);
+      backdrop-filter: blur(16px);
+    }
+    .nav {
+      width: min(calc(100% - 32px), var(--page));
+      min-height: 68px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .brand-mark {
+      width: 26px;
+      height: 26px;
+      border: 7px solid var(--text);
+      border-right-color: var(--accent);
+      border-radius: 50%;
+      transform: rotate(-32deg);
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-left: auto;
+      font-size: .88rem;
+      font-weight: 650;
+    }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-actions { display: flex; gap: 8px; }
+    .icon-button {
+      min-width: 42px;
+      min-height: 42px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 750;
+    }
+    .icon-button:hover { border-color: var(--accent); }
+    .icon-button:active { transform: translateY(1px); }
+    :focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 58%, transparent); outline-offset: 3px; }
+
+    main { overflow: clip; }
+    .wrap {
+      width: min(calc(100% - 32px), var(--page));
+      margin: 0 auto;
+    }
+    .section {
+      padding: 92px 0;
+      scroll-margin-top: 78px;
+    }
+    .section + .section { border-top: 1px solid var(--line); }
+    .section-heading {
+      max-width: 780px;
+      margin-bottom: 42px;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1, h2, h3 {
+      letter-spacing: -.035em;
+      line-height: 1.06;
+    }
+    h1 { font-size: clamp(2.75rem, 6vw, 5.7rem); max-width: 850px; margin-bottom: 22px; }
+    h2 { font-size: clamp(2rem, 4vw, 3.6rem); margin-bottom: 18px; }
+    h3 { font-size: clamp(1.2rem, 2vw, 1.55rem); margin-bottom: 12px; }
+    p { color: var(--muted); }
+    .lead { font-size: clamp(1.1rem, 2vw, 1.34rem); max-width: 68ch; }
+    .eyebrow {
+      margin-bottom: 18px;
+      color: #ffc5b2;
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+    .muted { color: var(--muted); }
+    .accent { color: var(--accent-strong); }
+    .small { font-size: .88rem; }
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .hero {
+      width: min(calc(100% - 32px), 1400px);
+      min-height: min(760px, calc(100dvh - 92px));
+      margin: 24px auto 0;
+      position: relative;
+      display: grid;
+      align-items: center;
+      overflow: hidden;
+      border-radius: var(--radius);
+      background: #090d11;
+      box-shadow: var(--shadow);
+      color: #f4f7f8;
+    }
+    .hero-media,
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+    }
+    .hero-media picture,
+    .hero-media img { width: 100%; height: 100%; }
+    .hero-media img { object-fit: cover; object-position: center; }
+    .hero-overlay { background: var(--hero-overlay); }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      width: min(100%, 840px);
+      padding: clamp(42px, 7vw, 96px);
+    }
+    .hero h1 { color: #f4f7f8; }
+    .hero .hero-copy {
+      max-width: 650px;
+      color: #d8dee2;
+      font-size: clamp(1.05rem, 1.7vw, 1.3rem);
+      margin-bottom: 30px;
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .button {
+      display: inline-flex;
+      min-height: 48px;
+      align-items: center;
+      justify-content: center;
+      padding: 11px 19px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      font-weight: 800;
+      text-decoration: none;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+    }
+    .button:hover { transform: translateY(-2px); }
+    .button:active { transform: translateY(1px); }
+    .button-primary { background: var(--action-bg); color: var(--action-ink); }
+    .button-primary:hover { background: var(--action-hover); }
+    .button-secondary { border-color: rgba(255,255,255,.45); color: #fff; background: rgba(9,13,17,.34); }
+    .button-secondary:hover { background: rgba(255,255,255,.1); }
+
+    .fact-strip {
+      width: min(calc(100% - 32px), var(--page));
+      margin: 24px auto 0;
+      display: grid;
+      grid-template-columns: 1.2fr .8fr .8fr;
+      gap: 1px;
+      overflow: hidden;
+      background: var(--line);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+    .fact { padding: 24px; background: var(--surface); }
+    .fact strong { display: block; font-size: 1.45rem; line-height: 1.1; margin-bottom: 6px; }
+    .fact span { color: var(--muted); font-size: .9rem; }
+
+    .plain-answer {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(300px, .85fr);
+      gap: 52px;
+      align-items: start;
+    }
+    .statement {
+      font-size: clamp(1.5rem, 3vw, 2.45rem);
+      line-height: 1.25;
+      letter-spacing: -.025em;
+      color: var(--text);
+    }
+    .decision-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: decisions;
+      display: grid;
+      gap: 12px;
+    }
+    .decision-list li {
+      counter-increment: decisions;
+      position: relative;
+      padding: 18px 18px 18px 60px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-small);
+      font-weight: 720;
+    }
+    .decision-list li::before {
+      content: counter(decisions);
+      position: absolute;
+      left: 18px;
+      top: 16px;
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      background: var(--accent-soft);
+      color: var(--accent-ink);
+      border-radius: 50%;
+      font: 800 .78rem/1 "SFMono-Regular", monospace;
+    }
+
+    .core-pipeline {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(135px, 1fr));
+      gap: 12px;
+      overflow-x: auto;
+      padding: 4px 2px 16px;
+      scrollbar-width: thin;
+    }
+    .pipe-node {
+      min-height: 126px;
+      padding: 18px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-small);
+      position: relative;
+    }
+    .pipe-node:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      right: -18px;
+      top: 48px;
+      width: 24px;
+      color: var(--accent);
+      font-size: 1.35rem;
+      font-weight: 900;
+      text-align: center;
+      z-index: 2;
+    }
+    .pipe-node strong { display: block; margin-bottom: 8px; }
+    .pipe-node span { display: block; color: var(--muted); font-size: .84rem; }
+
+    .parameter-map {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(280px, .65fr);
+      gap: 18px;
+    }
+    .parameter-card {
+      padding: 28px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+    .parameter-card.large { grid-row: span 2; min-height: 390px; }
+    .parameter-card h3 { display: flex; align-items: center; gap: 10px; }
+    .type-tag {
+      display: inline-flex;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent-ink);
+      font: 800 .7rem/1.2 "SFMono-Regular", monospace;
+      letter-spacing: .03em;
+    }
+    .parameter-card ul { margin: 18px 0 0; padding-left: 20px; }
+    .parameter-card li + li { margin-top: 9px; }
+    .do-not-mix {
+      margin-top: 22px;
+      padding: 16px 18px;
+      background: var(--accent-soft);
+      color: var(--accent-ink);
+      border-radius: var(--radius-small);
+      font-weight: 750;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+    }
+    .scope-panel {
+      padding: 30px;
+      border-radius: var(--radius);
+      background: var(--surface);
+      border: 1px solid var(--line);
+    }
+    .scope-panel ul { margin: 20px 0 0; padding: 0; list-style: none; }
+    .scope-panel li { padding: 10px 0 10px 28px; position: relative; }
+    .scope-panel li::before {
+      position: absolute;
+      left: 0;
+      top: 10px;
+      font-weight: 900;
+      color: var(--accent);
+    }
+    .scope-panel.in li::before { content: "+"; }
+    .scope-panel.out li::before { content: "×"; }
+
+    .data-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(310px, .55fr);
+      gap: 28px;
+      align-items: start;
+    }
+    .table-shell {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+    table { width: 100%; border-collapse: collapse; min-width: 660px; }
+    th, td { padding: 15px 16px; text-align: right; border-bottom: 1px solid var(--line); }
+    th:first-child, td:first-child { text-align: left; }
+    thead th { color: var(--muted); font-size: .76rem; letter-spacing: .04em; background: var(--surface-2); }
+    tbody tr:last-child td { border-bottom: 0; }
+    tbody tr:hover td { background: color-mix(in srgb, var(--accent-soft) 45%, var(--surface)); }
+    .calculator {
+      position: sticky;
+      top: 92px;
+      padding: 26px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .field { display: grid; gap: 7px; margin-top: 16px; }
+    label { font-size: .84rem; font-weight: 800; }
+    select {
+      width: 100%;
+      min-height: 46px;
+      padding: 9px 12px;
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+    }
+    .result-box {
+      margin-top: 22px;
+      padding: 18px;
+      border-radius: var(--radius-small);
+      background: var(--accent-soft);
+      color: var(--accent-ink);
+    }
+    .result-box span { display: block; font-size: .8rem; }
+    .result-box strong { display: block; margin-top: 3px; font-size: 2.3rem; letter-spacing: -.04em; }
+    .formula-line { margin: 14px 0 0; color: var(--muted); font-size: .8rem; overflow-wrap: anywhere; }
+
+    .source-list { display: grid; gap: 14px; }
+    .source-card {
+      display: grid;
+      grid-template-columns: 54px minmax(175px, .8fr) minmax(0, 1.6fr);
+      gap: 18px;
+      align-items: center;
+      padding: 20px 22px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-small);
+    }
+    .source-id {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      background: var(--surface-2);
+      border-radius: 50%;
+      font-weight: 900;
+    }
+    .source-title strong { display: block; font-size: 1.08rem; }
+    .source-title span { color: var(--muted); font-size: .83rem; }
+    .source-specs { display: flex; flex-wrap: wrap; gap: 8px; }
+    .spec {
+      padding: 7px 10px;
+      background: var(--surface-2);
+      border-radius: 999px;
+      font-size: .78rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .investment-grid {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 18px;
+      margin-top: 34px;
+    }
+    .investment-card {
+      padding: 28px;
+      border-radius: var(--radius);
+      background: var(--surface);
+      border: 1px solid var(--line);
+    }
+    .investment-card.featured {
+      background: var(--accent-soft);
+      color: var(--accent-ink);
+      border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
+    }
+    .investment-card.featured p { color: color-mix(in srgb, var(--accent-ink) 78%, transparent); }
+    .metric-pair { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 20px; }
+    .metric strong { display: block; font-size: 1.75rem; line-height: 1; }
+    .metric span { font-size: .8rem; color: var(--muted); }
+    .featured .metric span { color: color-mix(in srgb, var(--accent-ink) 72%, transparent); }
+
+    .constraints {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr 1fr;
+      gap: 16px;
+    }
+    .constraint {
+      min-height: 210px;
+      padding: 24px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--surface);
+    }
+    .constraint.wide { grid-column: span 2; }
+    .constraint-number { font-size: clamp(2rem, 4vw, 3.4rem); font-weight: 900; letter-spacing: -.06em; line-height: 1; color: var(--accent-strong); }
+    .constraint h3 { margin-top: 16px; }
+
+    .stress-panel {
+      padding: 30px;
+      background: #10161b;
+      color: #f0f3f5;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .stress-panel p { color: #abb6bd; }
+    .stress-grid {
+      display: grid;
+      grid-template-columns: 1.1fr repeat(4, minmax(145px, 1fr));
+      margin-top: 28px;
+      overflow-x: auto;
+      border: 1px solid #33404a;
+      border-radius: var(--radius-small);
+    }
+    .stress-cell {
+      min-height: 78px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      border-right: 1px solid #33404a;
+      border-bottom: 1px solid #33404a;
+      background: #151d23;
+      color: #dfe5e8;
+      font-size: .86rem;
+    }
+    .stress-cell:nth-child(5n) { border-right: 0; }
+    .stress-cell:nth-last-child(-n+5) { border-bottom: 0; }
+    .stress-cell.header { background: #202a32; font-weight: 850; color: #f8fafb; }
+    .stress-cell.label { font-weight: 750; color: #f8fafb; }
+    .stress-cell.changed { background: #342119; color: #ffd0c0; font-weight: 800; }
+    .stress-note {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .stress-note div { padding: 18px; border: 1px solid #33404a; border-radius: var(--radius-small); }
+    .stress-note strong { display: block; margin-bottom: 6px; }
+    .stress-note span { color: #abb6bd; font-size: .88rem; }
+    .stress-inference {
+      margin-top: 14px;
+      padding: 18px;
+      border-radius: var(--radius-small);
+      background: #f16d42;
+      color: #1a0c07;
+    }
+    .stress-inference strong { display: block; margin-bottom: 5px; }
+    .stress-inference span { font-size: .9rem; }
+
+    .corrections {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 34px;
+    }
+    .correction {
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-small);
+      background: var(--surface);
+    }
+    .wrong, .right { display: block; font-weight: 850; }
+    .wrong { color: var(--danger); margin-bottom: 6px; }
+    .right { color: var(--good); }
+
+    .formula-grid {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 18px;
+    }
+    .formula-card {
+      padding: 26px;
+      border-radius: var(--radius);
+      background: var(--surface);
+      border: 1px solid var(--line);
+    }
+    .formula-card code {
+      display: block;
+      margin-top: 16px;
+      padding: 15px;
+      overflow-x: auto;
+      background: var(--surface-2);
+      border-radius: var(--radius-small);
+      color: var(--text);
+      font-size: .86rem;
+      line-height: 1.7;
+    }
+    .formula-card.feature { grid-row: span 2; }
+    .formula-card.feature code { font-size: 1rem; }
+    .formula-card ul { padding-left: 20px; margin-bottom: 0; }
+
+    .score-layout {
+      display: grid;
+      grid-template-columns: minmax(280px, .7fr) minmax(0, 1.3fr);
+      gap: 30px;
+      align-items: start;
+    }
+    .score-total {
+      position: sticky;
+      top: 94px;
+      padding: 30px;
+      background: var(--action-bg);
+      color: var(--action-ink);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .score-total strong { display: block; font-size: clamp(4rem, 9vw, 7rem); letter-spacing: -.09em; line-height: .9; }
+    .score-total p { color: var(--action-subtle); margin: 16px 0 0; }
+    .score-groups { display: grid; gap: 14px; }
+    details {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-small);
+      overflow: hidden;
+    }
+    summary {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      padding: 20px;
+      cursor: pointer;
+      font-weight: 850;
+      list-style: none;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: "+"; color: var(--accent); font-size: 1.5rem; line-height: 1; }
+    details[open] summary::after { content: "−"; }
+    .score-points { color: var(--accent-strong); white-space: nowrap; }
+    .details-body { padding: 0 20px 22px; }
+    .criterion {
+      display: grid;
+      grid-template-columns: 42px minmax(150px, .65fr) minmax(0, 1.35fr);
+      gap: 14px;
+      padding: 16px 0;
+      border-top: 1px solid var(--line);
+    }
+    .criterion-id { color: var(--accent-strong); font-weight: 900; }
+    .criterion strong { line-height: 1.25; }
+    .criterion span:last-child { color: var(--muted); font-size: .9rem; }
+
+    .five-rule {
+      margin-top: 28px;
+      display: grid;
+      grid-template-columns: .7fr 1.3fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+    .five-badge {
+      min-height: 260px;
+      display: grid;
+      place-items: center;
+      background: var(--surface-2);
+      border-radius: var(--radius);
+      font-size: 7rem;
+      font-weight: 950;
+      letter-spacing: -.1em;
+      color: var(--accent-strong);
+    }
+    .five-copy {
+      padding: 30px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+    .five-copy ul { margin-bottom: 0; padding-left: 20px; }
+    .five-copy li + li { margin-top: 8px; }
+
+    .roadmap {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .roadmap-item {
+      min-height: 230px;
+      padding: 26px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+    .roadmap-item strong { display: block; font-size: 1.45rem; line-height: 1.1; letter-spacing: -.025em; margin-bottom: 12px; }
+    .roadmap-item p { margin-bottom: 0; }
+    .roadmap-item.priority { background: var(--accent-soft); color: var(--accent-ink); border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
+    .roadmap-item.priority p { color: color-mix(in srgb, var(--accent-ink) 74%, transparent); }
+
+    .risk-layout {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 20px;
+      align-items: start;
+    }
+    .risk-panel {
+      padding: 28px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+    .risk-fields {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .risk-field {
+      min-height: 86px;
+      padding: 14px;
+      background: var(--surface-2);
+      border-radius: var(--radius-small);
+    }
+    .risk-field strong { display: block; margin-bottom: 4px; font-size: .9rem; }
+    .risk-field span { display: block; color: var(--muted); font-size: .8rem; }
+    .stakeholder-list { display: grid; gap: 10px; margin-top: 20px; }
+    .stakeholder {
+      display: grid;
+      grid-template-columns: minmax(130px, .65fr) minmax(0, 1.35fr);
+      gap: 14px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .stakeholder:last-child { border-bottom: 0; }
+    .stakeholder span { color: var(--muted); font-size: .86rem; }
+    .contract-check {
+      margin-top: 20px;
+      padding: 24px;
+      border-radius: var(--radius);
+      background: var(--accent-soft);
+      color: var(--accent-ink);
+    }
+    .contract-check p { color: color-mix(in srgb, var(--accent-ink) 78%, transparent); margin-bottom: 0; }
+
+    .mistake-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .mistake {
+      padding: 22px 22px 22px 54px;
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-small);
+    }
+    .mistake::before {
+      content: "×";
+      position: absolute;
+      left: 20px;
+      top: 17px;
+      color: var(--danger);
+      font-size: 1.7rem;
+      font-weight: 900;
+    }
+    .mistake strong { display: block; margin-bottom: 5px; }
+    .mistake span { color: var(--muted); font-size: .9rem; }
+
+    .checklist {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 290px;
+      gap: 26px;
+      align-items: start;
+    }
+    .check-items { display: grid; gap: 10px; }
+    .check-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: start;
+      padding: 16px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-small);
+      cursor: pointer;
+    }
+    .check-item:hover { border-color: var(--accent); }
+    .check-item input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--accent); }
+    .check-item strong { display: block; }
+    .check-item span { color: var(--muted); font-size: .86rem; }
+    .check-summary {
+      position: sticky;
+      top: 92px;
+      padding: 24px;
+      background: var(--surface-2);
+      border-radius: var(--radius);
+    }
+    .check-summary strong { display: block; font-size: 2.8rem; letter-spacing: -.05em; }
+
+    .bonus {
+      padding: 36px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 28px;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+    .bonus-number { font-size: clamp(4rem, 9vw, 7.5rem); font-weight: 950; color: var(--accent-strong); letter-spacing: -.09em; line-height: .85; }
+
+    .source-footer {
+      padding: 44px 0 56px;
+      border-top: 1px solid var(--line);
+    }
+    .source-footer-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+    }
+    .source-links { display: grid; gap: 10px; }
+    .source-links a { color: var(--accent-strong); font-weight: 750; text-underline-offset: 3px; }
+    .source-note { color: var(--muted); font-size: .88rem; }
+
+    .noscript {
+      margin: 16px auto;
+      width: min(calc(100% - 32px), var(--page));
+      padding: 14px 18px;
+      border: 1px solid var(--warning);
+      border-radius: var(--radius-small);
+      background: var(--surface);
+    }
+
+    @media (max-width: 980px) {
+      .nav-links { display: none; }
+      .nav-actions { margin-left: auto; }
+      .hero { min-height: 660px; }
+      .hero-media img { object-position: 58% center; }
+      .hero-overlay { background: linear-gradient(90deg, rgba(8,12,16,.96) 0%, rgba(8,12,16,.84) 60%, rgba(8,12,16,.25) 100%); }
+      .fact-strip { grid-template-columns: 1fr 1fr; }
+      .fact:first-child { grid-column: 1 / -1; }
+      .plain-answer, .data-layout, .score-layout, .checklist, .source-footer-grid, .risk-layout { grid-template-columns: 1fr; }
+      .calculator, .score-total, .check-summary { position: static; }
+      .constraints { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .constraint.wide { grid-column: span 1; }
+      .core-pipeline { grid-template-columns: repeat(6, 190px); }
+    }
+
+    @media (max-width: 760px) {
+      .section { padding: 68px 0; }
+      .hero { min-height: 700px; margin-top: 12px; }
+      .hero-content { align-self: end; padding: 34px 24px 48px; }
+      .hero-media img { object-position: 64% center; }
+      .hero-overlay { background: linear-gradient(0deg, rgba(8,12,16,.98) 0%, rgba(8,12,16,.85) 56%, rgba(8,12,16,.2) 100%); }
+      .fact-strip, .two-col, .parameter-map, .investment-grid, .constraints, .formula-grid, .corrections, .mistake-grid, .roadmap, .stress-note, .five-rule, .risk-fields { grid-template-columns: 1fr; }
+      .fact:first-child, .parameter-card.large, .formula-card.feature { grid-column: auto; grid-row: auto; }
+      .source-card { grid-template-columns: 48px 1fr; }
+      .source-specs { grid-column: 1 / -1; }
+      .criterion { grid-template-columns: 34px 1fr; }
+      .criterion span:last-child { grid-column: 2; }
+      .bonus { grid-template-columns: 1fr; }
+      .stress-panel { padding: 22px; }
+      .stress-grid { grid-template-columns: 170px repeat(4, 145px); }
+    }
+
+    @media (max-width: 480px) {
+      .brand span:last-child { display: none; }
+      .nav { min-height: 62px; }
+      .print-button { display: none; }
+      .hero { width: calc(100% - 16px); border-radius: 16px; }
+      .fact-strip, .wrap { width: calc(100% - 24px); }
+      .hero-actions { display: grid; }
+      .button { width: 100%; }
+      .source-card { padding: 18px; }
+      .five-badge { min-height: 180px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+
+    @media print {
+      :root {
+        --bg: #fff;
+        --surface: #fff;
+        --surface-2: #f1f1f1;
+        --text: #111;
+        --muted: #444;
+        --line: #bbb;
+        --accent: #b23a17;
+        --accent-strong: #8f2b0e;
+        --accent-soft: #f8e7e0;
+        --accent-ink: #5d1c09;
+      }
+      .site-header, .hero-actions, .check-items input { display: none !important; }
+      body { background: #fff; font-size: 10.5pt; }
+      .hero { min-height: 440px; box-shadow: none; break-after: page; }
+      .section { padding: 36px 0; break-inside: avoid; }
+      .calculator, .score-total, .check-summary { position: static; box-shadow: none; }
+      details { break-inside: avoid; }
+      details > .details-body { display: block !important; }
+      a { text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#content">К содержанию</a>
+  <header class="site-header">
+    <nav class="nav" aria-label="Основная навигация">
+      <a class="brand" href="#top" aria-label="К началу страницы">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>Космоконтур 2035</span>
+      </a>
+      <div class="nav-links">
+        <a href="#brief">Суть</a>
+        <a href="#data">Данные</a>
+        <a href="#stress">Стресс</a>
+        <a href="#score">Оценка</a>
+        <a href="#plan">План работы</a>
+      </div>
+      <div class="nav-actions">
+        <button class="icon-button print-button" id="printPage" type="button">Печать</button>
+        <button class="icon-button" id="themeToggle" type="button" aria-label="Переключить тему" aria-pressed="false">Тема</button>
+      </div>
+    </nav>
+  </header>
+
+  <noscript><div class="noscript">Страница работает и без JavaScript. Не будут доступны только переключатель темы, калькулятор и сохранение отметок в чек-листе.</div></noscript>
+
+  <main id="content">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero-media" aria-hidden="true">
+        <picture>
+          <source srcset="assets/orbital-fuel-hub.webp" type="image/webp">
+          <img src="assets/orbital-fuel-hub.png" alt="" width="1954" height="805" fetchpriority="high">
+        </picture>
+      </div>
+      <div class="hero-overlay" aria-hidden="true"></div>
+      <div class="hero-content">
+        <p class="eyebrow">Разбор кейса КосмоХакатон 2026</p>
+        <h1 id="hero-title">Спроектируйте систему, которая не даст топливу закончиться</h1>
+        <p class="hero-copy">Нужно связать решения оператора с честной расчётной моделью снабжения на 2035-2040 годы.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#brief">Понять задачу</a>
+          <a class="button button-secondary" href="#deliverables">Открыть чек-лист</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="fact-strip" aria-label="Ключевые факты о кейсе">
+      <div class="fact"><strong>Не просто дашборд</strong><span>За интерфейсом должно работать пересчитываемое ядро с формулами и проверками.</span></div>
+      <div class="fact"><strong>100 + 5</strong><span>Основная шкала и бонус за геополитический модуль.</span></div>
+      <div class="fact"><strong>6 лет</strong><span>Обязательный горизонт: 2035-2040.</span></div>
+    </div>
+
+    <section class="section" id="brief">
+      <div class="wrap">
+        <div class="section-heading">
+          <h2>Суть задачи простыми словами</h2>
+          <p class="lead">Вы управляете условной орбитальной заправкой между Землёй и Луной. Топливо нужно заранее покупать, хранить и страховать от срывов.</p>
+        </div>
+        <div class="plain-answer">
+          <div>
+            <p class="statement">Ваша программа должна отвечать на главный вопрос: <strong>какой план поставок и инвестиций будет выполнимым, достаточно надёжным и разумным по стоимости?</strong></p>
+            <p>Пользователь меняет решения, нажимает пересчёт и сразу видит поставки, остатки, дефицит, расходы и нарушения. Затем он включает обязательный стресс и понимает, выдержит ли выбранная стратегия удар.</p>
+          </div>
+          <ol class="decision-list" aria-label="Главные решения оператора">
+            <li>Сколько топлива заказать</li>
+            <li>У кого и когда купить</li>
+            <li>Какую мощность зарезервировать</li>
+            <li>Во что вложиться заранее</li>
+            <li>Как пережить сбой поставок</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="contour">
+      <div class="wrap">
+        <div class="section-heading">
+          <h2>Что такое «цифровой контур»</h2>
+          <p class="lead">Это не картинка с красивыми числами. Это цепочка, в которой любое допустимое изменение входа приводит к новому проверяемому результату.</p>
+        </div>
+        <div class="core-pipeline" aria-label="Логика цифрового контура">
+          <div class="pipe-node"><strong>Данные</strong><span>Спрос, цены, мощности, сроки, хранилище</span></div>
+          <div class="pipe-node"><strong>Решения</strong><span>Заказы, резерв, инвестиции, контракты</span></div>
+          <div class="pipe-node"><strong>Расчёт</strong><span>Баланс топлива и денежных потоков</span></div>
+          <div class="pipe-node"><strong>Проверки</strong><span>Сервис, CAPEX, сроки, ёмкость, роли каналов</span></div>
+          <div class="pipe-node"><strong>Сценарии</strong><span>BASE, обязательный стресс, чувствительность, риски</span></div>
+          <div class="pipe-node"><strong>Результат</strong><span>Сравнение, сохранение, повторное открытие, экспорт</span></div>
+        </div>
+
+        <div class="parameter-map" style="margin-top: 34px">
+          <article class="parameter-card large">
+            <h3><span class="type-tag">CASE_INPUT</span> Условия организатора</h3>
+            <p>Их нельзя незаметно менять в контрольных расчётах.</p>
+            <ul>
+              <li>Спрос по годам и его критическая часть</li>
+              <li>Мощности, цены, сроки и надёжность пяти каналов</li>
+              <li>Параметры хранилища и инвестиционных опций</li>
+              <li>Лимиты CAPEX и требования к обслуживанию</li>
+              <li>Все изменения обязательного стресс-сценария</li>
+            </ul>
+            <div class="do-not-mix">Это контрольная база. Даже удобное для стратегии изменение нельзя выдавать за исходное условие.</div>
+          </article>
+          <article class="parameter-card">
+            <h3><span class="type-tag">TEAM_DECISION</span> Решение команды</h3>
+            <p>То, что выбирает оператор: объёмы, каналы, резервирование, физический запас, инвестиции и момент их запуска.</p>
+          </article>
+          <article class="parameter-card">
+            <h3><span class="type-tag">TEAM_ASSUMPTION</span> Явное допущение</h3>
+            <p>То, чего нет в исходнике: ставка дисконтирования, вероятность собственного риска, правила перевода месяцев в дни, параметры после 2040 года.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="scope">
+      <div class="wrap">
+        <div class="section-heading">
+          <h2>Граница модели</h2>
+          <p class="lead">Кейс про управление цепочкой снабжения, а не про проектирование реальной ракеты или бака.</p>
+        </div>
+        <div class="two-col">
+          <article class="scope-panel in">
+            <h3>Нужно считать</h3>
+            <ul>
+              <li>Закупки и фактические поставки</li>
+              <li>Запас, потери и дефицит во времени</li>
+              <li>Резерв мощности и take-or-pay</li>
+              <li>CAPEX, OPEX, хранение и дисконтирование</li>
+              <li>Сервис общего и критического спроса</li>
+              <li>Риски, чувствительность и реакцию стратегии</li>
+            </ul>
+          </article>
+          <article class="scope-panel out">
+            <h3>Не требуется в обязательной части</h3>
+            <ul>
+              <li>Траекторная оптимизация</li>
+              <li>Подбор конкретной ракеты</li>
+              <li>Термодинамика и геометрия баков</li>
+              <li>Телеметрия реального оборудования</li>
+              <li>Автоматический оптимизатор</li>
+              <li>Фактическое заключение контрактов</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="data">
+      <div class="wrap">
+        <div class="section-heading">
+          <h2>Спрос растёт почти в четыре раза</h2>
+          <p class="lead">Критический спрос уже входит в общий. Складывать эти две колонки нельзя.</p>
+        </div>
+        <div class="data-layout">
+          <div class="table-shell">
+            <table>
+              <caption class="visually-hidden">Спрос на топливо по годам, тонн в год</caption>
+              <thead>
+                <tr>
+                  <th>Год</th>
+                  <th>Базовый общий</th>
+                  <th>Базовый критический</th>
+                  <th>Низкий общий</th>
+                  <th>Высокий общий</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>2035</td><td>100</td><td>80</td><td>80</td><td>110</td></tr>
+                <tr><td>2036</td><td>140</td><td>105</td><td>112</td><td>154</td></tr>
+                <tr><td>2037</td><td>190</td><td>135</td><td>152</td><td>209</td></tr>
+                <tr><td>2038</td><td>250</td><td>170</td><td>200</td><td>312,5</td></tr>
+                <tr><td>2039</td><td>320</td><td>210</td><td>256</td><td>400</td></tr>
+                <tr><td>2040</td><td>390</td><td>250</td><td>312</td><td>487,5</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <aside class="calculator" aria-labelledby="reserve-title">
+            <h3 id="reserve-title">45-дневный резерв</h3>
+            <p class="small">Выберите год и сценарий. Расчёт использует общий спрос выбранного сценария.</p>
+            <div class="field">
+              <label for="reserveYear">Год</label>
+              <select id="reserveYear">
+                <option value="2035">2035</option>
+                <option value="2036">2036</option>
+                <option value="2037">2037</option>
+                <option value="2038" selected>2038</option>
+                <option value="2039">2039</option>
+                <option value="2040">2040</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="reserveScenario">Сценарий</label>
+              <select id="reserveScenario">
+                <option value="base">BASE</option>
+                <option value="stress" selected>MANDATORY_STRESS</option>
+              </select>
+            </div>
+            <div class="result-box" aria-live="polite">
+              <span>Минимальный эквивалент резерва</span>
+              <strong id="reserveResult">35,45 т</strong>
+            </div>
+            <p class="formula-line mono" id="reserveFormula">287,5 × 45 / 365 = 35,45</p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="sources">
+      <div class="wrap">
+        <div class="section-heading">
+          <h2>Пять способов получить топливо</h2>
+          <p class="lead">Дешёвый канал может быть медленным или рискованным. Гибкий канал дороже. В этом и состоит управленческий выбор.</p>
+        </div>
+        <div class="source-list">
+          <article class="source-card">
+            <div class="source-id">A</div>
+            <div class="source-title"><strong>Earth-Core</strong><span>Долгосрочный базовый канал</span></div>
+            <div class="source-specs"><span class="spec">190 т/год</span><span class="spec">6,2 млн/т</span><span class="spec">резерв 0,45</span><span class="spec">TOP 70%</span><span class="spec">12 месяцев</span><span class="spec">надёжность 0,96</span></div>
+          </article>
+          <article class="source-card">
+            <div class="source-id">B</div>
+            <div class="source-title"><strong>Earth-Flex</strong><span>Гибкий наземный канал</span></div>
+            <div class="source-specs"><span class="spec">110 т/год</span><span class="spec">8,9 млн/т</span><span class="spec">резерв 0,15</span><span class="spec">TOP 0%</span><span class="spec">4 месяца</span><span class="spec">надёжность 0,985</span></div>
+          </article>
+          <article class="source-card">
+            <div class="source-id">C</div>
+            <div class="source-title"><strong>Earth-New</strong><span>Новый поставщик после подготовки</span></div>
+            <div class="source-specs"><span class="spec">130 т/год</span><span class="spec">7,1 млн/т</span><span class="spec">резерв 0,30</span><span class="spec">TOP 50%</span><span class="spec">18-24 месяца</span><span class="spec">0,88, затем 0,94</span></div>
+          </article>
+          <article class="source-card">
+            <div class="source-id">D</div>
+            <div class="source-title"><strong>Lunar-ISRU</strong><span>Лунный источник с 2038 года</span></div>
+            <div class="source-specs"><span class="spec">120 т/год</span><span class="spec">3,0 млн/т</span><span class="spec">без платы за резерв</span><span class="spec">без TOP</span><span class="spec">1-2 месяца после ввода</span><span class="spec">0,78 / 0,90 / 0,93</span></div>
+          </article>
+          <article class="source-card">
+            <div class="source-id">E</div>
+            <div class="source-title"><strong>Emergency</strong><span>Аварийная или спотовая поставка</span></div>
+            <div class="source-specs"><span class="spec">80 т/год</span><span class="spec">13,8 млн/т</span><span class="spec">резерв 0,35</span><span class="spec">TOP 0%</span><span class="spec">6 недель</span><span class="spec">надёжность 0,995</span></div>
+          </article>
+        </div>
+
+        <div class="investment-grid">
+          <article class="investment-card featured">
+            <h3>Хранилище: базовое или ZBO</h3>
+            <p>База уже существует. ZBO доступна как опция с 2036 года: она увеличивает ёмкость и резко снижает модельные потери, но требует CAPEX и ежегодного OPEX.</p>
+            <div class="metric-pair">
+              <div class="metric"><strong>70 → 120 т</strong><span>ёмкость</span></div>
+              <div class="metric"><strong>4,5% → 1,2%</strong><span>потери от поступления</span></div>
+              <div class="metric"><strong>180</strong><span>CAPEX ZBO, млн</span></div>
+              <div class="metric"><strong>+12/год</strong><span>дополнительный OPEX</span></div>
+              <div class="metric"><strong>0,72</strong><span>хранение, млн/т-год</span></div>
+            </div>
+          </article>
+          <article class="investment-card">
+            <h3>Инвестиционные опции</h3>
+            <p><strong>Lunar-ISRU:</strong> CAPEX 1 250 до 2038 года, затем OPEX 70 в год.</p>
+            <p><strong>Earth-New:</strong> 90 за опцион и ещё 270 при реализации. Итого ровно 360, не 450.</p>
+            <p class="small">Все денежные значения даны в млн условных единиц, в постоянных ценах 2035 года.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="limits">
+      <div class="wrap">
+        <div class="section-heading">
+          <h2>Жёсткие правила стандартного плана</h2>
+          <p class="lead">Проверять нужно каждый год. Хорошая средняя цифра за шесть лет не скрывает провал в одном году.</p>
+        </div>
+        <div class="constraints">
+          <article class="constraint">
+            <div class="constraint-number">99%</div>
+            <h3>Критический спрос</h3>
+            <p>Минимальная доля обслуживания в каждом году BASE.</p>
+          </article>
+          <article class="constraint">
+            <div class="constraint-number">97%</div>
+            <h3>Общий спрос</h3>
+            <p>Критическая часть уже находится внутри общего объёма.</p>
+          </article>
+          <article class="constraint">
+            <div class="constraint-number">45 дней</div>
+            <h3>Резерв</h3>
+            <p>Физический запас на начало года или доказанный контрактный эквивалент.</p>
+          </article>
+          <article class="constraint wide">
+            <div class="constraint-number">1 800 / 2 800</div>
+            <h3>Лимиты CAPEX</h3>
+            <p>Не более 1 800 млн до конца 2037 года и не более 2 800 млн суммарно до 2040 года.</p>
+          </article>
+          <article class="constraint">
+            <div class="constraint-number">≤ 2 лет</div>
+            <h3>Роль Emergency</h3>
+            <p>Нельзя делать его базовым каналом больше двух последовательных лет. Страховка и плановая закупка должны различаться.</p>
+          </article>
+          <article class="constraint">
+            <div class="constraint-number">0,78</div>
+            <h3>ISRU в первый год</h3>
+            <p>Нельзя самовольно принять надёжность выше этого значения без доказанного основания.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="stress">
+      <div class="wrap">
+        <div class="section-heading">
+          <h2>Обязательный стресс известен заранее</h2>
+          <p class="lead">Это не внезапное испытание на защите. Система с самого начала должна уметь считать и сравнивать BASE и MANDATORY_STRESS.</p>
+        </div>
+        <div class="stress-panel">
+          <h3>Что меняется по годам</h3>
+          <p>Изменения накладываются на базовые данные. Всё, что не перечислено, остаётся исходным.</p>
+          <div class="stress-grid" role="table" aria-label="Параметры обязательного стресс-сценария">
+            <div class="stress-cell header" role="columnheader">Параметр</div>
+            <div class="stress-cell header" role="columnheader">2035-2037</div>
+            <div class="stress-cell header" role="columnheader">2038</div>
+            <div class="stress-cell header" role="columnheader">2039</div>
+            <div class="stress-cell header" role="columnheader">2040</div>
+
+            <div class="stress-cell label" role="rowheader">Общий и критический спрос</div>
+            <div class="stress-cell">Базовый</div>
+            <div class="stress-cell changed">+15%</div>
+            <div class="stress-cell changed">+15%</div>
+            <div class="stress-cell changed">+15%</div>
+
+            <div class="stress-cell label" role="rowheader">Переменная цена Earth-Core / Flex</div>
+            <div class="stress-cell">Исходная</div>
+            <div class="stress-cell changed">+25%</div>
+            <div class="stress-cell changed">+25%</div>
+            <div class="stress-cell">Исходная</div>
+
+            <div class="stress-cell label" role="rowheader">Фактическая поставка ISRU</div>
+            <div class="stress-cell">До ввода: нет</div>
+            <div class="stress-cell changed">55% плана</div>
+            <div class="stress-cell changed">75% плана</div>
+            <div class="stress-cell">100% плана</div>
+
+            <div class="stress-cell label" role="rowheader">Предел потерь от оборота</div>
+            <div class="stress-cell">По режиму хранения</div>
+            <div class="stress-cell changed">≤ 2%</div>
+            <div class="stress-cell changed">≤ 2%</div>
+            <div class="stress-cell changed">≤ 2%</div>
+          </div>
+          <div class="stress-note">
+            <div><strong>Цена растёт не вся</strong><span>Шок +25% относится только к переменным ценам Earth-Core и Earth-Flex в 2038-2039. Резервные тарифы, CAPEX и остальные цены не меняются.</span></div>
+            <div><strong>ISRU не уменьшают дважды</strong><span>Заданные 55% и 75% уже являются фактической долей поставки. Повторно умножать их на коэффициент надёжности нельзя.</span></div>
+            <div><strong>Высокий спрос считается отдельно</strong><span>Mandatory stress не объединяется автоматически с таблицей высокого спроса и дополнительным геополитическим шоком.</span></div>
+            <div><strong>Ориентиры можно нарушить честно</strong><span>В стрессе 99% и 97% служат ориентирами устойчивости. Если план их не достигает, покажите величину дефицита, причину и реакцию.</span></div>
+          </div>
+          <div class="stress-inference"><strong>Практический вывод, а не отдельная команда организатора</strong><span>Базовое хранилище теряет 4,5% от поступления, а стресс с 2038 года требует не более 2%. ZBO даёт 1,2%, поэтому модель почти наверняка приведёт к её вводу до 2038 года. Это решение всё равно нужно провести через сроки, CAPEX и OPEX, а не зашить в расчёт без объяснения.</span></div>
+        </div>
+
+        <div class="corrections" aria-label="Критически важные различия">
+          <article class="correction"><span class="wrong">Неверно: резерв = топливо на складе</span><span class="right">Верно: резерв мощности даёт право на будущую поставку, но не является физическим запасом.</span></article>
+          <article class="correction"><span class="wrong">Неверно: план × надёжность в BASE</span><span class="right">Верно: BASE детерминирован. Надёжность изучается в отдельном блоке рисков.</span></article>
+          <article class="correction"><span class="wrong">Неверно: отрицательный запас</span><span class="right">Верно: физический запас не ниже нуля, а нехватка показывается отдельным дефицитом.</span></article>
+          <article class="correction"><span class="wrong">Неверно: Excel с готовыми итогами</span><span class="right">Верно: эксперт меняет решения и получает новый расчёт без участия разработчика.</span></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="math">
+      <div class="wrap">
+        <div class="section-heading">
+          <h2>Минимальная математика ядра</h2>
+          <p class="lead">Формулы могут быть сложнее, но эти сущности обязаны оставаться раздельными и прослеживаемыми.</p>
+        </div>
+        <div class="formula-grid">
+          <article class="formula-card feature">
+            <h3>Материальный баланс</h3>
+            <p>Для каждого временного шага топливо приходит, частично теряется, выдаётся потребителям или остаётся в хранилище.</p>
+            <code>I_end = I_start + Q_delivered - Losses - Q_served
+
+Shortage = max(0, Demand - Q_served)
+
+Losses = Gross_inflow × loss_rate</code>
+            <ul>
+              <li>Потери начисляются один раз на валовое поступление.</li>
+              <li>Ёмкость проверяется внутри года, а не только по годовому итогу.</li>
+              <li>Начальный запас имеет источник, дату и стоимость.</li>
+              <li>Хранение оплачивается по среднему физическому запасу с учётом времени.</li>
+              <li>Поступление, остаток и право на поставку нельзя складывать как независимые объёмы.</li>
+            </ul>
+          </article>
+          <article class="formula-card">
+            <h3>Take-or-pay и резервирование</h3>
+            <code>Q_pay = max(Q_order, TOP_share × Q_reserved)
+VariablePayment = price × Q_pay
+ReservationPayment = rate × capacity × period_fraction</code>
+            <p class="small">Минимальный оплачиваемый объём уже сидит внутри max(...). Второй раз добавлять TOP нельзя. Для части года плата за резерв пропорциональна длительности, а месячный шаг не создаёт новый TOP каждый месяц.</p>
+          </article>
+          <article class="formula-card">
+            <h3>Стоимость и сервис</h3>
+            <code>TotalCost = Procurement + Reservation + Holding + FixedOPEX + CAPEX
+PV_t = CF_t / (1 + r)^(t - t0)
+SL_total = served_total / demand_total
+SL_critical = served_critical / demand_critical</code>
+            <p class="small">При дисконтировании укажите реальную ставку и момент приведения. Выручки в исходнике нет, поэтому считать прибыль нельзя.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="tests">
+      <div class="wrap">
+        <div class="section-heading">
+          <h2>Какие эксперименты обязательны</h2>
+          <p class="lead">Одного переключателя сценария мало. Для каждого теста нужны цель, изменяемые параметры, метрики, критерий нарушения и способ повторить расчёт.</p>
+        </div>
+        <div class="roadmap">
+          <article class="roadmap-item priority"><strong>BASE</strong><p>Годовой план 2035-2040, все ограничения и стоимость жизненного цикла на исходных данных.</p></article>
+          <article class="roadmap-item"><strong>MANDATORY_STRESS</strong><p>Все заданные изменения по годам, без двойного учёта и без скрытого увеличения бюджета или мощностей.</p></article>
+          <article class="roadmap-item"><strong>Low / high demand</strong><p>Отдельные проверки чувствительности. Доля критического спроса сохраняется от базового года.</p></article>
+          <article class="roadmap-item"><strong>Собственные риски</strong><p>Например, отказ канала, задержка ввода или совместный шок. Для риска нужны количественные последствия и меры.</p></article>
+          <article class="roadmap-item"><strong>Пороговая чувствительность</strong><p>Найдите значение параметра, после которого план нарушает ограничение или проигрывает другой стратегии.</p></article>
+          <article class="roadmap-item"><strong>Горизонт после 2040</strong><p>На копии набора добавьте будущий период и явно задайте новые данные, правила и границы прогноза.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="risks">
+      <div class="wrap">
+        <div class="section-heading">
+          <h2>Риски и интересы сторон нужно посчитать</h2>
+          <p class="lead">Общая фраза «поставка может сорваться» не даёт баллов. Риск должен менять параметры модели и давать измеримое последствие.</p>
+        </div>
+        <div class="risk-layout">
+          <article class="risk-panel">
+            <h3>Строка хорошего реестра рисков</h3>
+            <p>Каждый выбранный риск проходит один и тот же проверяемый путь.</p>
+            <div class="risk-fields">
+              <div class="risk-field"><strong>Событие и причина</strong><span>Что именно происходит и почему</span></div>
+              <div class="risk-field"><strong>Период и параметры</strong><span>Когда действует и какие входы меняет</span></div>
+              <div class="risk-field"><strong>Вероятность или диапазон</strong><span>Источник, основание или честное допущение</span></div>
+              <div class="risk-field"><strong>Последствия</strong><span>Тонны, сроки, стоимость, сервис и дефицит</span></div>
+              <div class="risk-field"><strong>Связи и владелец</strong><span>Зависимости от других рисков и ответственная сторона</span></div>
+              <div class="risk-field"><strong>Мера и остаточный риск</strong><span>Цена реакции, её эффект и то, что всё равно останется</span></div>
+            </div>
+          </article>
+          <article class="risk-panel">
+            <h3>Кого затрагивает стратегия</h3>
+            <p>Покажите не только общий итог, но и распределение выгод, затрат и ответственности.</p>
+            <div class="stakeholder-list">
+              <div class="stakeholder"><strong>Оператор</strong><span>Стоимость, исполнимость, гибкость и ответственность за сервис</span></div>
+              <div class="stakeholder"><strong>Критические потребители</strong><span>Приоритет и требование не менее 99% в BASE</span></div>
+              <div class="stakeholder"><strong>Коммерческие потребители</strong><span>Доступный объём и компромисс при дефиците</span></div>
+              <div class="stakeholder"><strong>Поставщики топлива и запусков</strong><span>Оплата, резервирование, TOP, сроки и ответственность</span></div>
+              <div class="stakeholder"><strong>Инвестор</strong><span>График CAPEX, риск вложений и инвестиционные ворота</span></div>
+            </div>
+          </article>
+        </div>
+        <div class="contract-check">
+          <h3>Контракт должен быть связан с расчётом</h3>
+          <p>Для каждого существенного договора покажите контрагента, объём, сроки и lead time, резервирование, take-or-pay, оплату, ответственность и правила пересмотра. Если используете MCDA и веса интересов, раскройте нормализацию и происхождение весов. Весами нельзя отменить критические ограничения.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="score">
+      <div class="wrap">
+        <div class="section-heading">
+          <h2>Как жюри раздаёт 100 баллов</h2>
+          <p class="lead">Главный принцип: оценивается доказанный и воспроизводимый результат, а не количество экранов, сложность метода или самая низкая цена.</p>
+        </div>
+        <div class="score-layout">
+          <aside class="score-total">
+            <strong>100</strong>
+            <p>20 критериев, каждый от 0 до 5. Откройте группы справа, чтобы увидеть, что именно проверят.</p>
+          </aside>
+          <div class="score-groups">
+            <details open>
+              <summary><span>Надёжность и корректность модели</span><span class="score-points">25 баллов</span></summary>
+              <div class="details-body">
+                <div class="criterion"><span class="criterion-id">01</span><strong>Материальный баланс</strong><span>Поступления, запас, потери и выдача согласованы; нет двойного счёта и отрицательного физического запаса.</span></div>
+                <div class="criterion"><span class="criterion-id">02</span><strong>Мощности и сроки</strong><span>Доступность, lead time и ввод учтены; резерв не выдан за поставку.</span></div>
+                <div class="criterion"><span class="criterion-id">03</span><strong>Экономика</strong><span>CAPEX, OPEX, закупка, резервирование, TOP и хранение согласованы без дублей.</span></div>
+                <div class="criterion"><span class="criterion-id">04</span><strong>Ограничения BASE</strong><span>Все проверки сделаны по каждому году, а нарушения выражены численно.</span></div>
+                <div class="criterion"><span class="criterion-id">05</span><strong>Воспроизводимость</strong><span>Есть ручной пример, границы, ошибочный ввод и совпадение чисел во всех материалах.</span></div>
+              </div>
+            </details>
+            <details>
+              <summary><span>Архитектура и стратегия</span><span class="score-points">20 баллов</span></summary>
+              <div class="details-body">
+                <div class="criterion"><span class="criterion-id">06</span><strong>Логика архитектуры</strong><span>Понятно, как данные и решения превращаются в баланс, стоимость, риски и выбор.</span></div>
+                <div class="criterion"><span class="criterion-id">07</span><strong>Методы и источники</strong><span>Методы обоснованы, допущения отделены от фактов, границы применимости названы.</span></div>
+                <div class="criterion"><span class="criterion-id">08</span><strong>Сравнение альтернатив</strong><span>Разные планы сопоставлены на одной базе по стоимости, сервису и гибкости.</span></div>
+                <div class="criterion"><span class="criterion-id">09</span><strong>Инвестиции и контракты</strong><span>Дорожная карта, финансирование, lead time и обязательства совпадают с расчётом.</span></div>
+              </div>
+            </details>
+            <details>
+              <summary><span>Стресс-тестирование</span><span class="score-points">20 баллов</span></summary>
+              <div class="details-body">
+                <div class="criterion"><span class="criterion-id">10</span><strong>Обязательный стресс</strong><span>Все изменения применены к нужным параметрам и годам, ничего не умножено дважды.</span></div>
+                <div class="criterion"><span class="criterion-id">11</span><strong>Чувствительность</strong><span>Есть влияние параметров и пороги, после которых план перестаёт работать.</span></div>
+                <div class="criterion"><span class="criterion-id">12</span><strong>Методики тестов</strong><span>Эксперименты описаны и повторяемы; случайные расчёты имеют seed и настройки.</span></div>
+                <div class="criterion"><span class="criterion-id">13</span><strong>Работа плана в стрессе</strong><span>Последствия и реакция количественны; обязательства и время реакции не игнорируются.</span></div>
+              </div>
+            </details>
+            <details>
+              <summary><span>Оценка рисков</span><span class="score-points">15 баллов</span></summary>
+              <div class="details-body">
+                <div class="criterion"><span class="criterion-id">14</span><strong>Реестр рисков</strong><span>Риски относятся к вашей стратегии, имеют причины, периоды, зависимости и владельцев.</span></div>
+                <div class="criterion"><span class="criterion-id">15</span><strong>Количественные последствия</strong><span>Событие связано с тоннами, затратами, сервисом или сроками, а диапазон обоснован.</span></div>
+                <div class="criterion"><span class="criterion-id">16</span><strong>Меры и остаточный риск</strong><span>Мера отвечает причине, имеет стоимость и показывает, что останется после её применения.</span></div>
+              </div>
+            </details>
+            <details>
+              <summary><span>Интересы сторон</span><span class="score-points">10 баллов</span></summary>
+              <div class="details-body">
+                <div class="criterion"><span class="criterion-id">17</span><strong>Стороны и показатели</strong><span>Показано, кто получает топливо, кто платит, кто несёт риск и чего требует.</span></div>
+                <div class="criterion"><span class="criterion-id">18</span><strong>Адаптация к рискам</strong><span>Видны компромиссы и изменение обязательств для каждой значимой стороны.</span></div>
+              </div>
+            </details>
+            <details>
+              <summary><span>Функциональность контура</span><span class="score-points">10 баллов</span></summary>
+              <div class="details-body">
+                <div class="criterion"><span class="criterion-id">19</span><strong>Функции оператора</strong><span>Эксперт сам меняет данные и договорные решения, пересчитывает и видит понятные ошибки.</span></div>
+                <div class="criterion"><span class="criterion-id">20</span><strong>Сохранение и развитие</strong><span>План открывается повторно, экспорт совпадает с расчётом, источник и период добавляются через данные.</span></div>
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <div class="five-rule">
+          <div class="five-badge">5</div>
+          <div class="five-copy">
+            <h3>Что означает максимальный балл</h3>
+            <p>Не достаточно сказать, что функция есть. Нужно провести жюри по цепочке доказательства.</p>
+            <ul>
+              <li>Показать входные данные и допущения.</li>
+              <li>Запустить расчёт прямо в системе.</li>
+              <li>Показать результат и нарушение, если оно есть.</li>
+              <li>Подтвердить контрольным тестом или ручным примером.</li>
+              <li>Объяснить ограничение метода и управленческий вывод.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="plan">
+      <div class="wrap">
+        <div class="section-heading">
+          <h2>Разумный порядок работы</h2>
+          <p class="lead">Сначала докажите корректность ядра. Интерфейс и сложные методы усиливают решение только после этого.</p>
+        </div>
+        <div class="roadmap">
+          <article class="roadmap-item priority"><strong>Зафиксируйте контракт данных</strong><p>Разделите CASE_INPUT, TEAM_DECISION и TEAM_ASSUMPTION. Задайте единицы, диапазоны и валидацию.</p></article>
+          <article class="roadmap-item"><strong>Соберите минимальное ядро</strong><p>Временной шаг, lead time, поставки, потери, запас, сервис, дефицит и расходы.</p></article>
+          <article class="roadmap-item"><strong>Напишите проверки раньше оптимизации</strong><p>Ёмкость, мощности, CAPEX, 45 дней, TOP, сроки ввода, роль Emergency и ISRU.</p></article>
+          <article class="roadmap-item"><strong>Воспроизведите BASE вручную</strong><p>Один простой пример, одна граница и один заведомо неверный план должны давать ожидаемый результат.</p></article>
+          <article class="roadmap-item"><strong>Добавьте обязательный стресс</strong><p>Храните его отдельной конфигурацией. Покажите разницу решений и результатов на общей базе.</p></article>
+          <article class="roadmap-item"><strong>Откройте управление оператору</strong><p>Поля решений, пересчёт, нарушения, сохранение, повторное открытие и экспорт без разработчика.</p></article>
+          <article class="roadmap-item"><strong>Посчитайте собственные риски</strong><p>Выберите риски, которые действительно меняют вашу стратегию. Добавьте меры и остаточный риск.</p></article>
+          <article class="roadmap-item"><strong>Синхронизируйте защиту</strong><p>Одинаковые числа, единицы и названия в интерфейсе, выгрузках, записке и презентации.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="mistakes">
+      <div class="wrap">
+        <div class="section-heading">
+          <h2>Ошибки, которые особенно опасны</h2>
+          <p class="lead">Большинство из них дают красивый, но физически или финансово неверный план.</p>
+        </div>
+        <div class="mistake-grid">
+          <article class="mistake"><strong>Сложить общий и критический спрос</strong><span>Критический объём уже является частью общего.</span></article>
+          <article class="mistake"><strong>Считать надёжность множителем BASE</strong><span>BASE поступает по плану. Надёжность принадлежит отдельному риск-тесту.</span></article>
+          <article class="mistake"><strong>Назвать 80 т Emergency готовым запасом</strong><span>Это годовой предел канала, а поставка требует 6 недель.</span></article>
+          <article class="mistake"><strong>Начислить потери дважды</strong><span>В кейсе потери считаются от валового поступления, а не повторно от остатка.</span></article>
+          <article class="mistake"><strong>Добавить TOP вторым платежом</strong><span>Он уже входит в max(заказ, минимальный оплачиваемый объём).</span></article>
+          <article class="mistake"><strong>Сделать Earth-New равным 450</strong><span>90 + 270 = 360. Полный проект не добавляется третьим платежом.</span></article>
+          <article class="mistake"><strong>Проверить только годовую сумму</strong><span>Внутри года может возникнуть дефицит или переполнение хранилища.</span></article>
+          <article class="mistake"><strong>Подогнать ограничения под стратегию</strong><span>Исходные мощности, бюджет и сроки нельзя задним числом увеличить.</span></article>
+          <article class="mistake"><strong>Спрятать дефицит в среднем показателе</strong><span>Жюри проверяет сервис и нарушения по каждому году.</span></article>
+          <article class="mistake"><strong>Выдать допущение за факт</strong><span>Неизвестные вероятности, штрафы и цены нужно маркировать как гипотезы команды.</span></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="deliverables">
+      <div class="wrap">
+        <div class="section-heading">
+          <h2>Что должно лежать в итоговой сдаче</h2>
+          <p class="lead">Отмечайте готовое. Состояние чек-листа сохраняется в этом браузере.</p>
+        </div>
+        <div class="checklist">
+          <div class="check-items" id="deliverableChecklist">
+            <label class="check-item"><input type="checkbox" data-check="memo"><span><strong>Управленческая записка 8-12 страниц</strong><span>Архитектура, методы, данные, стратегии, контракты, экономика, риски, стороны, бюджет и дорожная карта.</span></span></label>
+            <label class="check-item"><input type="checkbox" data-check="onepage"><span><strong>Одностраничное сравнение BASE / STRESS</strong><span>Различия решений, стоимости, сервиса, запаса и дефицита.</span></span></label>
+            <label class="check-item"><input type="checkbox" data-check="contour"><span><strong>Работающий цифровой контур</strong><span>Интерфейс или конфигурация меняют решения без правки кода.</span></span></label>
+            <label class="check-item"><input type="checkbox" data-check="code"><span><strong>Исходный код, данные и конфигурации</strong><span>Достаточно для повторного запуска на стороне эксперта.</span></span></label>
+            <label class="check-item"><input type="checkbox" data-check="plans"><span><strong>Сохранённые планы обоих сценариев</strong><span>Планы повторно открываются через проект или импорт.</span></span></label>
+            <label class="check-item"><input type="checkbox" data-check="tests"><span><strong>Контрольные и стресс-тесты</strong><span>BASE, mandatory stress, low/high, собственные риски, ошибки и границы.</span></span></label>
+            <label class="check-item"><input type="checkbox" data-check="slides"><span><strong>Презентация до 12 слайдов</strong><span>Пользовательский сценарий, альтернативы, ключевые числа и ограничения.</span></span></label>
+            <label class="check-item"><input type="checkbox" data-check="risk"><span><strong>Реестр рисков и карта стейкхолдеров</strong><span>Последствия, владельцы, меры, остаточный риск и распределение ответственности.</span></span></label>
+            <label class="check-item"><input type="checkbox" data-check="export"><span><strong>CSV или XLSX выгрузки</strong><span>Данные, планы, KPI, расходы, риски и сравнение сценариев с единицами.</span></span></label>
+            <label class="check-item"><input type="checkbox" data-check="readme"><span><strong>README в корне GitVerse</strong><span>Назначение, запуск, зависимости и порядок проверки от BASE до экспорта.</span></span></label>
+          </div>
+          <aside class="check-summary" aria-live="polite">
+            <span class="small">Готовность комплекта</span>
+            <strong id="checkCount">0 из 10</strong>
+            <p class="small">Это только организационный индикатор. Он не проверяет качество расчётов.</p>
+          </aside>
+        </div>
+
+        <div class="bonus" style="margin-top: 52px">
+          <div class="bonus-number">+5</div>
+          <div>
+            <h3>Необязательный геополитический модуль</h3>
+            <p>Пользователь задаёт событие, затронутые каналы, период и изменение цены. Система показывает цепочку «условие → параметр цены → расходы → решение оператора», сравнивает до и после, экспортирует результат и возвращает исходные цены.</p>
+            <p class="small">Бонус не компенсирует ошибки основной модели. Точные вероятности нельзя выдумывать без данных.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="source-footer">
+    <div class="wrap source-footer-grid">
+      <div>
+        <h3>На чём основан разбор</h3>
+        <p class="source-note">Страница пересказывает три приложенных документа простым языком. Числа и правила взяты из постановки и критериев. Совет по порядку работы является практической интерпретацией, а не новым условием организатора.</p>
+      </div>
+      <div class="source-links">
+        <a href="https://github.com/SpaceEconomyPolicy/test_oil" target="_blank" rel="noreferrer">Стартовый технический репозиторий организаторов</a>
+        <a href="https://disk.360.yandex.ru/d/oMVoGQwhXvzzGg" target="_blank" rel="noreferrer">Дополнительная литература от организаторов</a>
+        <span class="source-note">Изучены документы: постановка кейса, критерии оценки и дополнительный лист со ссылками.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      const root = document.documentElement;
+      const themeToggle = document.getElementById('themeToggle');
+      const savedTheme = localStorage.getItem('cosmo-theme');
+      if (savedTheme === 'light' || savedTheme === 'dark') {
+        root.dataset.theme = savedTheme;
+      }
+
+      const syncThemeButton = () => {
+        const explicit = root.dataset.theme;
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const isDark = explicit ? explicit === 'dark' : systemDark;
+        themeToggle.setAttribute('aria-pressed', String(isDark));
+        themeToggle.textContent = isDark ? 'Светлая' : 'Тёмная';
+      };
+
+      themeToggle.addEventListener('click', () => {
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const isDark = root.dataset.theme ? root.dataset.theme === 'dark' : systemDark;
+        const next = isDark ? 'light' : 'dark';
+        root.dataset.theme = next;
+        localStorage.setItem('cosmo-theme', next);
+        syncThemeButton();
+      });
+      syncThemeButton();
+
+      const printableDetails = [...document.querySelectorAll('details')];
+      let detailsState = [];
+      window.addEventListener('beforeprint', () => {
+        detailsState = printableDetails.map((item) => item.open);
+        printableDetails.forEach((item) => { item.open = true; });
+      });
+      window.addEventListener('afterprint', () => {
+        printableDetails.forEach((item, index) => { item.open = detailsState[index]; });
+      });
+      document.getElementById('printPage').addEventListener('click', () => window.print());
+
+      const baseDemand = {
+        2035: 100,
+        2036: 140,
+        2037: 190,
+        2038: 250,
+        2039: 320,
+        2040: 390
+      };
+      const yearSelect = document.getElementById('reserveYear');
+      const scenarioSelect = document.getElementById('reserveScenario');
+      const resultNode = document.getElementById('reserveResult');
+      const formulaNode = document.getElementById('reserveFormula');
+      const format = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 2, minimumFractionDigits: 0 });
+
+      const updateReserve = () => {
+        const year = Number(yearSelect.value);
+        const stressMultiplier = scenarioSelect.value === 'stress' && year >= 2038 ? 1.15 : 1;
+        const demand = baseDemand[year] * stressMultiplier;
+        const reserve = demand * 45 / 365;
+        resultNode.textContent = `${format.format(reserve)} т`;
+        formulaNode.textContent = `${format.format(demand)} × 45 / 365 = ${format.format(reserve)}`;
+      };
+      yearSelect.addEventListener('change', updateReserve);
+      scenarioSelect.addEventListener('change', updateReserve);
+      updateReserve();
+
+      const checks = [...document.querySelectorAll('[data-check]')];
+      const countNode = document.getElementById('checkCount');
+      let savedChecks = {};
+      try {
+        savedChecks = JSON.parse(localStorage.getItem('cosmo-checklist') || '{}');
+      } catch {
+        savedChecks = {};
+      }
+      checks.forEach((check) => {
+        check.checked = Boolean(savedChecks[check.dataset.check]);
+      });
+
+      const updateChecks = () => {
+        const state = {};
+        let count = 0;
+        checks.forEach((check) => {
+          state[check.dataset.check] = check.checked;
+          if (check.checked) count += 1;
+        });
+        localStorage.setItem('cosmo-checklist', JSON.stringify(state));
+        countNode.textContent = `${count} из ${checks.length}`;
+      };
+      checks.forEach((check) => check.addEventListener('change', updateChecks));
+      updateChecks();
+    })();
+  </script>
+</body>
+</html>

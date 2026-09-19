@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Проверка подготовки</title><link rel="stylesheet" href="../../docs/plain.css"></head><body><main>
+<nav><a href="../../docs/index.html">Все этапы</a><a href="../../docs/progress.html">Прогресс</a></nav>
+<h1>Проверка подготовки</h1>
+<p>Статус: <strong>PASS</strong>. Проверок: 40; ошибок: 0.</p>
+<p>Это проверка исходных данных и конфигураций, не проверка исполнимости плана снабжения.</p>
+<p>Дата UTC: 2026-09-18T22:22:27.760975+00:00. Python: 3.14.3.</p>
+<p>Команда: <code>python3 scripts/verify_preparation.py --write-report</code>.</p>
+<table><tr><th>Проверка</th><th>Результат</th></tr>
+<tr><td>original:data/original/organizer/README.md</td><td>PASS</td></tr>
+<tr><td>original:data/original/organizer/data/README.md</td><td>PASS</td></tr>
+<tr><td>original:data/original/organizer/data/constraints.csv</td><td>PASS</td></tr>
+<tr><td>original:data/original/organizer/data/demand.csv</td><td>PASS</td></tr>
+<tr><td>original:data/original/organizer/data/investment_options.csv</td><td>PASS</td></tr>
+<tr><td>original:data/original/organizer/data/storage_options.csv</td><td>PASS</td></tr>
+<tr><td>original:data/original/organizer/data/supply_sources.csv</td><td>PASS</td></tr>
+<tr><td>original:data/original/organizer/docs/CALCULATION_RULES.md</td><td>PASS</td></tr>
+<tr><td>original:data/original/organizer/docs/CASE_RULES.md</td><td>PASS</td></tr>
+<tr><td>original:data/original/organizer/docs/DATA_DICTIONARY.md</td><td>PASS</td></tr>
+<tr><td>original:data/original/organizer/docs/FAQ.md</td><td>PASS</td></tr>
+<tr><td>original:data/original/organizer/docs/SCIENTIFIC_BASIS.md</td><td>PASS</td></tr>
+<tr><td>original:data/original/organizer/docs/STRESS_PROTOCOL.md</td><td>PASS</td></tr>
+<tr><td>original:data/original/organizer/scenarios/README.md</td><td>PASS</td></tr>
+<tr><td>original:data/original/organizer/scenarios/base.yaml</td><td>PASS</td></tr>
+<tr><td>original:data/original/organizer/scenarios/mandatory_stress.yaml</td><td>PASS</td></tr>
+<tr><td>original:data/original/organizer/validation/control_cases.md</td><td>PASS</td></tr>
+<tr><td>original:data/original/organizer/validation/expected_checks.json</td><td>PASS</td></tr>
+<tr><td>original:data/original/pdf/additional.pdf</td><td>PASS</td></tr>
+<tr><td>original:data/original/pdf/case-statement.pdf</td><td>PASS</td></tr>
+<tr><td>original:data/original/pdf/evaluation-criteria.pdf</td><td>PASS</td></tr>
+<tr><td>manifest</td><td>PASS</td></tr>
+<tr><td>reference:demand</td><td>PASS</td></tr>
+<tr><td>reference:supply_sources</td><td>PASS</td></tr>
+<tr><td>reference:storage_options</td><td>PASS</td></tr>
+<tr><td>reference:investment_options</td><td>PASS</td></tr>
+<tr><td>reference:constraints</td><td>PASS</td></tr>
+<tr><td>golden:demand</td><td>PASS</td></tr>
+<tr><td>golden:supply</td><td>PASS</td></tr>
+<tr><td>golden:storage</td><td>PASS</td></tr>
+<tr><td>golden:investments</td><td>PASS</td></tr>
+<tr><td>golden:constraints</td><td>PASS</td></tr>
+<tr><td>scenario:base</td><td>PASS</td></tr>
+<tr><td>scenario:mandatory_stress</td><td>PASS</td></tr>
+<tr><td>model:explicit_conventions</td><td>PASS</td></tr>
+<tr><td>criteria:20_evidence_map</td><td>PASS</td></tr>
+<tr><td>derived:scenario_inputs_only</td><td>PASS</td></tr>
+<tr><td>fingerprint:data/source-manifest.json</td><td>PASS</td></tr>
+<tr><td>fingerprint:configs/model.json</td><td>PASS</td></tr>
+<tr><td>fingerprint:configs/acceptance.json</td><td>PASS</td></tr></table>
+<p>Ограничения: исходный XLSX отсутствует; ERRATA_AND_PROVENANCE.md не найден в сохранённом коммите; Q01–Q05 открыты; ядро проверено на синтетических примерах, интеграция полного кейса ещё не выполнена.</p>
+<p>Хеши прочитанных входных файлов — в report.json. Таблица scenario-inputs.csv содержит только входы четырёх сценариев (24 строки), не поставки или финансовые результаты. Критический спрос LOW/HIGH вычислен пропорционально общему по правилу кейса и FAQ (CASE_INPUT_DERIVED).</p><footer>HTML-версия заметки. <a href="report.md">Исходный Markdown</a>. Пересборка: python3 scripts/render_docs.py.</footer>
+</main></body></html>

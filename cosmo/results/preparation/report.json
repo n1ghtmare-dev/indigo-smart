@@ -1,0 +1,210 @@
+{
+  "status": "PASS",
+  "scope": "PREPARATION_ONLY_NOT_PLAN_FEASIBILITY",
+  "generated_at_utc": "2026-09-18T22:22:27.760975+00:00",
+  "python_version": "3.14.3",
+  "source_commit": "cec6de1950276091689e71a67f9a875fb4ca6213",
+  "checks_total": 40,
+  "checks_failed": 0,
+  "checks": [
+    {
+      "id": "original:data/original/organizer/README.md",
+      "status": "PASS"
+    },
+    {
+      "id": "original:data/original/organizer/data/README.md",
+      "status": "PASS"
+    },
+    {
+      "id": "original:data/original/organizer/data/constraints.csv",
+      "status": "PASS"
+    },
+    {
+      "id": "original:data/original/organizer/data/demand.csv",
+      "status": "PASS"
+    },
+    {
+      "id": "original:data/original/organizer/data/investment_options.csv",
+      "status": "PASS"
+    },
+    {
+      "id": "original:data/original/organizer/data/storage_options.csv",
+      "status": "PASS"
+    },
+    {
+      "id": "original:data/original/organizer/data/supply_sources.csv",
+      "status": "PASS"
+    },
+    {
+      "id": "original:data/original/organizer/docs/CALCULATION_RULES.md",
+      "status": "PASS"
+    },
+    {
+      "id": "original:data/original/organizer/docs/CASE_RULES.md",
+      "status": "PASS"
+    },
+    {
+      "id": "original:data/original/organizer/docs/DATA_DICTIONARY.md",
+      "status": "PASS"
+    },
+    {
+      "id": "original:data/original/organizer/docs/FAQ.md",
+      "status": "PASS"
+    },
+    {
+      "id": "original:data/original/organizer/docs/SCIENTIFIC_BASIS.md",
+      "status": "PASS"
+    },
+    {
+      "id": "original:data/original/organizer/docs/STRESS_PROTOCOL.md",
+      "status": "PASS"
+    },
+    {
+      "id": "original:data/original/organizer/scenarios/README.md",
+      "status": "PASS"
+    },
+    {
+      "id": "original:data/original/organizer/scenarios/base.yaml",
+      "status": "PASS"
+    },
+    {
+      "id": "original:data/original/organizer/scenarios/mandatory_stress.yaml",
+      "status": "PASS"
+    },
+    {
+      "id": "original:data/original/organizer/validation/control_cases.md",
+      "status": "PASS"
+    },
+    {
+      "id": "original:data/original/organizer/validation/expected_checks.json",
+      "status": "PASS"
+    },
+    {
+      "id": "original:data/original/pdf/additional.pdf",
+      "status": "PASS"
+    },
+    {
+      "id": "original:data/original/pdf/case-statement.pdf",
+      "status": "PASS"
+    },
+    {
+      "id": "original:data/original/pdf/evaluation-criteria.pdf",
+      "status": "PASS"
+    },
+    {
+      "id": "manifest",
+      "status": "PASS"
+    },
+    {
+      "id": "reference:demand",
+      "status": "PASS"
+    },
+    {
+      "id": "reference:supply_sources",
+      "status": "PASS"
+    },
+    {
+      "id": "reference:storage_options",
+      "status": "PASS"
+    },
+    {
+      "id": "reference:investment_options",
+      "status": "PASS"
+    },
+    {
+      "id": "reference:constraints",
+      "status": "PASS"
+    },
+    {
+      "id": "golden:demand",
+      "status": "PASS"
+    },
+    {
+      "id": "golden:supply",
+      "status": "PASS"
+    },
+    {
+      "id": "golden:storage",
+      "status": "PASS"
+    },
+    {
+      "id": "golden:investments",
+      "status": "PASS"
+    },
+    {
+      "id": "golden:constraints",
+      "status": "PASS"
+    },
+    {
+      "id": "scenario:base",
+      "status": "PASS"
+    },
+    {
+      "id": "scenario:mandatory_stress",
+      "status": "PASS"
+    },
+    {
+      "id": "model:explicit_conventions",
+      "status": "PASS"
+    },
+    {
+      "id": "criteria:20_evidence_map",
+      "status": "PASS"
+    },
+    {
+      "id": "derived:scenario_inputs_only",
+      "status": "PASS"
+    },
+    {
+      "id": "fingerprint:data/source-manifest.json",
+      "status": "PASS"
+    },
+    {
+      "id": "fingerprint:configs/model.json",
+      "status": "PASS"
+    },
+    {
+      "id": "fingerprint:configs/acceptance.json",
+      "status": "PASS"
+    }
+  ],
+  "input_sha256": {
+    "data/original/organizer/README.md": "c8d70de40e74bd3450d39c28d6ee04f8ecb428c147570f1030485ad6d48f7916",
+    "data/original/organizer/data/README.md": "07adb666407da4373b6aab3414c06b95040d53a32d9c861db1c160c82635bb2f",
+    "data/original/organizer/data/constraints.csv": "9af0a70b445ee1c451b5dc368237b7727ed2923b89565f357dff61a21d4f4dc8",
+    "data/original/organizer/data/demand.csv": "a3049bd3ff3b9e7102858be94476a0f356be3027790382d3761be7745f82a1c1",
+    "data/original/organizer/data/investment_options.csv": "922c92bc0a70ab6e837e51a3017d4cde5b9a55baa51602132d21f4131d4b034c",
+    "data/original/organizer/data/storage_options.csv": "81c764ba07efae2860b72defff70b80ed6280a8243ec36a5ec5e8690187ed202",
+    "data/original/organizer/data/supply_sources.csv": "182139c4870402024f540d0f010b4396db2fad77bf5a35449e04cbe584ef0977",
+    "data/original/organizer/docs/CALCULATION_RULES.md": "639b9de750aa282bd1f2af434810eeb4814f86bb15615ea692c641dc24d663a2",
+    "data/original/organizer/docs/CASE_RULES.md": "435bdfd6f13b2560a68065d6e3b7f6093de23893d51823d0b3bbac0e2d107de0",
+    "data/original/organizer/docs/DATA_DICTIONARY.md": "3470582df353a8dc4c665d2b02df044270ddaae3f68fac0b2b5e631457bd114f",
+    "data/original/organizer/docs/FAQ.md": "a67501dc9d85a18c64161c3f53b40933346f7132539dfca97468816f27db54cb",
+    "data/original/organizer/docs/SCIENTIFIC_BASIS.md": "f314a79a6b7907c873fecb7056728b5152bfb56d28d0e52be9411e3aa5a03be5",
+    "data/original/organizer/docs/STRESS_PROTOCOL.md": "ed43dcc5a05ae7d6405f3385da51a92daaa9f135586eea4020320b80163cad8f",
+    "data/original/organizer/scenarios/README.md": "2e6f955f47992dbb12df901ec3359442ce2b0b1f3342454bdf79ddaf78cd2cb6",
+    "data/original/organizer/scenarios/base.yaml": "f16f46e3b291365051543f7ef9874f4ed5a295beb589af1c095e78b706bcac3a",
+    "data/original/organizer/scenarios/mandatory_stress.yaml": "312b097486d7940c92f70f9180b5d32141d27f1a9a7294f166f6bfeb5ca6a7f7",
+    "data/original/organizer/validation/control_cases.md": "945f32aa1d2fe1c3e7bfa25ee5d2c6256ccd1d66621f757c0a34ed2df096ba27",
+    "data/original/organizer/validation/expected_checks.json": "00713cb5cb9ddb62b0d6077fa7573b8d296945f6fe455cc1a0052e2613d644c5",
+    "data/original/pdf/additional.pdf": "b10c187b14b72b4c07dcebb770df69f046bbf97f223be48553028acaae2a7a66",
+    "data/original/pdf/case-statement.pdf": "9bfdbd7082d810616b5ce6de4794dd2fd60944901be9d3e5aa9ed5747f0b3b8a",
+    "data/original/pdf/evaluation-criteria.pdf": "7b12ebc5eb2ee2892854d730fd6ed6b3923d350b2e67c864f9cc0e604fa6295f",
+    "data/reference/demand.csv": "a3049bd3ff3b9e7102858be94476a0f356be3027790382d3761be7745f82a1c1",
+    "data/reference/supply_sources.csv": "182139c4870402024f540d0f010b4396db2fad77bf5a35449e04cbe584ef0977",
+    "data/reference/storage_options.csv": "81c764ba07efae2860b72defff70b80ed6280a8243ec36a5ec5e8690187ed202",
+    "data/reference/investment_options.csv": "922c92bc0a70ab6e837e51a3017d4cde5b9a55baa51602132d21f4131d4b034c",
+    "data/reference/constraints.csv": "9af0a70b445ee1c451b5dc368237b7727ed2923b89565f357dff61a21d4f4dc8",
+    "configs/scenarios/base.json": "778913d2bfffb6fe306f37e3c3f403090e65af145797ea8ebaa1f2d419c07ff0",
+    "configs/scenarios/mandatory_stress.json": "cee8dc47d11728e631abdd5b8955f7dbd71799dd134e107217c9d72986a61149",
+    "data/source-manifest.json": "d87c4538dc813f418d577f599701e70a408995d4b7f72830eac59d9fa5a80748",
+    "configs/model.json": "d20eedb873272b252c89812449657c0c718396cce943e1b4729c62b7eff9b913",
+    "configs/acceptance.json": "f4253dd2e3f19ddb4fcf613a50c8a4128767a3e530f46730d2fe70fc02cdef29"
+  },
+  "limitations": [
+    "Primary XLSX not supplied",
+    "Referenced ERRATA_AND_PROVENANCE.md absent from pinned commit",
+    "Full-plan assumptions Q01-Q05 unresolved",
+    "Only synthetic core primitives implemented; full case-plan integration pending"
+  ]
+}

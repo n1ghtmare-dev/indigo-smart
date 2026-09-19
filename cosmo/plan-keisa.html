@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>План решения кейса — Топливный космоконтур</title>
+  <style>
+    :root { color-scheme: light; --bg: #f7f8fa; --paper: #fff; --ink: #18232d; --muted: #526171; --line: #b6c2cc; --blue: #235fa4; --soft: #edf4fc; --orange: #98510f; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+    .page { max-width: 1060px; margin: auto; padding: 36px 24px 40px; }
+    header { display: flex; align-items: start; justify-content: space-between; gap: 24px; margin-bottom: 20px; }
+    h1 { font-size: clamp(24px, 4vw, 34px); line-height: 1.2; letter-spacing: -.025em; margin: 0 0 12px; }
+    p { margin: 0; }
+    header p { max-width: 660px; color: var(--muted); }
+    button { font: inherit; padding: 8px 16px; border: 1px solid var(--line); border-radius: 7px; background: var(--paper); cursor: pointer; color: var(--ink); }
+    button:hover { border-color: var(--blue); }
+    :focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+    .legend { display: flex; flex-wrap: wrap; gap: 10px 26px; color: var(--muted); font-size: 13px; margin-bottom: 30px; }
+    .legend span { display: inline-flex; align-items: center; gap: 8px; }
+    .sample { display: inline-block; width: 28px; border-top: 2px solid var(--blue); }
+    .sample.return { border-top-style: dashed; border-top-color: var(--orange); }
+    .diagram { position: relative; }
+    #connections { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+    .flow { display: grid; grid-template-columns: 100px minmax(0, 1fr) 230px; column-gap: 40px; row-gap: 28px; position: relative; }
+    .phase { grid-column: 1; align-self: start; padding-top: 15px; color: var(--muted); font-size: 12px; font-weight: 650; }
+    .phase strong { display: block; color: var(--ink); font-size: 14px; margin-bottom: 4px; }
+    .node { grid-column: 2; padding: 15px 18px; border: 1px solid var(--line); border-radius: 9px; background: var(--paper); position: relative; }
+    .node h2 { display: flex; align-items: baseline; gap: 12px; font-size: 16px; line-height: 1.35; margin: 0 0 4px; font-weight: 650; }
+    .number { color: var(--blue); font-variant-numeric: tabular-nums; flex: 0 0 22px; }
+    .node p { color: var(--muted); font-size: 13px; margin-left: 34px; }
+    .node.gate { border: 2px solid var(--blue); background: var(--soft); }
+    .branch-note { display: block; margin: 9px 0 0 34px; color: var(--orange); font-size: 12px; }
+    #s13 { grid-column: 3; grid-row: 8 / 13; align-self: center; border-style: dashed; }
+    #s13 h2 { align-items: start; }
+    #s13 .parallel { display: block; color: var(--blue); font-size: 12px; font-weight: 650; margin-bottom: 10px; }
+    #s13 p { margin-left: 0; margin-top: 10px; }
+    #finish { background: var(--soft); border-color: var(--blue); text-align: center; }
+    #finish h2 { display: block; }
+    #finish p { margin: 0; }
+    footer { margin: 30px 0 0 140px; max-width: 700px; color: var(--muted); font-size: 13px; }
+    footer strong { color: var(--ink); }
+    .edge { fill: none; stroke: var(--blue); stroke-width: 1.6; }
+    .back-edge { fill: none; stroke: var(--orange); stroke-width: 1.4; stroke-dasharray: 5 4; }
+    @media (max-width: 760px) {
+      .page { padding: 24px 16px; }
+      .flow { grid-template-columns: 28px minmax(0, 1fr) 165px; gap: 26px 20px; }
+      .phase { display: none; }
+      .node { padding: 13px 12px; }
+      .node h2 { font-size: 15px; gap: 8px; }
+      .node p, .branch-note { margin-left: 30px; }
+      footer { margin-left: 48px; }
+    }
+    @media (max-width: 550px) {
+      header { display: block; }
+      header button { margin-top: 16px; }
+      .flow { grid-template-columns: 28px minmax(0, 1fr) 14px; column-gap: 14px; }
+      #s13 { grid-column: 2; grid-row: 13; }
+      #s14 { grid-row: 14 !important; }
+      #s15 { grid-row: 15 !important; }
+      #finish { grid-row: 16 !important; }
+      footer { margin-left: 42px; }
+    }
+    @media print {
+      body { background: white; }
+      .page { max-width: none; padding: 0; }
+      button { display: none; }
+      .flow { row-gap: 16px; }
+      .node { padding-top: 9px; padding-bottom: 9px; break-inside: avoid; }
+      @page { size: A3 portrait; margin: 14mm; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div>
+        <h1>План решения топливного кейса</h1>
+        <p>Сначала постановка, расчёты и проверка стратегии. Интерфейс и оформление — на последнем этапе.</p>
+      </div>
+      <button id="print" type="button">Печать</button>
+    </header>
+    <div class="legend" aria-label="Обозначения">
+      <span><i class="sample" aria-hidden="true"></i>Порядок и зависимости</span>
+      <span><i class="sample return" aria-hidden="true"></i>Возврат на доработку</span>
+    </div>
+    <div class="diagram" id="diagram">
+      <svg id="connections" aria-hidden="true">
+        <defs>
+          <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L8,4 L0,8 Z" fill="var(--blue)"/></marker>
+          <marker id="back-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L8,4 L0,8 Z" fill="var(--orange)"/></marker>
+        </defs>
+        <g id="paths"></g>
+      </svg>
+      <div class="flow">
+        <div class="phase" style="grid-row:1"><strong>Постановка</strong>Что и по каким правилам считаем</div>
+        <article class="node" id="s1" style="grid-row:1"><h2><span class="number">1</span>Требования и критерии приёмки</h2><p>Каждому требованию соответствует результат и способ проверки.</p></article>
+        <article class="node" id="s2" style="grid-row:2"><h2><span class="number">2</span>Проверенные исходные данные</h2><p>Спрос, каналы, хранилище, инвестиции и сценарии.</p></article>
+        <article class="node" id="s3" style="grid-row:3"><h2><span class="number">3</span>Математическая постановка</h2><p>Переменные решений, формулы, ограничения и явные допущения.</p></article>
+
+        <div class="phase" style="grid-row:4"><strong>Расчёты</strong>Проверяем каждую тонну и каждый платёж</div>
+        <article class="node" id="s4" style="grid-row:4"><h2><span class="number">4</span>Календарь поставок и инвестиций</h2><p>Заказы, сроки доставки, ввод мощностей и начальный запас.</p></article>
+        <article class="node" id="s5" style="grid-row:5"><h2><span class="number">5</span>Физическая модель</h2><p>Поступления → потери → выдача → запас и дефицит.</p></article>
+        <article class="node" id="s6" style="grid-row:6"><h2><span class="number">6</span>Экономическая модель</h2><p>Закупки, резерв, take-or-pay, хранение, CAPEX и OPEX.</p></article>
+        <article class="node gate" id="s7" style="grid-row:7"><h2><span class="number">7</span>Контрольная точка: расчёты верны?</h2><p>Ручные примеры, граничные случаи, неверные планы и воспроизводимость.</p><span class="branch-note">Ошибка → исправляем этапы 4–6. Тесты пройдены → две ветки работы.</span></article>
+
+        <div class="phase" style="grid-row:8"><strong>Стратегия</strong>Ищем и обосновываем решение</div>
+        <article class="node" id="s8" style="grid-row:8"><h2><span class="number">8</span>Полный план BASE</h2><p>Баланс и расходы на 2035–2040 годы. Проверка всех ограничений.</p></article>
+        <article class="node" id="s9" style="grid-row:9"><h2><span class="number">9</span>Сравнение стратегий</h2><p>Стоимость, обслуживание спроса, инвестиции и гибкость.</p></article>
+        <article class="node" id="s10" style="grid-row:10"><h2><span class="number">10</span>Обязательный стресс</h2><p>Исходный план и допустимая реакция с учётом сроков и обязательств.</p></article>
+        <article class="node" id="s11" style="grid-row:11"><h2><span class="number">11</span>Чувствительность и собственные риски</h2><p>Низкий и высокий спрос, пороги нарушений, меры и остаточный риск.</p><span class="branch-note">Результаты требуют улучшений → пересматриваем стратегию.</span></article>
+        <article class="node gate" id="s12" style="grid-row:12"><h2><span class="number">12</span>Обоснованный выбор стратегии</h2><p>Контракты, интересы сторон, инвестиционные решения и дорожная карта.</p></article>
+
+        <article class="node" id="s13"><span class="parallel">ПАРАЛЛЕЛЬНО ПОСЛЕ ЭТАПА 7</span><h2><span class="number">13</span>Сохранение, выгрузка и расширение</h2><p>Повторное открытие плана и запуск расчёта.</p><p>CSV-выгрузки. Добавление источника и периода после 2040 года.</p></article>
+
+        <div class="phase" style="grid-row:13"><strong>Сдача</strong>Собираем доказательства и подключаем UI</div>
+        <article class="node" id="s14" style="grid-row:13"><h2><span class="number">14</span>Материалы и доказательства</h2><p>Записка, презентация, реестр рисков, протоколы тестов и README.</p></article>
+        <article class="node" id="s15" style="grid-row:14"><h2><span class="number">15</span>Интерфейс и оформление</h2><p>Ввод решений, пересчёт, сравнение и выгрузка через проверенное ядро.</p></article>
+        <article class="node" id="finish" style="grid-row:15"><h2>Финальная проверка и сдача</h2><p>Числа совпадают во всех материалах. Эксперт самостоятельно повторяет расчёт.</p></article>
+      </div>
+    </div>
+    <footer><strong>На протяжении работы:</strong> с этапа 3 фиксируем научные источники, допущения и объяснения решений. На этапе 14 собираем их в итоговые материалы. Геополитический бонус рассматриваем после готовности обязательной части.</footer>
+    <noscript><p>Этапы доступны без JavaScript. Для отображения соединяющих стрелок включите JavaScript.</p></noscript>
+  </main>
+  <script>
+    (() => {
+      const diagram = document.getElementById('diagram');
+      const svg = document.getElementById('connections');
+      const paths = document.getElementById('paths');
+      function draw() {
+        const root = diagram.getBoundingClientRect();
+        svg.setAttribute('viewBox', `0 0 ${root.width} ${root.height}`);
+        paths.replaceChildren();
+        const point = (id) => {
+          const r = document.getElementById(id).getBoundingClientRect();
+          return { l:r.left-root.left, r:r.right-root.left, t:r.top-root.top, b:r.bottom-root.top, x:(r.left+r.right)/2-root.left, y:(r.top+r.bottom)/2-root.top };
+        };
+        const edge = (d, back = false) => {
+          const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+          path.setAttribute('d',d);
+          path.setAttribute('class',back ? 'back-edge' : 'edge');
+          path.setAttribute('marker-end',back ? 'url(#back-arrow)' : 'url(#arrow)');
+          paths.appendChild(path);
+        };
+        const connect = (a,b) => {
+          const p=point(a),q=point(b);
+          edge(`M ${p.x} ${p.b+1} L ${q.x} ${q.t-3}`);
+        };
+        for(let i=1;i<12;i++) connect(`s${i}`,`s${i+1}`);
+        const p7=point('s7'),p12=point('s12'),p13=point('s13'),p14=point('s14');
+        const narrow=window.matchMedia('(max-width:550px)').matches;
+        if(narrow) {
+          const right=root.width-3;
+          edge(`M ${p7.r} ${p7.y} H ${right} V ${p13.y} H ${p13.r+2}`);
+          edge(`M ${p12.l} ${p12.y} H ${p12.l-12} V ${p14.t-12} H ${p14.x} V ${p14.t-3}`);
+          connect('s13','s14');
+        } else {
+          edge(`M ${p7.x} ${p7.b+1} V ${p7.b+14} H ${p13.x} V ${p13.t-3}`);
+          edge(`M ${p13.x} ${p13.b+1} V ${p14.t-14} H ${p14.x} V ${p14.t-3}`);
+          connect('s12','s14');
+        }
+        connect('s14','s15');
+        connect('s15','finish');
+        const back = (a,b) => {
+          const p=point(a),q=point(b),x=p.l-24;
+          edge(`M ${p.l} ${p.y} H ${x} V ${q.y} H ${q.l-3}`,true);
+        };
+        back('s7','s4');
+        back('s11','s9');
+      }
+      new ResizeObserver(draw).observe(diagram);
+      document.getElementById('print').addEventListener('click',()=>window.print());
+      window.addEventListener('beforeprint',draw);
+      window.addEventListener('afterprint',draw);
+      draw();
+    })();
+  </script>
+</body>
+</html>

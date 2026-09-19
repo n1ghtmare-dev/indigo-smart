@@ -1,0 +1,159 @@
+test_code_is_escaped_not_executed (test_artifacts.DocumentationTests.test_code_is_escaped_not_executed) ... ok
+test_html_document_links_and_offline_assets (test_artifacts.DocumentationTests.test_html_document_links_and_offline_assets) ... ok
+test_supported_markdown_subset (test_artifacts.DocumentationTests.test_supported_markdown_subset) ... ok
+test_export_roundtrip_and_repeatability (test_artifacts.ExportTests.test_export_roundtrip_and_repeatability) ... ok
+test_stopped_run_cannot_reuse_old_csv (test_artifacts.ExportTests.test_stopped_run_cannot_reuse_old_csv) ... ok
+127.0.0.1 - - [19/Sep/2026 15:49:25] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 15:49:25] "GET /app/forms.js HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 15:49:25] "GET /app/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 15:49:25] "GET /app/app.js HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 15:49:25] "GET /api/default HTTP/1.1" 200 -
+test_exact_comparison_cells_open_their_own_scenario (test_browser.BrowserRegressionTests.test_exact_comparison_cells_open_their_own_scenario) ... 127.0.0.1 - - [19/Sep/2026 15:49:25] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [19/Sep/2026 15:49:25] "GET /api/default HTTP/1.1" 200 -
+ok
+test_ids_survive_rebuild_and_case_controls_remain_locked (test_browser.BrowserRegressionTests.test_ids_survive_rebuild_and_case_controls_remain_locked) ... 127.0.0.1 - - [19/Sep/2026 15:49:25] "GET /api/default HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 15:49:25] "POST /api/run HTTP/1.1" 200 -
+ok
+test_stopped_result_still_shows_explained_alternatives (test_browser.BrowserRegressionTests.test_stopped_result_still_shows_explained_alternatives) ... 127.0.0.1 - - [19/Sep/2026 15:49:25] "GET /api/default HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 15:49:25] "POST /api/run HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 15:49:26] "POST /api/run HTTP/1.1" 200 -
+ok
+test_adaptation_cannot_change_discount_rate (test_case_engine.CaseEngineTests.test_adaptation_cannot_change_discount_rate) ... ok
+test_adaptation_cannot_rewrite_order (test_case_engine.CaseEngineTests.test_adaptation_cannot_rewrite_order) ... ok
+test_adaptation_obeys_lead_times_and_restores_service (test_case_engine.CaseEngineTests.test_adaptation_obeys_lead_times_and_restores_service) ... ok
+test_all_four_baselines_feasible (test_case_engine.CaseEngineTests.test_all_four_baselines_feasible) ... ok
+test_c_preparation_cannot_be_shortened_below_case_range (test_case_engine.CaseEngineTests.test_c_preparation_cannot_be_shortened_below_case_range) ... ok
+test_c_regular_delivery_range_is_explicit (test_case_engine.CaseEngineTests.test_c_regular_delivery_range_is_explicit) ... ok
+test_control_dataset_cannot_be_silently_modified (test_case_engine.CaseEngineTests.test_control_dataset_cannot_be_silently_modified) ... ok
+test_control_scenario_cannot_be_weakened (test_case_engine.CaseEngineTests.test_control_scenario_cannot_be_weakened) ... ok
+test_emergency_three_years_cannot_be_relabelled (test_case_engine.CaseEngineTests.test_emergency_three_years_cannot_be_relabelled) ... ok
+test_full_six_year_base (test_case_engine.CaseEngineTests.test_full_six_year_base) ... ok
+test_lead_time_not_user_overridden (test_case_engine.CaseEngineTests.test_lead_time_not_user_overridden) ... ok
+test_low_high_preserve_critical_share_by_case_rule (test_case_engine.CaseEngineTests.test_low_high_preserve_critical_share_by_case_rule) ... ok
+test_mandatory_stress_really_changes_both_demands_prices_and_shares (test_case_engine.CaseEngineTests.test_mandatory_stress_really_changes_both_demands_prices_and_shares) ... ok
+test_negative_and_duplicate_orders_fail (test_case_engine.CaseEngineTests.test_negative_and_duplicate_orders_fail) ... ok
+test_no_double_zbo_capex (test_case_engine.CaseEngineTests.test_no_double_zbo_capex) ... ok
+test_preparation_stock_paid_once_and_attributed_to_2035 (test_case_engine.CaseEngineTests.test_preparation_stock_paid_once_and_attributed_to_2035) ... ok
+test_repeatable_serialization (test_case_engine.CaseEngineTests.test_repeatable_serialization) ... ok
+test_research_extension_source_and_year_data_driven (test_case_engine.CaseEngineTests.test_research_extension_source_and_year_data_driven) ... ok
+test_research_plan_can_explore_policy_timings_outside_case_ranges (test_case_engine.CaseEngineTests.test_research_plan_can_explore_policy_timings_outside_case_ranges) ... ok
+test_stress_package_decimal_string_roundtrip (test_case_engine.CaseEngineTests.test_stress_package_decimal_string_roundtrip) ... ok
+test_unpaid_isru_does_not_create_fuel (test_case_engine.CaseEngineTests.test_unpaid_isru_does_not_create_fuel) ... ok
+test_unsupported_reliability_multiplier_rejected (test_case_engine.CaseEngineTests.test_unsupported_reliability_multiplier_rejected) ... ok
+test_boundary_and_prestart (test_core.CalendarTests.test_boundary_and_prestart) ... ok
+test_commission_availability (test_core.CalendarTests.test_commission_availability) ... ok
+test_duplicate_events_rejected (test_core.CalendarTests.test_duplicate_events_rejected) ... ok
+test_exact_emergency_boundary (test_core.CalendarTests.test_exact_emergency_boundary) ... ok
+test_fractional_grid (test_core.CalendarTests.test_fractional_grid) ... ok
+test_invalid_calendar_input (test_core.CalendarTests.test_invalid_calendar_input) ... ok
+test_simultaneous_event_order (test_core.CalendarTests.test_simultaneous_event_order) ... ok
+test_units (test_core.CalendarTests.test_units) ... ok
+test_adjacent_contracts_do_not_overlap (test_core.EconomicsTests.test_adjacent_contracts_do_not_overlap) ... ok
+test_budget_cutoff_is_exclusive (test_core.EconomicsTests.test_budget_cutoff_is_exclusive) ... ok
+test_duplicate_contracts_and_unknown_orders (test_core.EconomicsTests.test_duplicate_contracts_and_unknown_orders) ... ok
+test_early_commission (test_core.EconomicsTests.test_early_commission) ... ok
+test_explicit_discount_and_unknown_rate (test_core.EconomicsTests.test_explicit_discount_and_unknown_rate) ... ok
+test_option_90_plus_270_is_360 (test_core.EconomicsTests.test_option_90_plus_270_is_360) ... ok
+test_orders_above_top_not_added_twice (test_core.EconomicsTests.test_orders_above_top_not_added_twice) ... ok
+test_overlapping_contract_capacity (test_core.EconomicsTests.test_overlapping_contract_capacity) ... ok
+test_partial_period_order_limit (test_core.EconomicsTests.test_partial_period_order_limit) ... ok
+test_partial_year_opex (test_core.EconomicsTests.test_partial_year_opex) ... ok
+test_partial_year_top_and_reservation (test_core.EconomicsTests.test_partial_year_top_and_reservation) ... ok
+test_prestart_capex_counted_and_date_retained (test_core.EconomicsTests.test_prestart_capex_counted_and_date_retained) ... ok
+test_strict_financing_deadline (test_core.EconomicsTests.test_strict_financing_deadline) ... ok
+test_unexercised_option_has_no_opex (test_core.EconomicsTests.test_unexercised_option_has_no_opex) ... ok
+test_unfunded_commission (test_core.EconomicsTests.test_unfunded_commission) ... ok
+test_zero_served_unit_cost_not_applicable (test_core.EconomicsTests.test_zero_served_unit_cost_not_applicable) ... ok
+test_independent_audit_detects_tampering (test_core.IntegrationTests.test_independent_audit_detects_tampering) ... ok
+test_internal_precision_not_callers_precision (test_core.IntegrationTests.test_internal_precision_not_callers_precision) ... ok
+test_manual_learning_totals (test_core.IntegrationTests.test_manual_learning_totals) ... ok
+test_money_audit_detects_tampering (test_core.IntegrationTests.test_money_audit_detects_tampering) ... ok
+test_no_free_opening_stock (test_core.IntegrationTests.test_no_free_opening_stock) ... ok
+test_real_case_is_not_silently_accepted (test_core.IntegrationTests.test_real_case_is_not_silently_accepted) ... ok
+test_reproducibility (test_core.IntegrationTests.test_reproducibility) ... ok
+test_smaller_step_has_same_simple_fixture_totals (test_core.IntegrationTests.test_smaller_step_has_same_simple_fixture_totals) ... ok
+test_stop_before_physics_on_early_delivery (test_core.IntegrationTests.test_stop_before_physics_on_early_delivery) ... ok
+test_stop_on_overflow_not_free_disposal (test_core.IntegrationTests.test_stop_on_overflow_not_free_disposal) ... ok
+test_stress_share_changes_fuel_not_order_payment (test_core.IntegrationTests.test_stress_share_changes_fuel_not_order_payment) ... ok
+test_upgrade_must_match_paid_investment (test_core.IntegrationTests.test_upgrade_must_match_paid_investment) ... ok
+test_V01_balance (test_core.OrganizerControls.test_V01_balance) ... ok
+test_V02_shortage (test_core.OrganizerControls.test_V02_shortage) ... ok
+test_V03_take_or_pay (test_core.OrganizerControls.test_V03_take_or_pay) ... ok
+test_V04_no_double_top (test_core.OrganizerControls.test_V04_no_double_top) ... ok
+test_V05_partial_reservation (test_core.OrganizerControls.test_V05_partial_reservation) ... ok
+test_V06_losses_once (test_core.OrganizerControls.test_V06_losses_once) ... ok
+test_V07_reserve (test_core.OrganizerControls.test_V07_reserve) ... ok
+test_V08_capacity (test_core.OrganizerControls.test_V08_capacity) ... ok
+test_V09_critical_is_subset (test_core.OrganizerControls.test_V09_critical_is_subset) ... ok
+test_V10_actual_delivery_no_reliability (test_core.OrganizerControls.test_V10_actual_delivery_no_reliability) ... ok
+test_capacity_checks_net_inflow_by_declared_convention (test_core.PhysicsTests.test_capacity_checks_net_inflow_by_declared_convention) ... ok
+test_critical_first (test_core.PhysicsTests.test_critical_first) ... ok
+test_delivery_does_not_serve_past (test_core.PhysicsTests.test_delivery_does_not_serve_past) ... ok
+test_end_boundary_not_in_previous_year (test_core.PhysicsTests.test_end_boundary_not_in_previous_year) ... ok
+test_holding_integral_triangle (test_core.PhysicsTests.test_holding_integral_triangle) ... ok
+test_invalid_numbers (test_core.PhysicsTests.test_invalid_numbers) ... ok
+test_opening_reserve_before_new_year_arrival (test_core.PhysicsTests.test_opening_reserve_before_new_year_arrival) ... ok
+test_randomized_mass_conservation (test_core.PhysicsTests.test_randomized_mass_conservation) ... ok
+test_simultaneous_arrivals_aggregate_overflow (test_core.PhysicsTests.test_simultaneous_arrivals_aggregate_overflow) ... ok
+test_stock_not_reduced_without_inflow (test_core.PhysicsTests.test_stock_not_reduced_without_inflow) ... ok
+test_stress_service_target_not_hard_but_loss_is_hard (test_core.PhysicsTests.test_stress_service_target_not_hard_but_loss_is_hard) ... ok
+test_upgrade_exact_boundary (test_core.PhysicsTests.test_upgrade_exact_boundary) ... ok
+test_years_cannot_be_skipped (test_core.PhysicsTests.test_years_cannot_be_skipped) ... ok
+test_zero_demand_and_zero_throughput (test_core.PhysicsTests.test_zero_demand_and_zero_throughput) ... ok
+test_bad_input_and_build (test_operator.HTTPTests.test_bad_input_and_build) ... 127.0.0.1 - - [19/Sep/2026 15:49:28] "POST /api/run HTTP/1.1" 400 -
+127.0.0.1 - - [19/Sep/2026 15:49:28] "POST /api/run HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 15:49:28] "POST /api/run HTTP/1.1" 400 -
+ok
+test_cross_origin_and_host_rejected (test_operator.HTTPTests.test_cross_origin_and_host_rejected) ... 127.0.0.1 - - [19/Sep/2026 15:49:28] "POST /api/run HTTP/1.1" 403 -
+127.0.0.1 - - [19/Sep/2026 15:49:28] "POST /api/run HTTP/1.1" 403 -
+ok
+test_home_default_and_static (test_operator.HTTPTests.test_home_default_and_static) ... 127.0.0.1 - - [19/Sep/2026 15:49:28] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 15:49:28] "GET /app/app.js HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 15:49:28] "GET /app/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 15:49:28] "GET /api/default HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 15:49:28] "GET /data/original/pdf/ HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 15:49:28] "GET /README.md HTTP/1.1" 200 -
+ok
+test_path_traversal_and_private_files (test_operator.HTTPTests.test_path_traversal_and_private_files) ... 127.0.0.1 - - [19/Sep/2026 15:49:28] "GET /app/../../test-secret.txt HTTP/1.1" 404 -
+127.0.0.1 - - [19/Sep/2026 15:49:28] "GET /scripts/serve.py HTTP/1.1" 404 -
+127.0.0.1 - - [19/Sep/2026 15:49:28] "GET /.git/config HTTP/1.1" 404 -
+ok
+test_alternative_screen_cache_is_reused_and_returns_isolated_results (test_operator.OperatorTests.test_alternative_screen_cache_is_reused_and_returns_isolated_results) ... ok
+test_builder_can_include_prepaid_e_insurance (test_operator.OperatorTests.test_builder_can_include_prepaid_e_insurance) ... ok
+test_e_insurance_upgrades_existing_e_contracts_and_is_idempotent (test_operator.OperatorTests.test_e_insurance_upgrades_existing_e_contracts_and_is_idempotent) ... ok
+test_emergency_bridge_is_preventive_not_free_recourse (test_operator.OperatorTests.test_emergency_bridge_is_preventive_not_free_recourse) ... ok
+test_evaluation_returns_base_stress_pair_and_model_checked_alternatives (test_operator.OperatorTests.test_evaluation_returns_base_stress_pair_and_model_checked_alternatives) ... ok
+test_extension_uses_new_source (test_operator.OperatorTests.test_extension_uses_new_source) ... ok
+test_fixed_stress_and_valid_recourse (test_operator.OperatorTests.test_fixed_stress_and_valid_recourse) ... ok
+test_high_earth_only_builder_respects_emergency_streak_and_still_calculates (test_operator.OperatorTests.test_high_earth_only_builder_respects_emergency_streak_and_still_calculates) ... ok
+test_immutable_case_and_editable_research (test_operator.OperatorTests.test_immutable_case_and_editable_research) ... ok
+test_interactive_export_is_compact_complete_bundle (test_operator.OperatorTests.test_interactive_export_is_compact_complete_bundle) ... ok
+test_overflow_diagnostic_names_active_storage_and_arrivals (test_operator.OperatorTests.test_overflow_diagnostic_names_active_storage_and_arrivals) ... ok
+test_overflowing_high_plan_gets_usable_base_alternatives (test_operator.OperatorTests.test_overflowing_high_plan_gets_usable_base_alternatives) ... ok
+test_rebuild_and_evaluation_preserve_non_reusable_ui_ids (test_operator.OperatorTests.test_rebuild_and_evaluation_preserve_non_reusable_ui_ids) ... ok
+test_rebuild_preserves_custom_dataset_and_policy (test_operator.OperatorTests.test_rebuild_preserves_custom_dataset_and_policy) ... ok
+test_rebuild_rejects_forged_case_and_recourse (test_operator.OperatorTests.test_rebuild_rejects_forged_case_and_recourse) ... ok
+test_rebuild_zbo_switch_and_extension_horizon (test_operator.OperatorTests.test_rebuild_zbo_switch_and_extension_horizon) ... ok
+test_research_data_cannot_use_case_label (test_operator.OperatorTests.test_research_data_cannot_use_case_label) ... ok
+test_run_retention_and_cleanup_are_bounded (test_operator.OperatorTests.test_run_retention_and_cleanup_are_bounded) ... ok
+test_saved_roundtrip_identical_and_audit (test_operator.OperatorTests.test_saved_roundtrip_identical_and_audit) ... ok
+test_clean_package (test_preparation.PreparationTests.test_clean_package) ... ok
+test_double_counted_capex (test_preparation.PreparationTests.test_double_counted_capex) ... ok
+test_duplicate_year (test_preparation.PreparationTests.test_duplicate_year) ... ok
+test_malformed_scenario (test_preparation.PreparationTests.test_malformed_scenario) ... ok
+test_missing_original (test_preparation.PreparationTests.test_missing_original) ... ok
+test_no_reliability_double_multiplier (test_preparation.PreparationTests.test_no_reliability_double_multiplier) ... ok
+test_nonfinite_demand (test_preparation.PreparationTests.test_nonfinite_demand) ... ok
+test_premature_criteria_completion (test_preparation.PreparationTests.test_premature_criteria_completion) ... ok
+test_report_round_trip (test_preparation.PreparationTests.test_report_round_trip) ... ok
+test_scenario_boundaries_and_sensitivity (test_preparation.PreparationTests.test_scenario_boundaries_and_sensitivity) ... ok
+test_silent_discount_assumption (test_preparation.PreparationTests.test_silent_discount_assumption) ... ok
+test_silent_loss_convention_change (test_preparation.PreparationTests.test_silent_loss_convention_change) ... ok
+test_tampered_csv (test_preparation.PreparationTests.test_tampered_csv) ... ok
+test_tampered_original (test_preparation.PreparationTests.test_tampered_original) ... ok
+test_wrong_shock_year (test_preparation.PreparationTests.test_wrong_shock_year) ... ok
+
+----------------------------------------------------------------------
+Ran 128 tests in 13.188s
+
+OK

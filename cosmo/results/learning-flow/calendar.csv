@@ -1,0 +1,6 @@
+id,at,kind
+year:2035,0,year_open
+storage:INITIAL,0,commission
+arrival:BATCH-1,42,arrival
+storage:UPGRADE,200,commission
+arrival:BATCH-2,220,arrival

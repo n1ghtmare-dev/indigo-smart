@@ -1,0 +1,36 @@
+{
+  "memo_pages": 10,
+  "comparison_pages": 1,
+  "deck_slides": 10,
+  "artifacts": [
+    {
+      "path": "output/pdf/management-memo.pdf",
+      "sha256": "c24d1c4f8e0dac051aca88775f12a4198b3181cf3b86e2af73739eb1f5fbf934",
+      "visual_review": "PASS"
+    },
+    {
+      "path": "output/pdf/scenario-comparison.pdf",
+      "sha256": "42675f09baaea6ddf216ca044c863d77e1c88b521a0ae9b8874dcc80d2fb6bdc",
+      "visual_review": "PASS"
+    },
+    {
+      "path": "output/presentation/cosmo-defense-v2.pptx",
+      "sha256": "833639507c0f0b4ad98300b8318c9fe8dd1b5adb6c020c9dc521b629ed4cedea",
+      "visual_review": "PASS"
+    },
+    {
+      "path": "output/presentation/cosmo-defense.pdf",
+      "sha256": "401a8e9e2f251b247d4b818ee5d2eebf9ac70bd4b6ed708ed1e2fc7e91270c2a",
+      "visual_review": "PASS"
+    }
+  ],
+  "review": "All memo/comparison pages and all 10 final rendered slides inspected in contact sheets; the updated landscape comparison page was rendered at 160 dpi and inspected individually. Service, deficits, inventory, reserve margin, CAPEX, violation, versions, calculation time, hash and decision gates are legible without clipping.",
+  "pptx_native_tables": 7,
+  "pptx_structural_validation": "PASS (first-party import, dimensions, font policy, table ownership)",
+  "pdf_deck": "Raster viewing copy of final PPTX renders; editable tables and source notes are in PPTX.",
+  "limitations": [
+    "Browser UI was visually checked in Safari; the PPTX was not opened in Microsoft PowerPoint",
+    "Automatic table arithmetic checker skipped localized values; displayed figures reviewed against computed summaries"
+  ],
+  "reviewed_on": "2026-09-19"
+}

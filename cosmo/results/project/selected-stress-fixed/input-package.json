@@ -1,0 +1,1693 @@
+{
+  "plan": {
+    "schema_version": 2,
+    "scope": "CASE_PLAN",
+    "plan_id": "EARTH_NEW_BASE_R60_E_INSURANCE",
+    "label": "Земля + новый поставщик C",
+    "dataset_id": "case-v1",
+    "first_year": 2035,
+    "last_year": 2040,
+    "policy": {
+      "policy_id": "TEAM_POLICY_V1",
+      "status": "TEAM_ASSUMPTIONS_NOT_ORGANIZER_APPROVAL",
+      "preparation_year": 2034,
+      "prestart_channels": [
+        "B"
+      ],
+      "prestart_existing_storage": true,
+      "earth_new_preparation_months": "24",
+      "earth_new_regular_delivery_months": "4",
+      "zbo_installation_months": "6",
+      "isru_delivery_months": "2",
+      "real_discount_rate": "0.10",
+      "discount_sensitivity_rates": [
+        "0",
+        "0.05",
+        "0.10",
+        "0.15"
+      ],
+      "reaction_day": "1095",
+      "reaction_information": "All mandatory stress parameters become known at the beginning of 2038. Existing commitments cannot be cancelled; additional B/E orders respect their lead times.",
+      "terminal_inventory_target_t": "0",
+      "resolutions": {
+        "Q01_PRESTART_AVAILABILITY": "Preparatory B orders and deliveries in 2034 are allowed solely to fund opening inventory; the existing 70 t depot is available. Apply the same lead time, capacity, prices and loss rate. Conditional team interpretation of the explicit preparatory-period requirement, not an edit of the CSV.",
+        "Q02_C_DELIVERY_SCHEDULE": "24 months preparation after exercise, then a separately disclosed conservative 4-month recurring delivery lead time. No second 24-month preparation per shipment.",
+        "Q03_ZBO_COMMISSIONING": "Payment no earlier than 2036; installation takes 6 model months, with no outage. Old regime remains active until commissioning. Study delayed commissioning separately.",
+        "Q04_ISRU_FIRST_DELIVERY": "Commission no earlier than 2038 after funding strictly before 2038; first and subsequent orders require 2 months after the order and cannot be placed before commissioning.",
+        "Q05_REAL_DISCOUNT_RATE": "10% real annual planning rate, reference day 0 (start of 2035), identical across alternatives; compare 0/5/10/15%. Not a market estimate."
+      }
+    },
+    "construction": {
+      "method": "annual_least_variable_cost_then_equal_monthly_batches",
+      "not_global_optimum": true,
+      "reserve_days": "60",
+      "planning_profile": "BASE",
+      "reserve_basis": "max(profile demand, mandatory stress demand), not multiplied together",
+      "terminal_target_t": "0",
+      "B_backup_from_year": 2037,
+      "emergency_max_planned_streak_years": 2
+    },
+    "investments": [
+      {
+        "id": "ZBO",
+        "exercise_at": "365",
+        "commissioned_at": "1095/2"
+      },
+      {
+        "id": "EARTH_NEW",
+        "option_at": "0",
+        "exercise_at": "365",
+        "commissioned_at": "1095"
+      }
+    ],
+    "contracts": [
+      {
+        "id": "PREP-B",
+        "source": "B",
+        "year": 2034,
+        "reserved_annual": "17.21293839202467187836190203",
+        "decision_at": "-368/3",
+        "role": "opening_inventory"
+      },
+      {
+        "id": "A-2035",
+        "source": "A",
+        "year": 2035,
+        "start": "0",
+        "reserved_annual": "111.5972172416266226780463315",
+        "decision_at": "-365",
+        "role": "planned"
+      },
+      {
+        "id": "A-2036",
+        "source": "A",
+        "year": 2036,
+        "start": "365",
+        "reserved_annual": "152.5673474855293678043415422",
+        "decision_at": "0",
+        "role": "planned"
+      },
+      {
+        "id": "A-2037",
+        "source": "A",
+        "year": 2037,
+        "start": "730",
+        "reserved_annual": "190",
+        "decision_at": "365",
+        "role": "planned"
+      },
+      {
+        "id": "B-2037",
+        "source": "B",
+        "year": 2037,
+        "start": "730",
+        "reserved_annual": "110",
+        "decision_at": "1825/3",
+        "role": "planned_with_backup"
+      },
+      {
+        "id": "A-2038",
+        "source": "A",
+        "year": 2038,
+        "start": "1095",
+        "reserved_annual": "190",
+        "decision_at": "730",
+        "role": "planned"
+      },
+      {
+        "id": "C-2038",
+        "source": "C",
+        "year": 2038,
+        "start": "1095",
+        "reserved_annual": "76.43003715822749708834784534",
+        "decision_at": "1095",
+        "role": "planned"
+      },
+      {
+        "id": "B-2038",
+        "source": "B",
+        "year": 2038,
+        "start": "1095",
+        "reserved_annual": "110",
+        "decision_at": "2920/3",
+        "role": "planned_with_backup"
+      },
+      {
+        "id": "A-2039",
+        "source": "A",
+        "year": 2039,
+        "start": "1460",
+        "reserved_annual": "190",
+        "decision_at": "1095",
+        "role": "planned"
+      },
+      {
+        "id": "C-2039",
+        "source": "C",
+        "year": 2039,
+        "start": "1460",
+        "reserved_annual": "130",
+        "decision_at": "4015/3",
+        "role": "planned"
+      },
+      {
+        "id": "B-2039",
+        "source": "B",
+        "year": 2039,
+        "start": "1460",
+        "reserved_annual": "110",
+        "decision_at": "4015/3",
+        "role": "planned_with_backup"
+      },
+      {
+        "id": "A-2040",
+        "source": "A",
+        "year": 2040,
+        "start": "1825",
+        "reserved_annual": "190",
+        "decision_at": "1460",
+        "role": "planned"
+      },
+      {
+        "id": "C-2040",
+        "source": "C",
+        "year": 2040,
+        "start": "1825",
+        "reserved_annual": "130",
+        "decision_at": "5110/3",
+        "role": "planned"
+      },
+      {
+        "id": "B-2040",
+        "source": "B",
+        "year": 2040,
+        "start": "1825",
+        "reserved_annual": "110",
+        "decision_at": "5110/3",
+        "role": "planned_with_backup"
+      },
+      {
+        "id": "E-INSURANCE-2038",
+        "source": "E",
+        "year": 2038,
+        "reserved_annual": "80",
+        "decision_at": "1053",
+        "role": "contingent_backup"
+      },
+      {
+        "id": "E-INSURANCE-2039",
+        "source": "E",
+        "year": 2039,
+        "reserved_annual": "80",
+        "decision_at": "1418",
+        "role": "contingent_backup"
+      },
+      {
+        "id": "E-INSURANCE-2040",
+        "source": "E",
+        "year": 2040,
+        "reserved_annual": "80",
+        "decision_at": "1783",
+        "role": "contingent_backup"
+      }
+    ],
+    "orders": [
+      {
+        "id": "PREP-STOCK",
+        "contract_id": "PREP-B",
+        "ordered_at": "-368/3",
+        "arrival_at": "-1",
+        "planned_t": "17.21293839202467187836190203",
+        "role": "opening_inventory"
+      },
+      {
+        "id": "A-2035-01",
+        "contract_id": "A-2035",
+        "ordered_at": "-365",
+        "arrival_at": "0",
+        "planned_t": "9.299768103468885223170527625",
+        "role": "planned"
+      },
+      {
+        "id": "A-2035-02",
+        "contract_id": "A-2035",
+        "ordered_at": "-4015/12",
+        "arrival_at": "365/12",
+        "planned_t": "9.299768103468885223170527625",
+        "role": "planned"
+      },
+      {
+        "id": "A-2035-03",
+        "contract_id": "A-2035",
+        "ordered_at": "-1825/6",
+        "arrival_at": "365/6",
+        "planned_t": "9.299768103468885223170527625",
+        "role": "planned"
+      },
+      {
+        "id": "A-2035-04",
+        "contract_id": "A-2035",
+        "ordered_at": "-1095/4",
+        "arrival_at": "365/4",
+        "planned_t": "9.299768103468885223170527625",
+        "role": "planned"
+      },
+      {
+        "id": "A-2035-05",
+        "contract_id": "A-2035",
+        "ordered_at": "-730/3",
+        "arrival_at": "365/3",
+        "planned_t": "9.299768103468885223170527625",
+        "role": "planned"
+      },
+      {
+        "id": "A-2035-06",
+        "contract_id": "A-2035",
+        "ordered_at": "-2555/12",
+        "arrival_at": "1825/12",
+        "planned_t": "9.299768103468885223170527625",
+        "role": "planned"
+      },
+      {
+        "id": "A-2035-07",
+        "contract_id": "A-2035",
+        "ordered_at": "-365/2",
+        "arrival_at": "365/2",
+        "planned_t": "9.299768103468885223170527625",
+        "role": "planned"
+      },
+      {
+        "id": "A-2035-08",
+        "contract_id": "A-2035",
+        "ordered_at": "-1825/12",
+        "arrival_at": "2555/12",
+        "planned_t": "9.299768103468885223170527625",
+        "role": "planned"
+      },
+      {
+        "id": "A-2035-09",
+        "contract_id": "A-2035",
+        "ordered_at": "-365/3",
+        "arrival_at": "730/3",
+        "planned_t": "9.299768103468885223170527625",
+        "role": "planned"
+      },
+      {
+        "id": "A-2035-10",
+        "contract_id": "A-2035",
+        "ordered_at": "-365/4",
+        "arrival_at": "1095/4",
+        "planned_t": "9.299768103468885223170527625",
+        "role": "planned"
+      },
+      {
+        "id": "A-2035-11",
+        "contract_id": "A-2035",
+        "ordered_at": "-365/6",
+        "arrival_at": "1825/6",
+        "planned_t": "9.299768103468885223170527625",
+        "role": "planned"
+      },
+      {
+        "id": "A-2035-12",
+        "contract_id": "A-2035",
+        "ordered_at": "-365/12",
+        "arrival_at": "4015/12",
+        "planned_t": "9.2997681034688852231705277",
+        "role": "planned"
+      },
+      {
+        "id": "A-2036-01",
+        "contract_id": "A-2036",
+        "ordered_at": "0",
+        "arrival_at": "365",
+        "planned_t": "12.71394562379411398369512852",
+        "role": "planned"
+      },
+      {
+        "id": "A-2036-02",
+        "contract_id": "A-2036",
+        "ordered_at": "365/12",
+        "arrival_at": "4745/12",
+        "planned_t": "12.71394562379411398369512852",
+        "role": "planned"
+      },
+      {
+        "id": "A-2036-03",
+        "contract_id": "A-2036",
+        "ordered_at": "365/6",
+        "arrival_at": "2555/6",
+        "planned_t": "12.71394562379411398369512852",
+        "role": "planned"
+      },
+      {
+        "id": "A-2036-04",
+        "contract_id": "A-2036",
+        "ordered_at": "365/4",
+        "arrival_at": "1825/4",
+        "planned_t": "12.71394562379411398369512852",
+        "role": "planned"
+      },
+      {
+        "id": "A-2036-05",
+        "contract_id": "A-2036",
+        "ordered_at": "365/3",
+        "arrival_at": "1460/3",
+        "planned_t": "12.71394562379411398369512852",
+        "role": "planned"
+      },
+      {
+        "id": "A-2036-06",
+        "contract_id": "A-2036",
+        "ordered_at": "1825/12",
+        "arrival_at": "6205/12",
+        "planned_t": "12.71394562379411398369512852",
+        "role": "planned"
+      },
+      {
+        "id": "A-2036-07",
+        "contract_id": "A-2036",
+        "ordered_at": "365/2",
+        "arrival_at": "1095/2",
+        "planned_t": "12.71394562379411398369512852",
+        "role": "planned"
+      },
+      {
+        "id": "A-2036-08",
+        "contract_id": "A-2036",
+        "ordered_at": "2555/12",
+        "arrival_at": "6935/12",
+        "planned_t": "12.71394562379411398369512852",
+        "role": "planned"
+      },
+      {
+        "id": "A-2036-09",
+        "contract_id": "A-2036",
+        "ordered_at": "730/3",
+        "arrival_at": "1825/3",
+        "planned_t": "12.71394562379411398369512852",
+        "role": "planned"
+      },
+      {
+        "id": "A-2036-10",
+        "contract_id": "A-2036",
+        "ordered_at": "1095/4",
+        "arrival_at": "2555/4",
+        "planned_t": "12.71394562379411398369512852",
+        "role": "planned"
+      },
+      {
+        "id": "A-2036-11",
+        "contract_id": "A-2036",
+        "ordered_at": "1825/6",
+        "arrival_at": "4015/6",
+        "planned_t": "12.71394562379411398369512852",
+        "role": "planned"
+      },
+      {
+        "id": "A-2036-12",
+        "contract_id": "A-2036",
+        "ordered_at": "4015/12",
+        "arrival_at": "8395/12",
+        "planned_t": "12.7139456237941139836951285",
+        "role": "planned"
+      },
+      {
+        "id": "A-2037-01",
+        "contract_id": "A-2037",
+        "ordered_at": "365",
+        "arrival_at": "730",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2037-02",
+        "contract_id": "A-2037",
+        "ordered_at": "4745/12",
+        "arrival_at": "9125/12",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2037-03",
+        "contract_id": "A-2037",
+        "ordered_at": "2555/6",
+        "arrival_at": "4745/6",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2037-04",
+        "contract_id": "A-2037",
+        "ordered_at": "1825/4",
+        "arrival_at": "3285/4",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2037-05",
+        "contract_id": "A-2037",
+        "ordered_at": "1460/3",
+        "arrival_at": "2555/3",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2037-06",
+        "contract_id": "A-2037",
+        "ordered_at": "6205/12",
+        "arrival_at": "10585/12",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2037-07",
+        "contract_id": "A-2037",
+        "ordered_at": "1095/2",
+        "arrival_at": "1825/2",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2037-08",
+        "contract_id": "A-2037",
+        "ordered_at": "6935/12",
+        "arrival_at": "11315/12",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2037-09",
+        "contract_id": "A-2037",
+        "ordered_at": "1825/3",
+        "arrival_at": "2920/3",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2037-10",
+        "contract_id": "A-2037",
+        "ordered_at": "2555/4",
+        "arrival_at": "4015/4",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2037-11",
+        "contract_id": "A-2037",
+        "ordered_at": "4015/6",
+        "arrival_at": "6205/6",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2037-12",
+        "contract_id": "A-2037",
+        "ordered_at": "8395/12",
+        "arrival_at": "12775/12",
+        "planned_t": "15.8333333333333333333333335",
+        "role": "planned"
+      },
+      {
+        "id": "B-2037-01",
+        "contract_id": "B-2037",
+        "ordered_at": "1825/3",
+        "arrival_at": "730",
+        "planned_t": "1.544146192668182574455105102",
+        "role": "planned"
+      },
+      {
+        "id": "B-2037-02",
+        "contract_id": "B-2037",
+        "ordered_at": "2555/4",
+        "arrival_at": "9125/12",
+        "planned_t": "1.544146192668182574455105102",
+        "role": "planned"
+      },
+      {
+        "id": "B-2037-03",
+        "contract_id": "B-2037",
+        "ordered_at": "4015/6",
+        "arrival_at": "4745/6",
+        "planned_t": "1.544146192668182574455105102",
+        "role": "planned"
+      },
+      {
+        "id": "B-2037-04",
+        "contract_id": "B-2037",
+        "ordered_at": "8395/12",
+        "arrival_at": "3285/4",
+        "planned_t": "1.544146192668182574455105102",
+        "role": "planned"
+      },
+      {
+        "id": "B-2037-05",
+        "contract_id": "B-2037",
+        "ordered_at": "730",
+        "arrival_at": "2555/3",
+        "planned_t": "1.544146192668182574455105102",
+        "role": "planned"
+      },
+      {
+        "id": "B-2037-06",
+        "contract_id": "B-2037",
+        "ordered_at": "9125/12",
+        "arrival_at": "10585/12",
+        "planned_t": "1.544146192668182574455105102",
+        "role": "planned"
+      },
+      {
+        "id": "B-2037-07",
+        "contract_id": "B-2037",
+        "ordered_at": "4745/6",
+        "arrival_at": "1825/2",
+        "planned_t": "1.544146192668182574455105102",
+        "role": "planned"
+      },
+      {
+        "id": "B-2037-08",
+        "contract_id": "B-2037",
+        "ordered_at": "3285/4",
+        "arrival_at": "11315/12",
+        "planned_t": "1.544146192668182574455105102",
+        "role": "planned"
+      },
+      {
+        "id": "B-2037-09",
+        "contract_id": "B-2037",
+        "ordered_at": "2555/3",
+        "arrival_at": "2920/3",
+        "planned_t": "1.544146192668182574455105102",
+        "role": "planned"
+      },
+      {
+        "id": "B-2037-10",
+        "contract_id": "B-2037",
+        "ordered_at": "10585/12",
+        "arrival_at": "4015/4",
+        "planned_t": "1.544146192668182574455105102",
+        "role": "planned"
+      },
+      {
+        "id": "B-2037-11",
+        "contract_id": "B-2037",
+        "ordered_at": "1825/2",
+        "arrival_at": "6205/6",
+        "planned_t": "1.544146192668182574455105102",
+        "role": "planned"
+      },
+      {
+        "id": "B-2037-12",
+        "contract_id": "B-2037",
+        "ordered_at": "11315/12",
+        "arrival_at": "12775/12",
+        "planned_t": "1.54414619266818257445510512",
+        "role": "planned"
+      },
+      {
+        "id": "A-2038-01",
+        "contract_id": "A-2038",
+        "ordered_at": "730",
+        "arrival_at": "1095",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2038-02",
+        "contract_id": "A-2038",
+        "ordered_at": "9125/12",
+        "arrival_at": "13505/12",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2038-03",
+        "contract_id": "A-2038",
+        "ordered_at": "4745/6",
+        "arrival_at": "6935/6",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2038-04",
+        "contract_id": "A-2038",
+        "ordered_at": "3285/4",
+        "arrival_at": "4745/4",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2038-05",
+        "contract_id": "A-2038",
+        "ordered_at": "2555/3",
+        "arrival_at": "3650/3",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2038-06",
+        "contract_id": "A-2038",
+        "ordered_at": "10585/12",
+        "arrival_at": "14965/12",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2038-07",
+        "contract_id": "A-2038",
+        "ordered_at": "1825/2",
+        "arrival_at": "2555/2",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2038-08",
+        "contract_id": "A-2038",
+        "ordered_at": "11315/12",
+        "arrival_at": "15695/12",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2038-09",
+        "contract_id": "A-2038",
+        "ordered_at": "2920/3",
+        "arrival_at": "4015/3",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2038-10",
+        "contract_id": "A-2038",
+        "ordered_at": "4015/4",
+        "arrival_at": "5475/4",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2038-11",
+        "contract_id": "A-2038",
+        "ordered_at": "6205/6",
+        "arrival_at": "8395/6",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2038-12",
+        "contract_id": "A-2038",
+        "ordered_at": "12775/12",
+        "arrival_at": "17155/12",
+        "planned_t": "15.8333333333333333333333335",
+        "role": "planned"
+      },
+      {
+        "id": "C-2038-01",
+        "contract_id": "C-2038",
+        "ordered_at": "1095",
+        "arrival_at": "3650/3",
+        "planned_t": "9.553754644778437136043480668",
+        "role": "planned"
+      },
+      {
+        "id": "C-2038-02",
+        "contract_id": "C-2038",
+        "ordered_at": "13505/12",
+        "arrival_at": "14965/12",
+        "planned_t": "9.553754644778437136043480668",
+        "role": "planned"
+      },
+      {
+        "id": "C-2038-03",
+        "contract_id": "C-2038",
+        "ordered_at": "6935/6",
+        "arrival_at": "2555/2",
+        "planned_t": "9.553754644778437136043480668",
+        "role": "planned"
+      },
+      {
+        "id": "C-2038-04",
+        "contract_id": "C-2038",
+        "ordered_at": "4745/4",
+        "arrival_at": "15695/12",
+        "planned_t": "9.553754644778437136043480668",
+        "role": "planned"
+      },
+      {
+        "id": "C-2038-05",
+        "contract_id": "C-2038",
+        "ordered_at": "3650/3",
+        "arrival_at": "4015/3",
+        "planned_t": "9.553754644778437136043480668",
+        "role": "planned"
+      },
+      {
+        "id": "C-2038-06",
+        "contract_id": "C-2038",
+        "ordered_at": "14965/12",
+        "arrival_at": "5475/4",
+        "planned_t": "9.553754644778437136043480668",
+        "role": "planned"
+      },
+      {
+        "id": "C-2038-07",
+        "contract_id": "C-2038",
+        "ordered_at": "2555/2",
+        "arrival_at": "8395/6",
+        "planned_t": "9.553754644778437136043480668",
+        "role": "planned"
+      },
+      {
+        "id": "C-2038-08",
+        "contract_id": "C-2038",
+        "ordered_at": "15695/12",
+        "arrival_at": "17155/12",
+        "planned_t": "9.55375464477843713604348065",
+        "role": "planned"
+      },
+      {
+        "id": "A-2039-01",
+        "contract_id": "A-2039",
+        "ordered_at": "1095",
+        "arrival_at": "1460",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2039-02",
+        "contract_id": "A-2039",
+        "ordered_at": "13505/12",
+        "arrival_at": "17885/12",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2039-03",
+        "contract_id": "A-2039",
+        "ordered_at": "6935/6",
+        "arrival_at": "9125/6",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2039-04",
+        "contract_id": "A-2039",
+        "ordered_at": "4745/4",
+        "arrival_at": "6205/4",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2039-05",
+        "contract_id": "A-2039",
+        "ordered_at": "3650/3",
+        "arrival_at": "4745/3",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2039-06",
+        "contract_id": "A-2039",
+        "ordered_at": "14965/12",
+        "arrival_at": "19345/12",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2039-07",
+        "contract_id": "A-2039",
+        "ordered_at": "2555/2",
+        "arrival_at": "3285/2",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2039-08",
+        "contract_id": "A-2039",
+        "ordered_at": "15695/12",
+        "arrival_at": "20075/12",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2039-09",
+        "contract_id": "A-2039",
+        "ordered_at": "4015/3",
+        "arrival_at": "5110/3",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2039-10",
+        "contract_id": "A-2039",
+        "ordered_at": "5475/4",
+        "arrival_at": "6935/4",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2039-11",
+        "contract_id": "A-2039",
+        "ordered_at": "8395/6",
+        "arrival_at": "10585/6",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2039-12",
+        "contract_id": "A-2039",
+        "ordered_at": "17155/12",
+        "arrival_at": "21535/12",
+        "planned_t": "15.8333333333333333333333335",
+        "role": "planned"
+      },
+      {
+        "id": "C-2039-01",
+        "contract_id": "C-2039",
+        "ordered_at": "4015/3",
+        "arrival_at": "1460",
+        "planned_t": "10.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "C-2039-02",
+        "contract_id": "C-2039",
+        "ordered_at": "5475/4",
+        "arrival_at": "17885/12",
+        "planned_t": "10.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "C-2039-03",
+        "contract_id": "C-2039",
+        "ordered_at": "8395/6",
+        "arrival_at": "9125/6",
+        "planned_t": "10.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "C-2039-04",
+        "contract_id": "C-2039",
+        "ordered_at": "17155/12",
+        "arrival_at": "6205/4",
+        "planned_t": "10.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "C-2039-05",
+        "contract_id": "C-2039",
+        "ordered_at": "1460",
+        "arrival_at": "4745/3",
+        "planned_t": "10.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "C-2039-06",
+        "contract_id": "C-2039",
+        "ordered_at": "17885/12",
+        "arrival_at": "19345/12",
+        "planned_t": "10.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "C-2039-07",
+        "contract_id": "C-2039",
+        "ordered_at": "9125/6",
+        "arrival_at": "3285/2",
+        "planned_t": "10.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "C-2039-08",
+        "contract_id": "C-2039",
+        "ordered_at": "6205/4",
+        "arrival_at": "20075/12",
+        "planned_t": "10.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "C-2039-09",
+        "contract_id": "C-2039",
+        "ordered_at": "4745/3",
+        "arrival_at": "5110/3",
+        "planned_t": "10.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "C-2039-10",
+        "contract_id": "C-2039",
+        "ordered_at": "19345/12",
+        "arrival_at": "6935/4",
+        "planned_t": "10.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "C-2039-11",
+        "contract_id": "C-2039",
+        "ordered_at": "3285/2",
+        "arrival_at": "10585/6",
+        "planned_t": "10.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "C-2039-12",
+        "contract_id": "C-2039",
+        "ordered_at": "20075/12",
+        "arrival_at": "21535/12",
+        "planned_t": "10.8333333333333333333333334",
+        "role": "planned"
+      },
+      {
+        "id": "B-2039-01",
+        "contract_id": "B-2039",
+        "ordered_at": "4015/3",
+        "arrival_at": "1460",
+        "planned_t": "1.440019965614774554933170648",
+        "role": "planned"
+      },
+      {
+        "id": "B-2039-02",
+        "contract_id": "B-2039",
+        "ordered_at": "5475/4",
+        "arrival_at": "17885/12",
+        "planned_t": "1.440019965614774554933170648",
+        "role": "planned"
+      },
+      {
+        "id": "B-2039-03",
+        "contract_id": "B-2039",
+        "ordered_at": "8395/6",
+        "arrival_at": "9125/6",
+        "planned_t": "1.440019965614774554933170648",
+        "role": "planned"
+      },
+      {
+        "id": "B-2039-04",
+        "contract_id": "B-2039",
+        "ordered_at": "17155/12",
+        "arrival_at": "6205/4",
+        "planned_t": "1.440019965614774554933170648",
+        "role": "planned"
+      },
+      {
+        "id": "B-2039-05",
+        "contract_id": "B-2039",
+        "ordered_at": "1460",
+        "arrival_at": "4745/3",
+        "planned_t": "1.440019965614774554933170648",
+        "role": "planned"
+      },
+      {
+        "id": "B-2039-06",
+        "contract_id": "B-2039",
+        "ordered_at": "17885/12",
+        "arrival_at": "19345/12",
+        "planned_t": "1.440019965614774554933170648",
+        "role": "planned"
+      },
+      {
+        "id": "B-2039-07",
+        "contract_id": "B-2039",
+        "ordered_at": "9125/6",
+        "arrival_at": "3285/2",
+        "planned_t": "1.440019965614774554933170648",
+        "role": "planned"
+      },
+      {
+        "id": "B-2039-08",
+        "contract_id": "B-2039",
+        "ordered_at": "6205/4",
+        "arrival_at": "20075/12",
+        "planned_t": "1.440019965614774554933170648",
+        "role": "planned"
+      },
+      {
+        "id": "B-2039-09",
+        "contract_id": "B-2039",
+        "ordered_at": "4745/3",
+        "arrival_at": "5110/3",
+        "planned_t": "1.440019965614774554933170648",
+        "role": "planned"
+      },
+      {
+        "id": "B-2039-10",
+        "contract_id": "B-2039",
+        "ordered_at": "19345/12",
+        "arrival_at": "6935/4",
+        "planned_t": "1.440019965614774554933170648",
+        "role": "planned"
+      },
+      {
+        "id": "B-2039-11",
+        "contract_id": "B-2039",
+        "ordered_at": "3285/2",
+        "arrival_at": "10585/6",
+        "planned_t": "1.440019965614774554933170648",
+        "role": "planned"
+      },
+      {
+        "id": "B-2039-12",
+        "contract_id": "B-2039",
+        "ordered_at": "20075/12",
+        "arrival_at": "21535/12",
+        "planned_t": "1.44001996561477455493317063",
+        "role": "planned"
+      },
+      {
+        "id": "A-2040-01",
+        "contract_id": "A-2040",
+        "ordered_at": "1460",
+        "arrival_at": "1825",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2040-02",
+        "contract_id": "A-2040",
+        "ordered_at": "17885/12",
+        "arrival_at": "22265/12",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2040-03",
+        "contract_id": "A-2040",
+        "ordered_at": "9125/6",
+        "arrival_at": "11315/6",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2040-04",
+        "contract_id": "A-2040",
+        "ordered_at": "6205/4",
+        "arrival_at": "7665/4",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2040-05",
+        "contract_id": "A-2040",
+        "ordered_at": "4745/3",
+        "arrival_at": "5840/3",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2040-06",
+        "contract_id": "A-2040",
+        "ordered_at": "19345/12",
+        "arrival_at": "23725/12",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2040-07",
+        "contract_id": "A-2040",
+        "ordered_at": "3285/2",
+        "arrival_at": "4015/2",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2040-08",
+        "contract_id": "A-2040",
+        "ordered_at": "20075/12",
+        "arrival_at": "24455/12",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2040-09",
+        "contract_id": "A-2040",
+        "ordered_at": "5110/3",
+        "arrival_at": "6205/3",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2040-10",
+        "contract_id": "A-2040",
+        "ordered_at": "6935/4",
+        "arrival_at": "8395/4",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2040-11",
+        "contract_id": "A-2040",
+        "ordered_at": "10585/6",
+        "arrival_at": "12775/6",
+        "planned_t": "15.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "A-2040-12",
+        "contract_id": "A-2040",
+        "ordered_at": "21535/12",
+        "arrival_at": "25915/12",
+        "planned_t": "15.8333333333333333333333335",
+        "role": "planned"
+      },
+      {
+        "id": "C-2040-01",
+        "contract_id": "C-2040",
+        "ordered_at": "5110/3",
+        "arrival_at": "1825",
+        "planned_t": "10.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "C-2040-02",
+        "contract_id": "C-2040",
+        "ordered_at": "6935/4",
+        "arrival_at": "22265/12",
+        "planned_t": "10.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "C-2040-03",
+        "contract_id": "C-2040",
+        "ordered_at": "10585/6",
+        "arrival_at": "11315/6",
+        "planned_t": "10.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "C-2040-04",
+        "contract_id": "C-2040",
+        "ordered_at": "21535/12",
+        "arrival_at": "7665/4",
+        "planned_t": "10.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "C-2040-05",
+        "contract_id": "C-2040",
+        "ordered_at": "1825",
+        "arrival_at": "5840/3",
+        "planned_t": "10.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "C-2040-06",
+        "contract_id": "C-2040",
+        "ordered_at": "22265/12",
+        "arrival_at": "23725/12",
+        "planned_t": "10.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "C-2040-07",
+        "contract_id": "C-2040",
+        "ordered_at": "11315/6",
+        "arrival_at": "4015/2",
+        "planned_t": "10.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "C-2040-08",
+        "contract_id": "C-2040",
+        "ordered_at": "7665/4",
+        "arrival_at": "24455/12",
+        "planned_t": "10.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "C-2040-09",
+        "contract_id": "C-2040",
+        "ordered_at": "5840/3",
+        "arrival_at": "6205/3",
+        "planned_t": "10.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "C-2040-10",
+        "contract_id": "C-2040",
+        "ordered_at": "23725/12",
+        "arrival_at": "8395/4",
+        "planned_t": "10.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "C-2040-11",
+        "contract_id": "C-2040",
+        "ordered_at": "4015/2",
+        "arrival_at": "12775/6",
+        "planned_t": "10.83333333333333333333333333",
+        "role": "planned"
+      },
+      {
+        "id": "C-2040-12",
+        "contract_id": "C-2040",
+        "ordered_at": "24455/12",
+        "arrival_at": "25915/12",
+        "planned_t": "10.8333333333333333333333334",
+        "role": "planned"
+      },
+      {
+        "id": "B-2040-01",
+        "contract_id": "B-2040",
+        "ordered_at": "5110/3",
+        "arrival_at": "1825",
+        "planned_t": "0.009613073780341264119202117075",
+        "role": "planned"
+      },
+      {
+        "id": "B-2040-02",
+        "contract_id": "B-2040",
+        "ordered_at": "6935/4",
+        "arrival_at": "22265/12",
+        "planned_t": "0.009613073780341264119202117075",
+        "role": "planned"
+      },
+      {
+        "id": "B-2040-03",
+        "contract_id": "B-2040",
+        "ordered_at": "10585/6",
+        "arrival_at": "11315/6",
+        "planned_t": "0.009613073780341264119202117075",
+        "role": "planned"
+      },
+      {
+        "id": "B-2040-04",
+        "contract_id": "B-2040",
+        "ordered_at": "21535/12",
+        "arrival_at": "7665/4",
+        "planned_t": "0.009613073780341264119202117075",
+        "role": "planned"
+      },
+      {
+        "id": "B-2040-05",
+        "contract_id": "B-2040",
+        "ordered_at": "1825",
+        "arrival_at": "5840/3",
+        "planned_t": "0.009613073780341264119202117075",
+        "role": "planned"
+      },
+      {
+        "id": "B-2040-06",
+        "contract_id": "B-2040",
+        "ordered_at": "22265/12",
+        "arrival_at": "23725/12",
+        "planned_t": "0.009613073780341264119202117075",
+        "role": "planned"
+      },
+      {
+        "id": "B-2040-07",
+        "contract_id": "B-2040",
+        "ordered_at": "11315/6",
+        "arrival_at": "4015/2",
+        "planned_t": "0.009613073780341264119202117075",
+        "role": "planned"
+      },
+      {
+        "id": "B-2040-08",
+        "contract_id": "B-2040",
+        "ordered_at": "7665/4",
+        "arrival_at": "24455/12",
+        "planned_t": "0.009613073780341264119202117075",
+        "role": "planned"
+      },
+      {
+        "id": "B-2040-09",
+        "contract_id": "B-2040",
+        "ordered_at": "5840/3",
+        "arrival_at": "6205/3",
+        "planned_t": "0.009613073780341264119202117075",
+        "role": "planned"
+      },
+      {
+        "id": "B-2040-10",
+        "contract_id": "B-2040",
+        "ordered_at": "23725/12",
+        "arrival_at": "8395/4",
+        "planned_t": "0.009613073780341264119202117075",
+        "role": "planned"
+      },
+      {
+        "id": "B-2040-11",
+        "contract_id": "B-2040",
+        "ordered_at": "4015/2",
+        "arrival_at": "12775/6",
+        "planned_t": "0.009613073780341264119202117075",
+        "role": "planned"
+      },
+      {
+        "id": "B-2040-12",
+        "contract_id": "B-2040",
+        "ordered_at": "24455/12",
+        "arrival_at": "25915/12",
+        "planned_t": "0.0096130737803412641192021170",
+        "role": "planned"
+      }
+    ],
+    "management_recommendation": {
+      "status": "CONDITIONAL_AUTHORIZATION",
+      "cost_screen_baseline": "EARTH_NEW_BASE_R45",
+      "included_measures": [
+        "R60 selected before initial procurement",
+        "E capacity reserved for 2038-2040"
+      ],
+      "decision_gates": [
+        "prestart B physically and contractually confirmed",
+        "regular C delivery no more than 4 months"
+      ]
+    }
+  },
+  "dataset": {
+    "dataset_id": "case-v1",
+    "scope": "CASE_INPUT",
+    "hashes": {
+      "demand": "a3049bd3ff3b9e7102858be94476a0f356be3027790382d3761be7745f82a1c1",
+      "supply_sources": "182139c4870402024f540d0f010b4396db2fad77bf5a35449e04cbe584ef0977",
+      "storage_options": "81c764ba07efae2860b72defff70b80ed6280a8243ec36a5ec5e8690187ed202",
+      "investment_options": "922c92bc0a70ab6e837e51a3017d4cde5b9a55baa51602132d21f4131d4b034c",
+      "constraints": "9af0a70b445ee1c451b5dc368237b7727ed2923b89565f357dff61a21d4f4dc8"
+    },
+    "sources": {
+      "A": {
+        "source_id": "A",
+        "name": "Earth-Core",
+        "capacity_t_per_year": "190",
+        "variable_cost_mln_per_t": "6.2",
+        "reservation_rate_mln_per_t_year_capacity": "0.45",
+        "take_or_pay_share": "0.70",
+        "lead_time_min_value": "12",
+        "lead_time_max_value": "12",
+        "lead_time_unit": "month",
+        "reliability_profile": "constant:0.96",
+        "available_from_year": "2035",
+        "status": "CASE_INPUT",
+        "notes": "long-term Earth-to-orbit channel"
+      },
+      "B": {
+        "source_id": "B",
+        "name": "Earth-Flex",
+        "capacity_t_per_year": "110",
+        "variable_cost_mln_per_t": "8.9",
+        "reservation_rate_mln_per_t_year_capacity": "0.15",
+        "take_or_pay_share": "0.00",
+        "lead_time_min_value": "4",
+        "lead_time_max_value": "4",
+        "lead_time_unit": "month",
+        "reliability_profile": "constant:0.985",
+        "available_from_year": "2035",
+        "status": "CASE_INPUT",
+        "notes": "flexible Earth-to-orbit channel"
+      },
+      "C": {
+        "source_id": "C",
+        "name": "Earth-New",
+        "capacity_t_per_year": "130",
+        "variable_cost_mln_per_t": "7.1",
+        "reservation_rate_mln_per_t_year_capacity": "0.30",
+        "take_or_pay_share": "0.50",
+        "lead_time_min_value": "18",
+        "lead_time_max_value": "24",
+        "lead_time_unit": "month",
+        "reliability_profile": "first_operating_year:0.88;later:0.94",
+        "available_from_year": "",
+        "status": "CASE_INPUT",
+        "notes": "capacity available only after option exercise and preparation",
+        "investment_id": "EARTH_NEW"
+      },
+      "D": {
+        "source_id": "D",
+        "name": "Lunar-ISRU",
+        "capacity_t_per_year": "120",
+        "variable_cost_mln_per_t": "3.0",
+        "reservation_rate_mln_per_t_year_capacity": "0.00",
+        "take_or_pay_share": "0.00",
+        "lead_time_min_value": "1",
+        "lead_time_max_value": "2",
+        "lead_time_unit": "month",
+        "reliability_profile": "2038:0.78;2039:0.90;2040:0.93",
+        "available_from_year": "2038",
+        "status": "CASE_INPUT",
+        "notes": "available after required CAPEX financing and commissioning",
+        "investment_id": "LUNAR_ISRU"
+      },
+      "E": {
+        "source_id": "E",
+        "name": "Emergency",
+        "capacity_t_per_year": "80",
+        "variable_cost_mln_per_t": "13.8",
+        "reservation_rate_mln_per_t_year_capacity": "0.35",
+        "take_or_pay_share": "0.00",
+        "lead_time_min_value": "6",
+        "lead_time_max_value": "6",
+        "lead_time_unit": "week",
+        "reliability_profile": "constant:0.995",
+        "available_from_year": "2035",
+        "status": "CASE_INPUT",
+        "notes": "authoritative organizer lead time is six weeks"
+      }
+    },
+    "demand": {
+      "2035": {
+        "year": "2035",
+        "base_total_t": "100",
+        "base_critical_t": "80",
+        "low_total_t": "80",
+        "high_total_t": "110",
+        "status": "CASE_INPUT"
+      },
+      "2036": {
+        "year": "2036",
+        "base_total_t": "140",
+        "base_critical_t": "105",
+        "low_total_t": "112",
+        "high_total_t": "154",
+        "status": "CASE_INPUT"
+      },
+      "2037": {
+        "year": "2037",
+        "base_total_t": "190",
+        "base_critical_t": "135",
+        "low_total_t": "152",
+        "high_total_t": "209",
+        "status": "CASE_INPUT"
+      },
+      "2038": {
+        "year": "2038",
+        "base_total_t": "250",
+        "base_critical_t": "170",
+        "low_total_t": "200",
+        "high_total_t": "312.5",
+        "status": "CASE_INPUT"
+      },
+      "2039": {
+        "year": "2039",
+        "base_total_t": "320",
+        "base_critical_t": "210",
+        "low_total_t": "256",
+        "high_total_t": "400",
+        "status": "CASE_INPUT"
+      },
+      "2040": {
+        "year": "2040",
+        "base_total_t": "390",
+        "base_critical_t": "250",
+        "low_total_t": "312",
+        "high_total_t": "487.5",
+        "status": "CASE_INPUT"
+      }
+    },
+    "storage": {
+      "BASE": {
+        "storage_id": "BASE",
+        "name": "Base storage",
+        "capacity_t": "70",
+        "loss_rate_on_throughput": "0.045",
+        "holding_cost_mln_per_t_year": "0.72",
+        "capex_mln": "0",
+        "fixed_opex_mln_per_year": "0",
+        "available_from_year": "2035",
+        "status": "CASE_INPUT",
+        "notes": "existing storage"
+      },
+      "ZBO": {
+        "storage_id": "ZBO",
+        "name": "ZBO modernization",
+        "capacity_t": "120",
+        "loss_rate_on_throughput": "0.012",
+        "holding_cost_mln_per_t_year": "0.72",
+        "capex_mln": "180",
+        "fixed_opex_mln_per_year": "12",
+        "available_from_year": "2036",
+        "status": "CASE_INPUT",
+        "notes": "case-model coefficient; not a universal real ZBO performance claim"
+      }
+    },
+    "investments": {
+      "EARTH_NEW": {
+        "investment_id": "EARTH_NEW",
+        "name": "Earth-New option",
+        "option_fee_mln": "90",
+        "exercise_cost_mln": "270",
+        "total_capex_mln": "360",
+        "commissioning_rule": "18-24 months after exercise/preparation decision",
+        "fixed_opex_mln_per_year": "0",
+        "status": "CASE_INPUT",
+        "notes": "do not add another 360 on top of 90+270"
+      },
+      "LUNAR_ISRU": {
+        "investment_id": "LUNAR_ISRU",
+        "name": "Lunar-ISRU pilot",
+        "option_fee_mln": "0",
+        "exercise_cost_mln": "1250",
+        "total_capex_mln": "1250",
+        "commissioning_rule": "must be financed before 2038; available from 2038",
+        "fixed_opex_mln_per_year": "70",
+        "status": "CASE_INPUT",
+        "notes": "capacity effect is defined in supply_sources.csv"
+      },
+      "ZBO": {
+        "investment_id": "ZBO",
+        "name": "ZBO modernization",
+        "option_fee_mln": "0",
+        "exercise_cost_mln": "180",
+        "total_capex_mln": "180",
+        "commissioning_rule": "option available from 2036",
+        "fixed_opex_mln_per_year": "12",
+        "status": "CASE_INPUT",
+        "notes": "capacity becomes 120 t; loss rate becomes 1.2% of throughput"
+      }
+    },
+    "constraints": [
+      {
+        "constraint_id": "BASE_CRITICAL_SERVICE",
+        "metric": "critical_service_level",
+        "operator": ">=",
+        "value": "0.99",
+        "unit": "share",
+        "period": "annual",
+        "scenario": "BASE",
+        "severity": "hard",
+        "status": "CASE_INPUT",
+        "description": "critical demand service minimum"
+      },
+      {
+        "constraint_id": "BASE_TOTAL_SERVICE",
+        "metric": "total_service_level",
+        "operator": ">=",
+        "value": "0.97",
+        "unit": "share",
+        "period": "annual",
+        "scenario": "BASE",
+        "severity": "hard",
+        "status": "CASE_INPUT",
+        "description": "total demand service minimum"
+      },
+      {
+        "constraint_id": "CAPEX_2037",
+        "metric": "cumulative_capex",
+        "operator": "<=",
+        "value": "1800",
+        "unit": "mln_units",
+        "period": "through_2037",
+        "scenario": "ALL",
+        "severity": "hard",
+        "status": "CASE_INPUT",
+        "description": "CAPEX through end-2037"
+      },
+      {
+        "constraint_id": "CAPEX_2040",
+        "metric": "cumulative_capex",
+        "operator": "<=",
+        "value": "2800",
+        "unit": "mln_units",
+        "period": "through_2040",
+        "scenario": "ALL",
+        "severity": "hard",
+        "status": "CASE_INPUT",
+        "description": "total CAPEX through 2040"
+      },
+      {
+        "constraint_id": "RESERVE_45D",
+        "metric": "reserve_equivalent_days",
+        "operator": ">=",
+        "value": "45",
+        "unit": "days",
+        "period": "annual",
+        "scenario": "ALL",
+        "severity": "hard",
+        "status": "CASE_INPUT",
+        "description": "physical stock or demonstrably equivalent contracted emergency reserve"
+      },
+      {
+        "constraint_id": "EMERGENCY_BASE_STREAK",
+        "metric": "emergency_base_channel_consecutive_years",
+        "operator": "<=",
+        "value": "2",
+        "unit": "years",
+        "period": "2035_2040",
+        "scenario": "ALL",
+        "severity": "hard",
+        "status": "CASE_INPUT",
+        "description": "Emergency cannot serve as the base channel for more than two consecutive years"
+      },
+      {
+        "constraint_id": "STRESS_LOSS_LIMIT",
+        "metric": "losses_divided_by_throughput",
+        "operator": "<=",
+        "value": "0.02",
+        "unit": "share",
+        "period": "2038_2040",
+        "scenario": "MANDATORY_STRESS",
+        "severity": "hard",
+        "status": "CASE_INPUT",
+        "description": "applies from 2038 in mandatory stress only"
+      }
+    ],
+    "research_notes": []
+  },
+  "scenario": {
+    "schema_version": 1,
+    "scenario_id": "MANDATORY_STRESS",
+    "status": "CASE_INPUT",
+    "input_version": "case-v1",
+    "demand_profile": "base",
+    "demand_multiplier_default": 1,
+    "demand_multipliers_by_year": {
+      "2038": "1.15",
+      "2039": "1.15",
+      "2040": "1.15"
+    },
+    "apply_demand_multiplier_to": [
+      "total",
+      "critical"
+    ],
+    "variable_price_multiplier_default": 1,
+    "variable_price_multipliers_by_source_year": {
+      "A": {
+        "2038": "1.25",
+        "2039": "1.25"
+      },
+      "B": {
+        "2038": "1.25",
+        "2039": "1.25"
+      }
+    },
+    "actual_delivery_share_default": 1,
+    "actual_delivery_shares_by_source_year": {
+      "D": {
+        "2038": "0.55",
+        "2039": "0.75",
+        "2040": 1
+      }
+    },
+    "loss_ceiling": {
+      "enabled": true,
+      "from_year": 2038,
+      "through_year": 2040,
+      "max_losses_divided_by_throughput": "0.02"
+    },
+    "service_threshold_mode": "target",
+    "apply_reliability_to_deliveries": false,
+    "reservation_tariff_multiplier": 1,
+    "capex_multiplier": 1,
+    "combine_with_other_scenarios": false
+  },
+  "reference_plan": null
+}

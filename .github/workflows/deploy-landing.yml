@@ -9,6 +9,7 @@ on:
       - 'landing3/**'
       - 'landing4/**'
       - 'cosmograph/**'
+      - 'cosmo/**'
       - 'landing-root/**'
       - '.github/workflows/deploy-landing.yml'
   workflow_dispatch: {}
@@ -46,6 +47,9 @@ jobs:
           - dir: cosmograph
             slug: cosmograph
             marker: knowledge planet
+          - dir: cosmo
+            slug: cosmo
+            marker: План снабжения орбитального топливного узла
     name: ${{ matrix.slug }}
     steps:
       - uses: actions/checkout@v4

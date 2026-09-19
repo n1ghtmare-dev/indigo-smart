@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "plan_id": "LEARNING_FLOW_V1",
+  "scope": "SYNTHETIC_NOT_CASE_BASE",
+  "description": "Учебный год: первая поставка через 42 дня, две партии, модернизация. Намеренно нарушен начальный резерв и сервис. Все числа здесь синтетические, не стратегия кейса.",
+  "first_year": 2035,
+  "last_year": 2035,
+  "opening_t": "0",
+  "demand": [{"year": 2035, "total_t": "36.5", "critical_t": "18.25"}],
+  "contracts": [
+    {"id": "TEST-2035", "source": "SYNTHETIC", "year": 2035, "start": "0", "end": "365", "source_capacity": "45", "reserved_annual": "40", "price": "2", "reservation_rate": "0.4", "take_or_pay": "0.7"}
+  ],
+  "shipments": [
+    {"id": "BATCH-1", "source": "SYNTHETIC", "contract_id": "TEST-2035", "ordered_at": "0", "arrival_at": "42", "lead_days": "42", "planned_t": "20", "actual_share": "1", "available_at": "0"},
+    {"id": "BATCH-2", "source": "SYNTHETIC", "contract_id": "TEST-2035", "ordered_at": "178", "arrival_at": "220", "lead_days": "42", "planned_t": "20", "actual_share": "1", "available_at": "0"}
+  ],
+  "storage": [
+    {"id": "INITIAL", "at": "0", "capacity_t": "30", "loss_rate": "0.05", "holding_rate": "0.72"},
+    {"id": "UPGRADE", "at": "200", "capacity_t": "35", "loss_rate": "0.02", "holding_rate": "0.72"}
+  ],
+  "investments": [
+    {"id": "UPGRADE", "required_capex": "10", "payments": [{"id": "UPGRADE:payment", "at": "180", "category": "capex", "amount_mln": "10", "attribution_year": 2035, "subject": "UPGRADE"}], "commissioned_at": "200", "earliest_commission": "200", "annual_opex": "4"}
+  ],
+  "service_mode": "hard",
+  "real_discount_rate": null,
+  "capex_budgets": [{"cutoff": "365", "limit_mln": "10"}]
+}

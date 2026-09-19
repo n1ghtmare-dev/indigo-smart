@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "implementation_status": "FULL_CASE_CORE_IMPLEMENTED",
+  "runner_scope": "CASE_BASE_STRESS_AND_RESEARCH",
+  "implementation_policy": "configs/implementation-policy.json",
+  "case_input_version": "case-v1",
+  "model_horizon": {"first_year": 2035, "last_year": 2040, "year_length_days": 365},
+  "team_decisions": {
+    "reserve_policy": "physical_at_year_opening",
+    "allocation_policy": "critical_first_per_interval_no_cross_interval_lookahead"
+  },
+  "team_assumptions": {
+    "time_method": "event_based",
+    "max_demand_interval_days": 1,
+    "sensitivity_critical_demand": "preserve_base_critical_share",
+    "month_length_days": {"numerator": 365, "denominator": 12},
+    "week_length_days": 7,
+    "lead_time_range_selection": "upper_bound",
+    "capacity_profile": "annual_limit_with_explicit_delivery_schedule",
+    "opening_reserve_check": "before_events_at_new_year_boundary",
+    "loss_application": "instantaneous_on_inflow_before_stock_capacity_check",
+    "shortage_policy": "lost_demand_no_automatic_backlog",
+    "zero_demand_service_level": "null_not_applicable",
+    "emergency_base_role": "any_planned_positive_offtake_in_base_plan",
+    "holding_cost_method": "integral_of_piecewise_linear_inventory",
+    "cash_flow_timing": "capex_on_payment_date_operating_costs_at_year_end",
+    "real_discount_rate": "0.10",
+    "terminal_stock_policy": "report_no_salvage_credit_no_2041_reserve_without_scenario",
+    "decimal_precision": 28,
+    "absolute_tolerance_t": "0.000000001",
+    "absolute_tolerance_mln": "0.000000001",
+    "absolute_tolerance_share": "0.000000000001"
+  },
+  "conditionally_resolved_questions": [
+    "Q01_PRESTART_AVAILABILITY",
+    "Q02_C_DELIVERY_SCHEDULE",
+    "Q03_ZBO_COMMISSIONING",
+    "Q04_ISRU_FIRST_DELIVERY",
+    "Q05_REAL_DISCOUNT_RATE"
+  ],
+  "assumption_register": "docs/assumptions.md",
+  "open_questions_register": "docs/open-questions.md"
+}

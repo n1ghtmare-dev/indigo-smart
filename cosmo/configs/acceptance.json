@@ -1,0 +1,249 @@
+{
+  "schema_version": 1,
+  "meaning": "Карта представленных доказательств, не самооценка баллов. Баллы и принятие допущений определяет жюри.",
+  "criteria": [
+    {
+      "id": 1,
+      "name": "Материальный баланс",
+      "max_points": 5,
+      "stages": [
+        5,
+        7
+      ],
+      "evidence": "Журнал топлива и независимая проверка сохранения массы",
+      "status": "evidence_available",
+      "evidence_page": "docs/stages/07-verification.html"
+    },
+    {
+      "id": 2,
+      "name": "Мощности и сроки",
+      "max_points": 5,
+      "stages": [
+        4,
+        7
+      ],
+      "evidence": "Даты заказов и поставок, ввод и количественные нарушения",
+      "status": "evidence_available",
+      "evidence_page": "docs/stages/07-verification.html"
+    },
+    {
+      "id": 3,
+      "name": "Экономические расчёты",
+      "max_points": 5,
+      "stages": [
+        6,
+        7
+      ],
+      "evidence": "Реестр платежей и ручные примеры TOP, резерва, хранения, CAPEX",
+      "status": "evidence_available",
+      "evidence_page": "docs/stages/06-economics.html"
+    },
+    {
+      "id": 4,
+      "name": "Ограничения стандартного плана",
+      "max_points": 5,
+      "stages": [
+        7,
+        8
+      ],
+      "evidence": "Проверки каждого года и событий внутри года",
+      "status": "evidence_available",
+      "evidence_page": "docs/stages/08-base.html"
+    },
+    {
+      "id": 5,
+      "name": "Проверка и воспроизводимость",
+      "max_points": 5,
+      "stages": [
+        7,
+        13,
+        14
+      ],
+      "evidence": "Контрольные тесты, повторный запуск и сверка всех результатов",
+      "status": "evidence_available",
+      "evidence_page": "docs/stages/13-portability.html"
+    },
+    {
+      "id": 6,
+      "name": "Логика архитектуры",
+      "max_points": 5,
+      "stages": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "evidence": "Спецификация и прослеживаемый результат работающих модулей",
+      "status": "evidence_available",
+      "evidence_page": "docs/specification.html"
+    },
+    {
+      "id": 7,
+      "name": "Методы и научные источники",
+      "max_points": 5,
+      "stages": [
+        3,
+        11,
+        14
+      ],
+      "evidence": "Связь источника с методом, реализацией и границей применимости",
+      "status": "evidence_available",
+      "evidence_page": "docs/scientific-basis.html"
+    },
+    {
+      "id": 8,
+      "name": "Сравнение альтернатив",
+      "max_points": 5,
+      "stages": [
+        9,
+        12
+      ],
+      "evidence": "Разные стратегии на одинаковых входах и правилах",
+      "status": "evidence_available",
+      "evidence_page": "docs/stages/09-alternatives.html"
+    },
+    {
+      "id": 9,
+      "name": "Инвестиции и контракты",
+      "max_points": 5,
+      "stages": [
+        4,
+        6,
+        12
+      ],
+      "evidence": "График платежей и ввода, контракты и инвестиционные ворота",
+      "status": "evidence_available",
+      "evidence_page": "docs/contracts.html"
+    },
+    {
+      "id": 10,
+      "name": "Обязательный стресс",
+      "max_points": 5,
+      "stages": [
+        2,
+        10
+      ],
+      "evidence": "Результат стрессового плана и проверка каждого изменения",
+      "status": "evidence_available",
+      "evidence_page": "docs/stages/10-stress.html"
+    },
+    {
+      "id": 11,
+      "name": "Чувствительность",
+      "max_points": 5,
+      "stages": [
+        11
+      ],
+      "evidence": "Низкий и высокий спрос, интервалы и пороги нарушений",
+      "status": "evidence_available",
+      "evidence_page": "docs/sensitivity.html"
+    },
+    {
+      "id": 12,
+      "name": "Методики тестирования",
+      "max_points": 5,
+      "stages": [
+        7,
+        10,
+        11
+      ],
+      "evidence": "Протоколы с входами, планом, метриками и условиями повторения",
+      "status": "evidence_available",
+      "evidence_page": "docs/stages/07-verification.html"
+    },
+    {
+      "id": 13,
+      "name": "Работа плана в стрессе",
+      "max_points": 5,
+      "stages": [
+        10,
+        12
+      ],
+      "evidence": "Исходная стратегия и реакция с соблюдением сроков и обязательств",
+      "status": "evidence_available",
+      "evidence_page": "docs/stages/10-stress.html"
+    },
+    {
+      "id": 14,
+      "name": "Реестр рисков",
+      "max_points": 5,
+      "stages": [
+        11,
+        12
+      ],
+      "evidence": "События, причины, параметры, период, связи и владельцы",
+      "status": "evidence_available",
+      "evidence_page": "docs/risks.html"
+    },
+    {
+      "id": 15,
+      "name": "Количественные последствия",
+      "max_points": 5,
+      "stages": [
+        11
+      ],
+      "evidence": "Изменения топлива, затрат, сервиса и сроков с основанием диапазона",
+      "status": "evidence_available",
+      "evidence_page": "docs/risks.html"
+    },
+    {
+      "id": 16,
+      "name": "Меры и остаточный риск",
+      "max_points": 5,
+      "stages": [
+        11,
+        12
+      ],
+      "evidence": "Результаты до и после мер, цена меры, остаточные последствия",
+      "status": "evidence_available",
+      "evidence_page": "docs/risks.html"
+    },
+    {
+      "id": 17,
+      "name": "Интересы сторон",
+      "max_points": 5,
+      "stages": [
+        12
+      ],
+      "evidence": "Показатели потребителей, оператора, поставщиков и финансирующей стороны",
+      "status": "evidence_available",
+      "evidence_page": "docs/contracts.html"
+    },
+    {
+      "id": 18,
+      "name": "Адаптация к рискам",
+      "max_points": 5,
+      "stages": [
+        12
+      ],
+      "evidence": "Компромиссы и изменение ответственности без отмены сервиса",
+      "status": "evidence_available",
+      "evidence_page": "docs/contracts.html"
+    },
+    {
+      "id": 19,
+      "name": "Функции оператора",
+      "max_points": 5,
+      "stages": [
+        13,
+        15
+      ],
+      "evidence": "Самостоятельный ввод, пересчёт, сравнение, понятные ошибки",
+      "status": "evidence_available",
+      "evidence_page": "docs/operator.html"
+    },
+    {
+      "id": 20,
+      "name": "Сохранение, выгрузка, развитие",
+      "max_points": 5,
+      "stages": [
+        13,
+        14,
+        15
+      ],
+      "evidence": "Повторное открытие, CSV, новый источник и период, инструкции",
+      "status": "evidence_available",
+      "evidence_page": "docs/stages/13-portability.html"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Источники и происхождение</title><link rel="stylesheet" href="plain.css"></head><body><main>
+<nav><a href="index.html">Все этапы</a><a href="progress.html">Прогресс</a></nav>
+<h1>Источники и происхождение</h1>
+<h2>Контрольный набор</h2>
+<p>Три PDF пользователя скопированы без изменения в <a href="../data/original/pdf">data/original/pdf</a>: постановка, критерии, дополнительные материалы. Исходные имена, URL скачанных файлов и SHA-256 записаны в <a href="../data/source-manifest.json">source-manifest.json</a>.</p>
+<p>18 файлов <a href="https://github.com/SpaceEconomyPolicy/test_oil/tree/cec6de1950276091689e71a67f9a875fb4ca6213">репозитория организаторов</a> зафиксированы на коммите <code>cec6de1950276091689e71a67f9a875fb4ca6213</code>: пять CSV, три README, шесть документов правил/методологии, два YAML-сценария и два файла контрольных примеров. Скачаны 18 сентября 2026. В <code>data/reference/</code> находятся точные рабочие копии пяти CSV.</p>
+<p>Основные таблицы вручную сопоставлены с текстом постановки: спрос по шести годам, мощности/цены/резервирование/TOP/сроки пяти каналов, режимы хранения, инвестиции и ограничения. Контрольные значения отдельно записаны в проверяющем скрипте. Это защита от регрессий и опечаток после сверки, а не независимая экспертиза исходных данных.</p>
+<p>Единицы и определения полей: сохранённый <a href="../data/original/organizer/docs/DATA_DICTIONARY.md">DATA_DICTIONARY.md</a>. Расчётные трактовки: <a href="../data/original/organizer/docs/CALCULATION_RULES.md">CALCULATION_RULES.md</a>. Разделение фактов/решений: <a href="../data/original/organizer/docs/CASE_RULES.md">CASE_RULES.md</a>. Сценарии: <a href="../data/original/organizer/docs/STRESS_PROTOCOL.md">STRESS_PROTOCOL.md</a>.</p>
+<h2>Ограничения проверки</h2>
+<ul><li>Первичный XLSX не предоставлен; README организаторов также отмечает его отсутствие. Сверка с ним не выполнена.</li>
+<li>Ссылка на <code>ERRATA_AND_PROVENANCE.md</code> не разрешается внутри сохранённого коммита. Её содержимое нам неизвестно.</li>
+<li>Хеш подтверждает неизменность сохранённого файла относительно манифеста, не истинность фактов и не электронную подпись автора.</li>
+<li>Шесть методических источников проверены на официальных страницах/в полных открытых текстах либо аннотациях. <a href="scientific-basis.html">Карта применения</a> указывает метод, реализацию и границу прочитанного; недоступный полный текст не выдан за изученный.</li>
+<li>JSON BASE/STRESS — наше представление контрольных сценариев; все изменения в нём проверяются отдельными утверждениями скрипта.</li>
+<li>LOW/HIGH содержат исходный общий спрос; критический спрос вычисляется пропорционально по правилу кейса и FAQ (CASE_INPUT_DERIVED).</li></ul>
+<p>При противоречии источников не «усредняем» значения: записываем вопрос, сохраняем обе версии и выбираем трактовку явно. См. <a href="open-questions.html">открытые вопросы</a>.</p><footer>HTML-версия заметки. <a href="sources.md">Исходный Markdown</a>. Пересборка: python3 scripts/render_docs.py.</footer>
+</main></body></html>

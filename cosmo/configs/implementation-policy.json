@@ -1,0 +1,23 @@
+{
+  "policy_id": "TEAM_POLICY_V1",
+  "status": "TEAM_ASSUMPTIONS_NOT_ORGANIZER_APPROVAL",
+  "preparation_year": 2034,
+  "prestart_channels": ["B"],
+  "prestart_existing_storage": true,
+  "earth_new_preparation_months": "24",
+  "earth_new_regular_delivery_months": "4",
+  "zbo_installation_months": "6",
+  "isru_delivery_months": "2",
+  "real_discount_rate": "0.10",
+  "discount_sensitivity_rates": ["0", "0.05", "0.10", "0.15"],
+  "reaction_day": "1095",
+  "reaction_information": "All mandatory stress parameters become known at the beginning of 2038. Existing commitments cannot be cancelled; additional B/E orders respect their lead times.",
+  "terminal_inventory_target_t": "0",
+  "resolutions": {
+    "Q01_PRESTART_AVAILABILITY": "Preparatory B orders and deliveries in 2034 are allowed solely to fund opening inventory; the existing 70 t depot is available. Apply the same lead time, capacity, prices and loss rate. Conditional team interpretation of the explicit preparatory-period requirement, not an edit of the CSV.",
+    "Q02_C_DELIVERY_SCHEDULE": "24 months preparation after exercise, then a separately disclosed conservative 4-month recurring delivery lead time. No second 24-month preparation per shipment.",
+    "Q03_ZBO_COMMISSIONING": "Payment no earlier than 2036; installation takes 6 model months, with no outage. Old regime remains active until commissioning. Study delayed commissioning separately.",
+    "Q04_ISRU_FIRST_DELIVERY": "Commission no earlier than 2038 after funding strictly before 2038; first and subsequent orders require 2 months after the order and cannot be placed before commissioning.",
+    "Q05_REAL_DISCOUNT_RATE": "10% real annual planning rate, reference day 0 (start of 2035), identical across alternatives; compare 0/5/10/15%. Not a market estimate."
+  }
+}
