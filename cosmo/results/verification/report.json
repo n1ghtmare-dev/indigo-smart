@@ -1,6 +1,6 @@
 {
   "status": "PASS",
-  "generated_at_utc": "2026-09-19T12:49:41.015010+00:00",
+  "generated_at_utc": "2026-09-19T18:50:14.127678+00:00",
   "checks": [
     {
       "check": "Source integrity and control rules",
@@ -10,7 +10,7 @@
     {
       "check": "Unit, mutation, integration, localhost HTTP and headless-browser tests",
       "status": "PASS",
-      "detail": "Ran 128 tests in 13.188s"
+      "detail": "Ran 136 tests in 22.706s"
     },
     {
       "check": "Replay alternative-earth_new",
@@ -60,7 +60,7 @@
     {
       "check": "Replay low",
       "status": "PASS",
-      "detail": "STOPPED_OVERFLOW; exact replay, code/input hashes and CSV money verified"
+      "detail": "INFEASIBLE; exact replay, code/input hashes and CSV money verified"
     },
     {
       "check": "Replay low-replanned",
@@ -172,15 +172,15 @@
   "scope": "Reproducibility, arithmetic, input and local API checks. Not an independent engineering validation or jury score.",
   "source_sha256": {
     "src/cosmo/__init__.py": "ffc1801b116c662d8b00ccc36d0e072d66d9782cfa6a369ef66ef8a7a4bf8baf",
-    "src/cosmo/audit.py": "90f4fb5e4929b11f9a72f77ea5133c5a8d63c4861a11abbc11e33aa2fe5ffb90",
+    "src/cosmo/audit.py": "d200df2a45ad6216e1260df1b215c1ea3d1886d79fe3b512e1f625fd715a5562",
     "src/cosmo/calendar.py": "476a2dff6402c7f7baf126f9a2a6f03547dabd902f8acccbc34541bee46cef42",
     "src/cosmo/case_data.py": "d1919a6828161b6171186ca38dcd440c72fae01b523329d634b9dcd40b256d8b",
-    "src/cosmo/case_engine.py": "7f6b2c145c948d5c0aa573dc6bdf941ca64f34ba4699f5e8e00ad08b889024f6",
+    "src/cosmo/case_engine.py": "23b5c84f40a4fe6d7de1dc974d0052b858ecfd04feb4b83a2ca6667913b2e291",
     "src/cosmo/common.py": "fe7c43262256d57c59f6a0a0eaee5b25dc64fc957ba65805776576a81fcc30ce",
     "src/cosmo/economics.py": "4c70afd8756d1fbc0cc63bf72201156905188d5158861dfb51426e1368f83194",
-    "src/cosmo/example.py": "6ded45b1ce3f1346705a11312b83338c9281a1b2930d6363ae988be25c7b98fe",
-    "src/cosmo/exports.py": "c3b7be1adc6cb54bc2dfbc2bbaa648b817dfb62eaf232c10ef8267209f47c7b1",
-    "src/cosmo/physics.py": "0c52ce9ab4597322133db3b423ee42d101d49f3c88f292f990d239e0da43c794",
+    "src/cosmo/example.py": "fa8cdb756e24e446be63a02297d1e66922d7c4a1e614b654bc6575bb72b24c95",
+    "src/cosmo/exports.py": "6758f86353fea5c06414e29c190f1bdc36a7623052816a8f109e589904ac7674",
+    "src/cosmo/physics.py": "91fdfe12e843ee5ecaffa14868fb4b0cb42e74105406bd70741ba1cd781b11a9",
     "src/cosmo/planning.py": "d03dc8999182fdb4590c230b6c18c5866f81aeb7819c0691cafa46e8f64bb3a2",
     "src/cosmo/research.py": "f4eea0881647b7d6d91413ffd5ded14826d8869a2ca0445d0ab39f2e5c7ff957"
   }

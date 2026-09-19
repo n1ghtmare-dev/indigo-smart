@@ -40,7 +40,7 @@ python3 scripts/verify_project.py
 python3 scripts/run_case.py --package results/project/selected-stress-adapted/input-package.json --output results/replayed
 ```
 
-Успешный аудит означает согласованность журналов, а не допустимость плана. Смотрите `status`: FEASIBLE, INFEASIBLE, TARGETS_MISSED, INVALID_PLAN. При физической остановке полные расходы не выдумываются.
+Успешный аудит означает согласованность журналов, а не допустимость плана. Смотрите `status`: FEASIBLE, INFEASIBLE, TARGETS_MISSED, INVALID_PLAN. Валидные планы рассчитываются до конца; объём поставки сверх свободной ёмкости фиксируется как `rejected_t` и нарушение `STORAGE_OVERFLOW`, не попадая в доступный запас.
 
 ## Главный результат
 

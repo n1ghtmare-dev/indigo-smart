@@ -5,7 +5,7 @@
   "artifacts": [
     {
       "path": "output/pdf/management-memo.pdf",
-      "sha256": "c24d1c4f8e0dac051aca88775f12a4198b3181cf3b86e2af73739eb1f5fbf934",
+      "sha256": "c3c36b523f392a24631a75025a2896cc99738fc1cf38e4dafc5340b25760193a",
       "visual_review": "PASS"
     },
     {

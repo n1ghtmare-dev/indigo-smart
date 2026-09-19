@@ -1,2 +1,2 @@
-year,opening_t,required_reserve_t,gross_t,losses_t,served_t,served_critical_t,shortage_t,shortage_critical_t,inventory_t_year,holding_mln,closing_t,total_demand_t,critical_demand_t,total_service,critical_service,loss_share
-2034,0,0,12.90970379401850390877142652,0.5809366707308326758947141934,0E-30,0E-30,0E-30,0E-30,0.03377744417339088009007318447,0.02431975980484143366485269282,12.32876712328767123287671233,0,0,,,0.045
+year,opening_t,required_reserve_t,offered_gross_t,gross_t,rejected_gross_t,curtailed_inventory_t,losses_t,served_t,served_critical_t,shortage_t,shortage_critical_t,inventory_t_year,holding_mln,closing_t,total_demand_t,critical_demand_t,total_service,critical_service,loss_share
+2034,0,0,12.90970379401850390877142652,12.90970379401850390877142652,0E-26,0,0.5809366707308326758947141934,0E-30,0E-30,0E-30,0E-30,0.03377744417339088009007318447,0.02431975980484143366485269282,12.32876712328767123287671233,0,0,,,0.045
