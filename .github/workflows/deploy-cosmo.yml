@@ -1,0 +1,68 @@
+name: Deploy Cosmo
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'cosmo/**'
+      - '.github/workflows/deploy-cosmo.yml'
+  workflow_dispatch: {}
+
+concurrency:
+  group: deploy-cosmo-production
+  cancel-in-progress: false
+
+env:
+  SITE_ROOT: /var/www/indigosmart/data/www/indigosmart.ru
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup SSH
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          set -e
+          missing=()
+          [ -z "$SSH_HOST" ] && missing+=("SSH_HOST")
+          [ -z "$SSH_USER" ] && missing+=("SSH_USER")
+          [ -z "$SSH_PORT" ] && missing+=("SSH_PORT")
+          [ -z "$SSH_PRIVATE_KEY" ] && missing+=("SSH_PRIVATE_KEY")
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "ERROR: missing GitHub Secrets: ${missing[*]}"
+            exit 1
+          fi
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p "$SSH_PORT" "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+
+      - name: Deploy Cosmo
+        run: |
+          ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} \
+            -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+            -o LogLevel=ERROR -o ConnectTimeout=20 \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+            'mkdir -p ${{ env.SITE_ROOT }}/cosmo'
+          rsync -rlDzvc --delete \
+            --exclude='.git/' --exclude='.playwright-mcp/' \
+            --exclude='claude.md' --exclude='CLAUDE.md' \
+            --no-perms --no-owner --no-group \
+            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -o ConnectTimeout=20" \
+            cosmo/ \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ env.SITE_ROOT }}/cosmo/
+
+      - name: Smoke test
+        run: |
+          base="https://indigosmart.ru/cosmo"
+          curl -sfL -m 20 "$base/" | grep -q 'Лучшая стратегия среди выбранных'
+          curl -sfL -m 20 "$base/app.js?sha=$GITHUB_SHA" | grep -q 'function historyDecision'
+          curl -sfL -m 20 "$base/style.css?sha=$GITHUB_SHA" | grep -q 'history-plan-winner'
+          echo "OK: $base/ and strategy ranking assets are live"
