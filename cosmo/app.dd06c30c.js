@@ -442,24 +442,35 @@ function rankedAlternatives(r){
 }
 const SVG_NS='http://www.w3.org/2000/svg';
 function svgNode(name,attributes={},text){const node=document.createElementNS(SVG_NS,name);for(const [key,value]of Object.entries(attributes))node.setAttribute(key,String(value));if(text!==undefined)node.textContent=text;return node;}
+function smoothChartPath(points,x,y){
+  if(!points.length)return '';
+  let path=`M${x(points[0].at).toFixed(2)},${y(points[0].inventory_t).toFixed(2)}`;
+  for(let index=1;index<points.length;index++){
+    const previous=points[index-1],current=points[index],midX=(x(previous.at)+x(current.at))/2;
+    path+=` C${midX.toFixed(2)},${y(previous.inventory_t).toFixed(2)} ${midX.toFixed(2)},${y(current.inventory_t).toFixed(2)} ${x(current.at).toFixed(2)},${y(current.inventory_t).toFixed(2)}`;
+  }
+  return path;
+}
 function renderInventoryChart(r){
   const card=$('inventory-chart-card'),root=$('inventory-chart'),timeline=r.inventory_timeline||{},points=(timeline.points||[]).map(point=>({...point,at:Number(point.at),inventory_t:Number(point.inventory_t),capacity_t:Number(point.capacity_t),arrival_t:Number(point.arrival_t)})).filter(point=>Number.isFinite(point.at)&&Number.isFinite(point.inventory_t)&&Number.isFinite(point.capacity_t));
-  root.replaceChildren();card.hidden=true;if(points.length<2)return;
+  const arrivals=points.filter(point=>point.kind==='arrival'&&point.arrival_t>0),trendPoints=[...new Map(points.filter(point=>point.kind==='sample'||point.kind==='boundary').map(point=>[point.at,point])).values()];
+  root.replaceChildren();card.hidden=true;if(points.length<2||trendPoints.length<2)return;
   const reserves=(timeline.reserve_markers||[]).map(point=>({...point,at:Number(point.at),required_reserve_t:Number(point.required_reserve_t)})).filter(point=>Number.isFinite(point.at)&&Number.isFinite(point.required_reserve_t));
-  card.hidden=false;const width=Math.max(320,root.clientWidth||900),height=width<520?270:300,pad={left:width<520?48:58,right:width<520?12:22,top:18,bottom:42},plotWidth=width-pad.left-pad.right,plotHeight=height-pad.top-pad.bottom,minX=Math.min(...points.map(point=>point.at)),maxX=Math.max(...points.map(point=>point.at)),maxValue=Math.max(...points.flatMap(point=>[point.inventory_t,point.capacity_t]),...reserves.map(point=>point.required_reserve_t),1),maxY=Math.ceil(maxValue/10)*10;
-  const x=value=>pad.left+(value-minX)/Math.max(1,maxX-minX)*plotWidth,y=value=>pad.top+(1-value/maxY)*plotHeight;
-  const legend=el('div',undefined,'chart-legend');for(const [label,kind]of [['Запас','inventory'],['Вместимость','capacity'],['Норматив на начало года','reserve'],['Поставка','arrival']]){const item=el('span',undefined,'chart-legend-item'),mark=el('i',undefined,`chart-legend-mark ${kind}`);mark.setAttribute('aria-hidden','true');item.append(mark,document.createTextNode(label));legend.append(item);}
+  card.hidden=false;const width=Math.max(320,root.clientWidth||900),height=width<520?270:300,pad={left:width<520?48:58,right:width<520?12:22,top:18,bottom:42},plotWidth=width-pad.left-pad.right,plotHeight=height-pad.top-pad.bottom,minX=Math.min(...points.map(point=>point.at)),maxX=Math.max(...points.map(point=>point.at)),maxValue=Math.max(...points.flatMap(point=>[point.inventory_t,point.capacity_t]),...reserves.map(point=>point.required_reserve_t),1),tickStep=Math.max(10,Math.ceil(maxValue/40)*10),axisMax=tickStep*4,domainMax=axisMax*1.055;
+  const x=value=>pad.left+(value-minX)/Math.max(1,maxX-minX)*plotWidth,y=value=>pad.top+(1-value/domainMax)*plotHeight;
+  const legend=el('div',undefined,'chart-legend');for(const [label,kind]of [['Запас на конец месяца','inventory'],['Вместимость','capacity'],['Норматив на начало года','reserve'],['Поставка','arrival']]){const item=el('span',undefined,'chart-legend-item'),mark=el('i',undefined,`chart-legend-mark ${kind}`);mark.setAttribute('aria-hidden','true');item.append(mark,document.createTextNode(label));legend.append(item);}
   const svg=svgNode('svg',{viewBox:`0 0 ${width} ${height}`,'aria-hidden':'true',focusable:'false'}),frame=svgNode('g',{class:'chart-frame'});
-  for(let index=0;index<=4;index++){const value=maxY*index/4,py=y(value);frame.append(svgNode('line',{x1:pad.left,y1:py,x2:width-pad.right,y2:py,class:'chart-grid-line'}),svgNode('text',{x:pad.left-10,y:py+4,class:'chart-axis-label','text-anchor':'end'},fmt(value,0)));}
+  const defs=svgNode('defs'),gradient=svgNode('linearGradient',{id:'inventory-area-gradient',x1:'0',x2:'0',y1:'0',y2:'1'});gradient.append(svgNode('stop',{offset:'0%','stop-color':'#2f63a8','stop-opacity':'.17'}),svgNode('stop',{offset:'100%','stop-color':'#2f63a8','stop-opacity':'.015'}));defs.append(gradient);svg.append(defs);
+  for(let index=0;index<=4;index++){const value=tickStep*index,py=y(value);frame.append(svgNode('line',{x1:pad.left,y1:py,x2:width-pad.right,y2:py,class:'chart-grid-line'}),svgNode('text',{x:pad.left-10,y:py+4,class:'chart-axis-label','text-anchor':'end'},fmt(value,0)));}
   const firstYear=Number(pkg?.plan?.first_year||2035),lastYear=Number(pkg?.plan?.last_year||2040),yearStep=width<520?2:1;for(let year=firstYear;year<=lastYear;year+=yearStep){const at=(year-2035)*365;if(at<minX||at>maxX)continue;const px=x(at);frame.append(svgNode('line',{x1:px,y1:pad.top,x2:px,y2:height-pad.bottom,class:'chart-year-line'}),svgNode('text',{x:px,y:height-16,class:'chart-axis-label','text-anchor':year===firstYear?'start':'middle'},String(year)));}
   frame.append(svgNode('text',{x:16,y:pad.top+plotHeight/2,class:'chart-axis-title',transform:`rotate(-90 16 ${pad.top+plotHeight/2})`,'text-anchor':'middle'},'Запас, т'));
-  const inventoryPath=points.map((point,index)=>`${index?'L':'M'}${x(point.at).toFixed(2)},${y(point.inventory_t).toFixed(2)}`).join(' ');
+  const inventoryPath=smoothChartPath(trendPoints,x,y),inventoryArea=`${inventoryPath} L${x(trendPoints.at(-1).at).toFixed(2)},${y(0).toFixed(2)} L${x(trendPoints[0].at).toFixed(2)},${y(0).toFixed(2)} Z`;
   let capacityPath=`M${x(points[0].at).toFixed(2)},${y(points[0].capacity_t).toFixed(2)}`;for(const point of points.slice(1))capacityPath+=` H${x(point.at).toFixed(2)} V${y(point.capacity_t).toFixed(2)}`;
-  frame.append(svgNode('path',{d:capacityPath,class:'chart-capacity-line'}),svgNode('path',{d:inventoryPath,class:'chart-inventory-line'}));
+  frame.append(svgNode('path',{d:inventoryArea,class:'chart-inventory-area'}),svgNode('path',{d:capacityPath,class:'chart-capacity-line'}),svgNode('path',{d:inventoryPath,class:'chart-inventory-line'}));
   for(const marker of reserves){if(marker.at<minX||marker.at>maxX)continue;const dot=svgNode('circle',{cx:x(marker.at),cy:y(marker.required_reserve_t),r:4.5,class:'chart-reserve-point'});dot.append(svgNode('title',{},`${marker.year}: норматив ${fmt(marker.required_reserve_t)} т`));frame.append(dot);}
-  for(const point of points.filter(point=>point.kind==='arrival'&&point.arrival_t>0)){const dot=svgNode('circle',{cx:x(point.at),cy:y(point.inventory_t),r:3.5,class:'chart-arrival-point'});dot.append(svgNode('title',{},`${humanDate(point.at)}: поступило ${fmt(point.arrival_t)} т, запас ${fmt(point.inventory_t)} т`));frame.append(dot);}
+  for(const point of arrivals){const dot=svgNode('circle',{cx:x(point.at),cy:y(point.inventory_t),r:2.5,class:'chart-arrival-point'});dot.append(svgNode('title',{},`${humanDate(point.at)}: поступило ${fmt(point.arrival_t)} т, запас после поставки ${fmt(point.inventory_t)} т`));frame.append(dot);}
   const stoppedAt=timeline.stopped_at===null||timeline.stopped_at===undefined||timeline.stopped_at===''?NaN:Number(timeline.stopped_at);if(Number.isFinite(stoppedAt)){const candidates=points.filter(point=>Math.abs(point.at-stoppedAt)<1e-6),stopped=candidates.sort((a,b)=>b.inventory_t-a.inventory_t)[0];if(stopped){const px=x(stopped.at),py=y(stopped.inventory_t),anchor=px>width-190?'end':'start',tx=px+(anchor==='end'?-10:10);frame.append(svgNode('circle',{cx:px,cy:py,r:6,class:'chart-stop-point'}),svgNode('text',{x:tx,y:Math.max(pad.top+12,py-12),class:'chart-stop-label','text-anchor':anchor},`Переполнение ${humanDate(stopped.at)}`));}}
-  svg.append(frame);root.append(legend,svg);root.setAttribute('aria-label',`Динамика запаса от ${fmt(points[0].inventory_t)} до ${fmt(points.at(-1).inventory_t)} тонн${Number.isFinite(stoppedAt)?`. Расчёт остановлен ${humanDate(stoppedAt)} из-за переполнения`:''}.`);
+  svg.append(frame);root.append(legend,svg);root.setAttribute('aria-label',`Запас на конец месяца: от ${fmt(trendPoints[0].inventory_t)} до ${fmt(trendPoints.at(-1).inventory_t)} тонн. Отмечено поставок: ${arrivals.length}${Number.isFinite(stoppedAt)?`. Расчёт остановлен ${humanDate(stoppedAt)} из-за переполнения`:''}.`);
 }
 function renderAlternativesChart(r,visible){
   const root=$('alternatives-chart');root.replaceChildren();root.hidden=true;
