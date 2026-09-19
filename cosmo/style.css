@@ -454,8 +454,7 @@ label small, .hint { color: var(--muted); font-size: 11px; font-weight: 450; lin
 .history-summary-item > small { color: var(--muted); font-size: 9px; }
 .history-workbench { overflow: hidden; }
 .history-workbench-head { padding: 16px 18px 14px; display: flex; align-items: center; justify-content: space-between; gap: 20px; border-bottom: 1px solid var(--line); }
-.history-workbench-head h3 { margin: 0 0 3px; }
-.history-workbench-head p { max-width: 72ch; margin: 0; color: var(--muted); font-size: 10px; }
+.history-workbench-head h3 { margin: 0; }
 .history-scenario-switch { flex: 0 0 auto; padding: 3px; display: inline-flex; gap: 2px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface-soft); }
 .history-scenario-switch button { min-height: 30px; padding: 5px 12px; border-radius: 6px; color: var(--muted); font-size: 10px; font-weight: 700; }
 .history-scenario-switch button:hover { color: var(--ink); background: #eef2f7; }
@@ -471,10 +470,10 @@ label small, .hint { color: var(--muted); font-size: 11px; font-weight: 450; lin
 .history-panel-title { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 .history-panel-title h4 { margin: 0; font-size: 12px; }
 .history-panel-title span { color: var(--muted); font-size: 9px; font-weight: 700; }
-.history-plan-panel > p { margin: 2px 0 10px; color: var(--muted); font-size: 9px; }
-.history-plan-list { max-height: 410px; overflow: auto; display: grid; gap: 7px; scrollbar-gutter: stable; }
+.history-plan-list { max-height: 410px; margin-top: 10px; overflow: auto; display: grid; gap: 7px; scrollbar-gutter: stable; }
 .history-plan-choice { border: 1px solid #e1e6ed; border-radius: 9px; background: var(--surface); }
 .history-plan-choice.selected { border-color: color-mix(in srgb, var(--plan-color) 42%, #dce1e9); box-shadow: inset 3px 0 0 var(--plan-color); }
+.history-plan-choice.winner { background: linear-gradient(90deg, var(--success-soft), var(--surface) 72%); }
 .history-plan-select { padding: 9px 9px 7px; display: grid; grid-template-columns: 15px 22px minmax(0, 1fr); align-items: center; gap: 7px; cursor: pointer; }
 .history-plan-select input { width: 14px; height: 14px; margin: 0; accent-color: var(--blue); }
 .history-plan-index { width: 20px; height: 20px; display: grid; place-items: center; border: 1px solid #c9d1dd; border-radius: 5px; color: #778195; font: 750 9px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
@@ -482,6 +481,7 @@ label small, .hint { color: var(--muted); font-size: 11px; font-weight: 450; lin
 .history-plan-copy { min-width: 0; }
 .history-plan-copy strong, .history-plan-copy small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .history-plan-copy strong { color: var(--ink); font-size: 10px; }
+.history-plan-winner { display: inline-block; margin-top: 4px; padding: 2px 5px; border-radius: 4px; background: #dff3e8; color: var(--success); font-size: 7px; font-weight: 750; letter-spacing: .035em; text-transform: uppercase; }
 .history-plan-copy small { margin-top: 2px; color: var(--muted); font-size: 8px; }
 .history-test-buttons { padding: 0 7px 7px 53px; display: flex; gap: 5px; }
 .history-test-button { min-height: 25px; padding: 3px 6px; border: 1px solid #e1e6ed; border-radius: 6px; background: #fafbfc; font-size: 8px; font-weight: 680; }
