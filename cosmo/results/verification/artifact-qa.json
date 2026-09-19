@@ -1,16 +1,16 @@
 {
-  "memo_pages": 10,
+  "memo_pages": 12,
   "comparison_pages": 1,
   "deck_slides": 10,
   "artifacts": [
     {
       "path": "output/pdf/management-memo.pdf",
-      "sha256": "c3c36b523f392a24631a75025a2896cc99738fc1cf38e4dafc5340b25760193a",
+      "sha256": "563d60b9c2d1777416c62644a656a77ab5264c7eb2a27dfb0cdb1e61357397ea",
       "visual_review": "PASS"
     },
     {
       "path": "output/pdf/scenario-comparison.pdf",
-      "sha256": "42675f09baaea6ddf216ca044c863d77e1c88b521a0ae9b8874dcc80d2fb6bdc",
+      "sha256": "630453fcb272626c849e6ed12e3f3685b4e5ce13275e5ef964cddef969104d1b",
       "visual_review": "PASS"
     },
     {
@@ -24,7 +24,7 @@
       "visual_review": "PASS"
     }
   ],
-  "review": "All memo/comparison pages and all 10 final rendered slides inspected in contact sheets; the updated landscape comparison page was rendered at 160 dpi and inspected individually. Service, deficits, inventory, reserve margin, CAPEX, violation, versions, calculation time, hash and decision gates are legible without clipping.",
+  "review": "All 12 memo pages were rendered at 120 dpi and inspected as a contact sheet; dense criterion pages 7, 8, 9, 11 and 12 were inspected individually at original render size. The one-page comparison was rendered at 160 dpi and inspected individually. All 10 final slide renders retain their prior reviewed hashes. Tables, sources, numbers, decision gates and the 20-criterion evidence map are legible without clipping.",
   "pptx_native_tables": 7,
   "pptx_structural_validation": "PASS (first-party import, dimensions, font policy, table ownership)",
   "pdf_deck": "Raster viewing copy of final PPTX renders; editable tables and source notes are in PPTX.",

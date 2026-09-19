@@ -1,6 +1,6 @@
 {
   "status": "PASS",
-  "generated_at_utc": "2026-09-19T18:50:14.127678+00:00",
+  "generated_at_utc": "2026-09-19T19:23:11.491584+00:00",
   "checks": [
     {
       "check": "Source integrity and control rules",
@@ -10,7 +10,7 @@
     {
       "check": "Unit, mutation, integration, localhost HTTP and headless-browser tests",
       "status": "PASS",
-      "detail": "Ran 136 tests in 22.706s"
+      "detail": "Ran 136 tests in 16.461s"
     },
     {
       "check": "Replay alternative-earth_new",
@@ -165,7 +165,7 @@
     {
       "check": "Deliverable content and visual-review hashes",
       "status": "PASS",
-      "detail": "Memo 10 pages; comparison 1 page; deck 10 slides. Rendered artifacts inspected; Safari smoke and Chrome regressions passed; Microsoft PowerPoint not tested."
+      "detail": "Memo 12 pages; comparison 1 page; deck 10 slides. Rendered artifacts inspected; Safari smoke and Chrome regressions passed; Microsoft PowerPoint not tested."
     }
   ],
   "package_count": 27,
