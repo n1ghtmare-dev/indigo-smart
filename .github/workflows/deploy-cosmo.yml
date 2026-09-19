@@ -63,8 +63,9 @@ jobs:
         run: |
           base="https://indigosmart.ru/cosmo"
           curl -sfL -m 20 "$base/" | grep -q 'Лучшая стратегия среди выбранных'
-          curl -sfL -m 20 "$base/app.3a52f046.js" | grep -q 'historySelectionInitialized'
+          curl -sfL -m 20 "$base/app.8c1ac2da.js" | grep -q 'rejected_t'
           curl -sfL -m 20 "$base/engine.zip" -o /tmp/cosmo-engine.zip
           unzip -p /tmp/cosmo-engine.zip scripts/serve.py | grep -q 'deliveries_by_at'
+          unzip -p /tmp/cosmo-engine.zip src/cosmo/physics.py | grep -q 'rejected_gross_t'
           curl -sfL -m 20 "$base/style.css?sha=$GITHUB_SHA" | grep -q 'chart-shortage-year'
           echo "OK: $base/ and inventory event assets are live"

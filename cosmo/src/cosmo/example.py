@@ -5,7 +5,7 @@ from decimal import localcontext
 from .calendar import Event, Shipment, check_shipments, ordered_events, year_start
 from .common import ZERO, number, unique_ids
 from .economics import Contract, Investment, Payment, cash_flow, check_contracts, check_investments
-from .physics import Arrival, Demand, PhysicalInfeasibility, Storage, simulate
+from .physics import Arrival, Demand, Storage, simulate
 
 
 def run_example(config, *, max_step=1):
@@ -64,11 +64,8 @@ def _run_example(config, max_step):
     result = {"scope": config["scope"], "plan_id": config["plan_id"], "calendar": ordered_events(events)}
     if issues:
         return {**result, "status": "INVALID_SCHEDULE_OR_CONTRACT", "violations": issues, "physical": None, "economics": None}
-    try:
-        physical = simulate(demands, [Arrival(s.id, s.arrival_at, s.gross_t) for s in shipments], storages,
-                            opening_t=config["opening_t"], service_mode=config["service_mode"], max_step=max_step)
-    except PhysicalInfeasibility as exc:
-        return {**result, "status": "STOPPED_PHYSICAL_INFEASIBILITY", "violations": [exc.issue], "physical": None, "economics": None}
+    physical = simulate(demands, [Arrival(s.id, s.arrival_at, s.gross_t) for s in shipments], storages,
+                        opening_t=config["opening_t"], service_mode=config["service_mode"], max_step=max_step)
     economic = cash_flow(contracts, orders, investments, physical, first_year=first, last_year=last,
                          real_discount_rate=config["real_discount_rate"],
                          capex_budgets=[(b["cutoff"], b["limit_mln"]) for b in config["capex_budgets"]])

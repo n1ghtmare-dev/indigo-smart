@@ -44,6 +44,8 @@ def result_summary(result):
     intervals = [row for row in physical.get("intervals", [])
                  if annual and row.get("year", annual[0]["year"] - 1) >= annual[0]["year"]]
     reserve_margins = [row["opening_t"] - row["required_reserve_t"] for row in annual]
+    rejected_t = sum((row.get("rejected_gross_t", ZERO) + row.get("curtailed_inventory_t", ZERO)
+                      for row in annual), ZERO) if annual else None
     key_issue = next((v for severity in ("hard", "target") for v in result["violations"]
                       if v.severity == severity), None)
     return {"plan_id": result["plan_id"], "scenario_id": result["scenario_id"], "status": result["status"],
@@ -51,6 +53,7 @@ def result_summary(result):
             "capex_mln": economic.get("components_mln", {}).get("capex"),
             "cost_per_served_t": economic.get("cost_per_served_t"),
             "served_t": sum((r["served_t"] for r in annual), ZERO) if annual else None,
+            "rejected_t": rejected_t,
             "shortage_t": sum((r["shortage_t"] for r in annual), ZERO) if annual else None,
             "critical_shortage_t": sum((r["shortage_critical_t"] for r in annual), ZERO) if annual else None,
             "worst_total_service": min((r["total_service"] for r in annual if r["total_service"] is not None), default=None),
@@ -113,8 +116,8 @@ def export_run(directory, plan, dataset, scenario, result, *, reference=None, in
         write_csv(directory / filename, rows)
     body = '<p class="note">Результат условен относительно раскрытых допущений ' + html.escape(plan['policy']['policy_id']) + '. Это учебный кейс, не инженерный проект. Нет статистической гарантии надёжности.</p>'
     body += '<p class="note">Версия данных: ' + html.escape(str(summary["data_version"])) + '; политика: ' + html.escape(str(summary["policy_version"])) + '; расчёт UTC: ' + html.escape(summary["calculated_at_utc"]) + '; SHA-256 входов: <code>' + html.escape(summary["input_sha256"]) + '</code>.</p>'
-    body += table([summary], [("scenario_id", "Сценарий"), ("status", "Статус"), ("total_mln", "Всего, млн"), ("pv_mln", "PV, млн"), ("capex_mln", "CAPEX, млн"), ("shortage_t", "Дефицит, т"), ("critical_shortage_t", "Крит. дефицит, т"), ("worst_total_service", "Общий сервис"), ("worst_critical_service", "Крит. сервис"), ("minimum_inventory_t", "Мин. запас, т"), ("final_inventory_t", "Конечный запас, т"), ("minimum_reserve_margin_t", "Мин. запас сверх норматива, т"), ("key_violation", "Ключевое нарушение")])
-    body += '<h2>По годам</h2>' + table(result.get("annual", []), [("year", "Год"), ("opening_t", "Начало, т"), ("required_reserve_t", "Норматив, т"), ("gross_t", "Пришло, т"), ("losses_t", "Потери, т"), ("served_t", "Выдача, т"), ("shortage_t", "Дефицит, т"), ("shortage_critical_t", "Крит. дефицит, т"), ("closing_t", "Конец, т"), ("total_service", "Общий сервис"), ("critical_service", "Крит. сервис")])
+    body += table([summary], [("scenario_id", "Сценарий"), ("status", "Статус"), ("total_mln", "Всего, млн"), ("pv_mln", "PV, млн"), ("capex_mln", "CAPEX, млн"), ("rejected_t", "Не принято, т"), ("shortage_t", "Дефицит, т"), ("critical_shortage_t", "Крит. дефицит, т"), ("worst_total_service", "Общий сервис"), ("worst_critical_service", "Крит. сервис"), ("minimum_inventory_t", "Мин. запас, т"), ("final_inventory_t", "Конечный запас, т"), ("minimum_reserve_margin_t", "Мин. запас сверх норматива, т"), ("key_violation", "Ключевое нарушение")])
+    body += '<h2>По годам</h2>' + table(result.get("annual", []), [("year", "Год"), ("opening_t", "Начало, т"), ("required_reserve_t", "Норматив, т"), ("offered_gross_t", "Предложено, т"), ("gross_t", "Принято, т"), ("rejected_gross_t", "Не принято, т"), ("losses_t", "Потери, т"), ("served_t", "Выдача, т"), ("shortage_t", "Дефицит, т"), ("shortage_critical_t", "Крит. дефицит, т"), ("closing_t", "Конец, т"), ("total_service", "Общий сервис"), ("critical_service", "Крит. сервис")])
     body += '<h2>Нарушения</h2>' + table(result.get("violations", []), [("code", "Правило"), ("at", "День"), ("subject", "Объект"), ("actual", "Факт"), ("limit", "Предел"), ("excess", "Отклонение"), ("severity", "Тип")])
     if not result.get("annual"):
         body += '<p>Расчёт остановлен. Итоговые стоимость и обслуживание не выдумываются; см. нарушение выше.</p>'

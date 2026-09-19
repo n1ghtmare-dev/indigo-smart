@@ -10,7 +10,7 @@ from .calendar import Shipment, check_shipments, duration, model_year, year_star
 from .case_data import ROOT, delivery_delay, demand_for, factor, load_dataset, load_json, scenario_named, validate_dataset
 from .common import MASS_TOL, ZERO, decimal_time, json_value, number, time, unique_ids, violation
 from .economics import Contract, Investment, Payment, cash_flow, check_contracts, check_investments
-from .physics import Arrival, Demand, PhysicalInfeasibility, Storage, simulate
+from .physics import Arrival, Demand, Storage, simulate
 
 
 def policy_default():
@@ -229,12 +229,9 @@ def _evaluate(plan, data, scenario, reference, max_step):
     ceiling = scenario.get("loss_ceiling", {"enabled": False})
     loss_limits = {y: ceiling["max_losses_divided_by_throughput"] for y in range(first, last + 1)
                    if ceiling.get("enabled") and ceiling["from_year"] <= y <= ceiling.get("through_year", last)}
-    try:
-        physical = simulate(demands, actual_arrivals, storages, service_mode=scenario["service_threshold_mode"], loss_limits=loss_limits, max_step=max_step)
-    except PhysicalInfeasibility as exc:
-        return {**result, "status": "STOPPED_OVERFLOW", "violations": [exc.issue],
-                "partial_physical": {"intervals": exc.intervals, "annual": exc.annual},
-                "audit": {"status": "NOT_APPLICABLE", "checks": 0}}
+    physical = simulate(demands, actual_arrivals, storages,
+                        service_mode=scenario["service_threshold_mode"],
+                        loss_limits=loss_limits, max_step=max_step)
     budgets = [(year_start(2038), "1800"), (year_start(2041), "2800")]
     for raw in data.get("extension_constraints", {}).get("capex_budgets", []):
         budgets.append((time(raw["cutoff"]), raw["limit_mln"]))

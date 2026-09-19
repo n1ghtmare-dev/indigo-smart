@@ -1,4 +1,4 @@
-"""Mass balance, demand dispatch and stock-time integral, with explicit failures."""
+"""Mass balance, demand dispatch and stock-time integral, with explicit constraints."""
 from collections import defaultdict
 from dataclasses import dataclass
 from decimal import Decimal, localcontext
@@ -46,7 +46,7 @@ class Storage:
 
 
 class PhysicalInfeasibility(Exception):
-    """Stop on overflow: do not clip stock, invent disposal, or fabricate later KPIs."""
+    """Legacy exception kept for callers that imported it before overflow became a result."""
     def __init__(self, issue, intervals=(), annual=()):
         self.issue = issue
         self.intervals = list(intervals)
@@ -108,15 +108,6 @@ def _simulate(demands, arrivals, storages, opening_t, service_mode, loss_limits,
     active = storages[0]
     rows, issues, annual = [], [], {}
 
-    def capacity_check(at, partial_rows=None):
-        if stock > active.capacity_t + MASS_TOL:
-            raise PhysicalInfeasibility(
-                violation("STORAGE_OVERFLOW", at, stock, active.capacity_t, "t", active.id),
-                rows if partial_rows is None else partial_rows,
-                annual.values(),
-            )
-
-    capacity_check(start)
     inflows = defaultdict(lambda: ZERO)
     for arrival in arrivals:
         inflows[arrival.at] += arrival.gross_t
@@ -130,22 +121,35 @@ def _simulate(demands, arrivals, storages, opening_t, service_mode, loss_limits,
             if stock + MASS_TOL < required:
                 issues.append(violation("OPENING_RESERVE_SHORTFALL", at, stock, required, "t", str(year), lower=True))
         active = changes.get(at, active)
-        capacity_check(at)
         fraction = decimal_time(until - at) / 365
         demand = demands[year].total_t * fraction
         critical = demands[year].critical_t * fraction
-        row = dispatch(stock, inflows[at], active.loss_rate, demand, critical)
+        offered = inflows[at]
+        retained = 1 - active.loss_rate
+        prospective_stock = stock + offered * retained
+        curtailed = max(stock - active.capacity_t, ZERO)
+        bounded_opening = stock - curtailed
+        available = max(active.capacity_t - bounded_opening, ZERO)
+        accepted = offered if retained == ZERO else min(offered, available / retained)
+        rejected = offered - accepted
+        if curtailed > MASS_TOL or rejected > MASS_TOL:
+            issues.append(violation("STORAGE_OVERFLOW", at, prospective_stock,
+                                    active.capacity_t, "t", active.id))
+        row = dispatch(bounded_opening, accepted, active.loss_rate, demand, critical)
+        row.update({"opening_t": stock, "offered_gross_t": offered,
+                    "rejected_gross_t": rejected, "curtailed_inventory_t": curtailed})
         stock = row["after_inflow_t"]
         row.update({"at": at, "until": until, "year": year, "storage_id": active.id,
                     "demand_t": demand, "critical_demand_t": critical,
                     "inventory_t_year": (row["after_inflow_t"] + row["closing_t"]) / 2 * fraction})
         row["holding_mln"] = row["inventory_t_year"] * active.holding_rate
-        capacity_check(at, [*rows, row])
         rows.append(row)
         stock = row["closing_t"]
     for year, summary in annual.items():
         part = [r for r in rows if r["year"] == year]
-        for field in ("gross_t", "losses_t", "served_t", "served_critical_t", "shortage_t", "shortage_critical_t", "inventory_t_year", "holding_mln"):
+        for field in ("offered_gross_t", "gross_t", "rejected_gross_t", "curtailed_inventory_t",
+                      "losses_t", "served_t", "served_critical_t", "shortage_t",
+                      "shortage_critical_t", "inventory_t_year", "holding_mln"):
             summary[field] = sum((r[field] for r in part), ZERO)
         summary["closing_t"] = part[-1]["closing_t"]
         summary["total_demand_t"] = demands[year].total_t
