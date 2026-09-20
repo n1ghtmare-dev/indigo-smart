@@ -67,5 +67,6 @@ jobs:
           curl -sfL -m 20 "$base/engine.zip" -o /tmp/cosmo-engine.zip
           unzip -p /tmp/cosmo-engine.zip scripts/serve.py | grep -q 'deliveries_by_at'
           unzip -p /tmp/cosmo-engine.zip src/cosmo/physics.py | grep -q 'rejected_gross_t'
-          curl -sfL -m 20 "$base/style.css?sha=$GITHUB_SHA" | grep -q 'chart-shortage-year'
+          curl -sfL -m 20 "$base/forms.f085167.js" | grep -q 'selectedSources'
+          curl -sfL -m 20 "$base/style.f085167.css" | grep -q 'chart-shortage-year'
           echo "OK: $base/ and inventory event assets are live"
