@@ -110,7 +110,7 @@
       "blocks": [
         {
           "type": "p",
-          "text": "Исходная доказательная база: материалы организатора, пять контрольных CSV и два неизменяемых сценария; первичный XLSX не предоставлен. Вход выбранного BASE идентифицирован SHA-256 104ecc553b323759…, совокупный отпечаток файлов ядра — a5dc1dda1991c3aa…. Полные значения записаны в selected-base/result.json, хеши артефактов — в artifact-qa.json."
+          "text": "Исходная доказательная база: материалы организатора, пять контрольных CSV и два неизменяемых сценария; первичный XLSX не предоставлен. Вход выбранного BASE идентифицирован SHA-256 104ecc553b323759…, совокупный отпечаток файлов ядра — c87763393d92ef02…. Полные значения записаны в selected-base/result.json, хеши артефактов — в artifact-qa.json."
         },
         {
           "type": "table",
@@ -793,7 +793,7 @@
             [
               "Интерфейс / экспорт",
               "HTTP, формы, браузер, ссылки и архив",
-              "136 Python + 8 form; 33 группы PASS",
+              "140 Python + 8 form; 33 группы PASS",
               "results/verification/report.html"
             ],
             [
@@ -877,7 +877,7 @@
         },
         {
           "type": "p",
-          "text": "Команды: python3 scripts/run_project.py; python3 -m unittest discover -s tests -v; python3 scripts/verify_project.py. Идентификаторы выбранного входа/ядра: 104ecc553b323759… / a5dc1dda1991c3aa…. Полные хеши лежат в result.json и release-manifest.json; GitVerse и отправка жюри не заявлены."
+          "text": "Команды: python3 scripts/run_project.py; python3 -m unittest discover -s tests -v; python3 scripts/verify_project.py. Идентификаторы выбранного входа/ядра: 104ecc553b323759… / c87763393d92ef02…. Полные хеши лежат в result.json и release-manifest.json; GitVerse и отправка жюри не заявлены."
         }
       ]
     },
@@ -985,21 +985,21 @@
             "BASE",
             "case-v1",
             "TEAM_POLICY_V1",
-            "2026-09-19T18:48:27.207507+00:00",
+            "2026-09-19T19:53:08.947875+00:00",
             "104ecc553b323759"
           ],
           [
             "Стресс: фикс.",
             "case-v1",
             "TEAM_POLICY_V1",
-            "2026-09-19T18:48:27.325593+00:00",
+            "2026-09-19T19:53:09.059729+00:00",
             "b8533a6a713a50eb"
           ],
           [
             "Стресс: реакция",
             "case-v1",
             "TEAM_POLICY_V1",
-            "2026-09-19T18:48:27.445953+00:00",
+            "2026-09-19T19:53:09.171982+00:00",
             "f0092817253f0ff6"
           ]
         ]

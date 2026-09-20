@@ -80,7 +80,7 @@
         "audit_status": "PASS",
         "data_version": "case-v1",
         "policy_version": "TEAM_POLICY_V1",
-        "calculated_at_utc": "2026-09-19T18:48:27.445953+00:00",
+        "calculated_at_utc": "2026-09-19T19:53:09.171982+00:00",
         "engine_version": "1.0.0",
         "input_sha256": "f0092817253f0ff64dc7d275d470a969263c250e2e7c53f6347be0623acac5ae",
         "compact_export": false
@@ -204,7 +204,7 @@
       "audit_status": "PASS",
       "data_version": "case-v1",
       "policy_version": "TEAM_POLICY_V1",
-      "calculated_at_utc": "2026-09-19T18:48:27.618401+00:00",
+      "calculated_at_utc": "2026-09-19T19:53:09.329900+00:00",
       "engine_version": "1.0.0",
       "input_sha256": "43bb743da861dced82198c412c01b6221dc0f0369f1491c3fefd64064e365941",
       "compact_export": true
@@ -234,7 +234,7 @@
       "audit_status": "PASS",
       "data_version": "case-v1",
       "policy_version": "TEAM_POLICY_V1",
-      "calculated_at_utc": "2026-09-19T18:48:27.694573+00:00",
+      "calculated_at_utc": "2026-09-19T19:53:09.396393+00:00",
       "engine_version": "1.0.0",
       "input_sha256": "f263e19faf4acbee58fe8030adf7c480d463d7b4b8da6f0564dbb00b20f62034",
       "compact_export": true
@@ -722,7 +722,7 @@
       "audit_status": "PASS",
       "data_version": "case-v1",
       "policy_version": "TEAM_POLICY_V1",
-      "calculated_at_utc": "2026-09-19T18:48:27.207507+00:00",
+      "calculated_at_utc": "2026-09-19T19:53:08.947875+00:00",
       "engine_version": "1.0.0",
       "input_sha256": "104ecc553b3237595b3dbe1191c05547eb469914ba08129b9fac73f31a7eae0a",
       "compact_export": false
@@ -752,7 +752,7 @@
       "audit_status": "PASS",
       "data_version": "case-v1",
       "policy_version": "TEAM_POLICY_V1",
-      "calculated_at_utc": "2026-09-19T18:48:27.325593+00:00",
+      "calculated_at_utc": "2026-09-19T19:53:09.059729+00:00",
       "engine_version": "1.0.0",
       "input_sha256": "b8533a6a713a50ebcedb5996cb01fec764f9a6617114e2135fd705b530bab084",
       "compact_export": false
@@ -782,7 +782,7 @@
       "audit_status": "PASS",
       "data_version": "case-v1",
       "policy_version": "TEAM_POLICY_V1",
-      "calculated_at_utc": "2026-09-19T18:48:27.445953+00:00",
+      "calculated_at_utc": "2026-09-19T19:53:09.171982+00:00",
       "engine_version": "1.0.0",
       "input_sha256": "f0092817253f0ff64dc7d275d470a969263c250e2e7c53f6347be0623acac5ae",
       "compact_export": false
@@ -2329,7 +2329,7 @@
     "audit_status": "PASS",
     "data_version": "TEAM_EXTENSION_2041_X_V1",
     "policy_version": "TEAM_POLICY_V1",
-    "calculated_at_utc": "2026-09-19T18:48:33.142028+00:00",
+    "calculated_at_utc": "2026-09-19T19:53:14.335745+00:00",
     "engine_version": "1.0.0",
     "input_sha256": "1bf6663e42c0b6da395ac0036b8839385ff4807c6cc40c4922ccfc2536531298",
     "compact_export": false

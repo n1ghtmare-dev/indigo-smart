@@ -33,9 +33,27 @@ const CosmoForms = (() => {
     if(!pkg?.plan||!pkg?.dataset||!pkg?.scenario||!Array.isArray(pkg.plan.orders)||!Array.isArray(pkg.plan.contracts)||!Array.isArray(pkg.plan.investments)||!pkg.plan.policy||!pkg.dataset.sources||!pkg.dataset.demand)throw Error('Откройте пакет входных данных input-package.json, а не файл результата');
     return pkg;
   }
+  function parsePackageText(text) {
+    let pkg;
+    try { pkg=JSON.parse(text); }
+    catch (_) { throw Error('Файл не является корректным JSON'); }
+    return validatePackage(pkg);
+  }
   function strategy(plan) {
     const ids=new Set(plan.investments.map(x=>x.id));
     return ids.has('EARTH_NEW')?(ids.has('LUNAR_ISRU')?'HYBRID':'EARTH_NEW'):(ids.has('LUNAR_ISRU')?'LUNAR':'EARTH_ONLY');
+  }
+  function strategySources(value) {
+    return ({
+      EARTH_ONLY:['A','B','E'],
+      EARTH_NEW:['A','B','C','E'],
+      LUNAR:['A','B','D','E'],
+      HYBRID:['A','B','C','D','E']
+    }[value]||[]).slice();
+  }
+  function selectedSources(plan) {
+    const saved=plan?.construction?.selected_sources;
+    return Array.isArray(saved)&&saved.length?saved.slice():strategySources(strategy(plan));
   }
   function stableJson(value) {
     if(value===undefined)return '"__undefined__"';
@@ -72,6 +90,6 @@ const CosmoForms = (() => {
       policy:pkg?.plan?.policy??null
     });
   }
-  return {number,modelDate,modelDay,research,validatePackage,strategy,resultInputHash,planInputHash};
+  return {number,modelDate,modelDay,research,validatePackage,parsePackageText,strategy,strategySources,selectedSources,resultInputHash,planInputHash};
 })();
 if(typeof module!=='undefined')module.exports=CosmoForms;

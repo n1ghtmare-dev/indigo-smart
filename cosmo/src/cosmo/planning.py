@@ -78,28 +78,58 @@ def limit_emergency_streak(plan, max_streak):
     return removed
 
 
-def build_plan(strategy="EARTH_NEW", *, reserve_days="60", profile="BASE", dataset=None, policy=None, zbo=True, last_year=2040):
+def build_plan(strategy="EARTH_NEW", *, reserve_days="60", profile="BASE", dataset=None, policy=None,
+               zbo=True, last_year=2040, sources=None):
     with localcontext() as ctx:
         ctx.prec = 28
         return _build(strategy, number(reserve_days, minimum=Decimal(45), maximum=Decimal(120)), profile,
-                      dataset or load_dataset(), copy.deepcopy(policy or policy_default()), zbo, last_year)
+                      dataset or load_dataset(), copy.deepcopy(policy or policy_default()), zbo, last_year, sources)
 
 
-def _build(strategy, reserve_days, profile, data, policy, zbo, last_year):
+def _build(strategy, reserve_days, profile, data, policy, zbo, last_year, sources):
     if strategy not in STRATEGIES or profile not in ("BASE", "LOW", "HIGH"):
         raise ValueError("Неизвестная стратегия/профиль спроса")
+    explicit_sources = sources is not None
+    if explicit_sources:
+        if not isinstance(sources, (list, tuple)) or not sources:
+            raise ValueError("Выберите хотя бы одного поставщика")
+        if len(sources) != len(set(sources)) or any(sid not in data["sources"] for sid in sources):
+            raise ValueError("Список поставщиков содержит неизвестный или повторяющийся источник")
+        selected_sources = [sid for sid in data["sources"] if sid in sources]
+        matched = next((key for key, value in STRATEGIES.items()
+                        if set(value["sources"]) == set(selected_sources)), None)
+        strategy_key = matched or "CUSTOM"
+        investments = []
+        if zbo:
+            investments.append({"id": "ZBO", "exercise_at": "365", "commissioned_at": "1095/2"})
+        required_investments = {data["sources"][sid].get("investment_id") for sid in selected_sources}
+        for iid in (item for item in ("EARTH_NEW", "LUNAR_ISRU") if item in required_investments):
+            if iid == "EARTH_NEW":
+                investments.append({"id": iid, "option_at": "0", "exercise_at": "365", "commissioned_at": "1095"})
+            else:
+                investments.append({"id": iid, "exercise_at": "1000", "commissioned_at": "1095"})
+        label = STRATEGIES[strategy_key]["label"] if strategy_key in STRATEGIES else "Поставщики " + " + ".join(selected_sources)
+    else:
+        selected_sources = list(STRATEGIES[strategy]["sources"])
+        selected_sources.extend(sid for sid, source in data["sources"].items()
+                                if source.get("include_in_research_planner") and sid not in selected_sources)
+        strategy_key = strategy
+        investments = baseline_investments(strategy, zbo)
+        label = STRATEGIES[strategy]["label"]
     scenario = scenario_named(profile)
     first, prep = 2035, policy["preparation_year"]
     max_emergency_streak = emergency_streak_limit(data)
     plan = {"schema_version": 2, "scope": "CASE_PLAN" if data["scope"] == "CASE_INPUT" else "RESEARCH_PLAN",
-            "plan_id": f"{strategy}_{profile}_R{reserve_days}", "label": STRATEGIES[strategy]["label"],
+            "plan_id": f"{strategy_key}_{profile}_R{reserve_days}", "label": label,
             "dataset_id": data["dataset_id"], "first_year": first, "last_year": last_year, "policy": policy,
             "construction": {"method": "annual_least_variable_cost_then_equal_monthly_batches", "not_global_optimum": True,
                              "reserve_days": str(reserve_days), "planning_profile": profile,
                              "reserve_basis": "max(profile demand, mandatory stress demand), not multiplied together",
                              "terminal_target_t": "0", "B_backup_from_year": 2037,
                              "emergency_max_planned_streak_years": max_emergency_streak},
-            "investments": baseline_investments(strategy, zbo), "contracts": [], "orders": []}
+            "investments": investments, "contracts": [], "orders": []}
+    if explicit_sources:
+        plan["construction"]["selected_sources"] = selected_sources
     if last_year != 2040 or data["dataset_id"] != "case-v1":
         plan["plan_id"] += f"_{last_year}_RESEARCH"
     if policy["policy_id"] != "TEAM_POLICY_V1":
@@ -120,20 +150,26 @@ def _build(strategy, reserve_days, profile, data, policy, zbo, last_year):
         stress_total = demand_for(data, scenario_named("MANDATORY_STRESS"), year)[0] if year <= 2040 else total
         return max(total, stress_total) * reserve_days / 365
 
-    opening = opening_target(first)
-    prep_gross = opening / (1 - number(storage_initial["loss_rate_on_throughput"]))
-    prep_source = "B"
-    if prep_source not in policy["prestart_channels"]:
-        raise ValueError("Конструктор начального запаса требует явно разрешённый подготовительный B")
-    prep_arrival = Fraction(-1)
-    prep_lead = timing[prep_source][1]
-    plan["contracts"].append({"id": "PREP-B", "source": prep_source, "year": prep,
-                              "reserved_annual": str(prep_gross), "decision_at": str(prep_arrival - prep_lead), "role": "opening_inventory"})
-    plan["orders"].append({"id": "PREP-STOCK", "contract_id": "PREP-B", "ordered_at": str(prep_arrival - prep_lead),
-                           "arrival_at": str(prep_arrival), "planned_t": str(prep_gross), "role": "opening_inventory"})
-    allowed = list(STRATEGIES[strategy]["sources"])
-    # Data-driven optional sources appear only on research copies with explicit flag.
-    allowed.extend(sid for sid, s in data["sources"].items() if s.get("include_in_research_planner") and sid not in allowed)
+    opening_first = opening_target(first)
+    prep_candidates = [sid for sid in selected_sources if sid in policy["prestart_channels"]]
+    if prep_candidates:
+        prep_source = min(prep_candidates, key=lambda sid: number(data["sources"][sid]["variable_cost_mln_per_t"]))
+        prep_gross = opening_first / (1 - number(storage_initial["loss_rate_on_throughput"]))
+        prep_arrival = Fraction(-1)
+        prep_lead = timing[prep_source][1]
+        prep_contract = f"PREP-{prep_source}"
+        plan["contracts"].append({"id": prep_contract, "source": prep_source, "year": prep,
+                                  "reserved_annual": str(prep_gross), "decision_at": str(prep_arrival - prep_lead),
+                                  "role": "opening_inventory"})
+        plan["orders"].append({"id": "PREP-STOCK", "contract_id": prep_contract,
+                               "ordered_at": str(prep_arrival - prep_lead), "arrival_at": str(prep_arrival),
+                               "planned_t": str(prep_gross), "role": "opening_inventory"})
+        opening = opening_first
+    else:
+        opening = ZERO
+        plan["construction_warnings"] = [{"year": first, "unallocated_net_t": str(opening_first),
+                                          "constraint": "NO_SELECTED_PRESTART_CHANNEL"}]
+    allowed = selected_sources
     for year in range(first, last_year + 1):
         target = opening_target(year + 1) if year < last_year else number(policy["terminal_inventory_target_t"], minimum=ZERO)
         remaining_net = demand_for(data, scenario, year)[0] + target - opening

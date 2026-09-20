@@ -5,7 +5,7 @@
   "artifacts": [
     {
       "path": "output/pdf/management-memo.pdf",
-      "sha256": "563d60b9c2d1777416c62644a656a77ab5264c7eb2a27dfb0cdb1e61357397ea",
+      "sha256": "549b76584a8b0c4cf00407ce0808364aa62097ec96400175548bfffcd5b115b9",
       "visual_review": "PASS"
     },
     {
@@ -24,7 +24,7 @@
       "visual_review": "PASS"
     }
   ],
-  "review": "All 12 memo pages were rendered at 120 dpi and inspected as a contact sheet; dense criterion pages 7, 8, 9, 11 and 12 were inspected individually at original render size. The one-page comparison was rendered at 160 dpi and inspected individually. All 10 final slide renders retain their prior reviewed hashes. Tables, sources, numbers, decision gates and the 20-criterion evidence map are legible without clipping.",
+  "review": "All 12 memo pages were rendered at 120 dpi and inspected as a contact sheet after the supplier-selector and verification update; dense criterion pages 8, 11 and 12 were inspected individually at original render size. The one-page comparison and all 10 final slide renders retain their prior reviewed hashes. Tables, sources, numbers, decision gates and the 20-criterion evidence map are legible without clipping.",
   "pptx_native_tables": 7,
   "pptx_structural_validation": "PASS (first-party import, dimensions, font policy, table ownership)",
   "pdf_deck": "Raster viewing copy of final PPTX renders; editable tables and source notes are in PPTX.",

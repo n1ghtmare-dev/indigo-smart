@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated_at_utc": "2026-09-19T18:48:27.445953+00:00",
+    "generated_at_utc": "2026-09-19T19:53:09.171982+00:00",
     "engine_version": "1.0.0",
     "python_version": "3.14.3",
     "package_sha256": "f0092817253f0ff64dc7d275d470a969263c250e2e7c53f6347be0623acac5ae",
@@ -15,7 +15,7 @@
       "src/cosmo/example.py": "fa8cdb756e24e446be63a02297d1e66922d7c4a1e614b654bc6575bb72b24c95",
       "src/cosmo/exports.py": "6758f86353fea5c06414e29c190f1bdc36a7623052816a8f109e589904ac7674",
       "src/cosmo/physics.py": "91fdfe12e843ee5ecaffa14868fb4b0cb42e74105406bd70741ba1cd781b11a9",
-      "src/cosmo/planning.py": "d03dc8999182fdb4590c230b6c18c5866f81aeb7819c0691cafa46e8f64bb3a2",
+      "src/cosmo/planning.py": "25eabd0072c7ac787b36ba74b98e5b2c877eca0d890f0bdd66003324fd6592de",
       "src/cosmo/research.py": "f4eea0881647b7d6d91413ffd5ded14826d8869a2ca0445d0ab39f2e5c7ff957"
     }
   },
@@ -44,7 +44,7 @@
     "audit_status": "PASS",
     "data_version": "case-v1",
     "policy_version": "TEAM_POLICY_V1",
-    "calculated_at_utc": "2026-09-19T18:48:27.445953+00:00",
+    "calculated_at_utc": "2026-09-19T19:53:09.171982+00:00",
     "engine_version": "1.0.0",
     "input_sha256": "f0092817253f0ff64dc7d275d470a969263c250e2e7c53f6347be0623acac5ae",
     "compact_export": false

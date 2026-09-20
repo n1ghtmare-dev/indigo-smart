@@ -3,7 +3,7 @@ const $=id=>document.getElementById(id), F=CosmoForms, STORAGE='cosmo.workspace.
 let pkg=null, runs=[], panel='overview', busy=false, rawDirty=false, lastResult=null, lastResultInputHash=null, builderDirty=false, attentionOrderIds=new Set(), orderPage=1, selectedOrderIds=new Set(), dirtySections=new Set(), calculationAcknowledged=false, lastCalculatedSections=[], annualSupplyDraft={}, matrixDirty=false, historyScenario=null, historySelectedKeys=new Set(), historySelectionInitialized=false, messageTimer=null, saveStatusTimer=null;
 const clone=x=>JSON.parse(JSON.stringify(x));
 const labels={FEASIBLE:'План покрывает выбранные условия',INFEASIBLE:'Расчёт завершён с ограничениями',TARGETS_MISSED:'Сервис ниже целевого уровня',INVALID_PLAN:'Исправьте входные данные',STOPPED_OVERFLOW:'Старый неполный расчёт'};
-const scenarioLabels={BASE:'Базовый тест',MANDATORY_STRESS:'Стресс-тест',LOW:'Низкий спрос',HIGH:'Высокий спрос'};
+const scenarioLabels={BASE:'Стандарт (BASE)',MANDATORY_STRESS:'Обязательный стресс',LOW:'Доп. исследование LOW',HIGH:'Доп. исследование HIGH'};
 const profileLabels={BASE:'обычного спроса',LOW:'низкого спроса',HIGH:'высокого спроса'};
 const legacyPlanLabels={'Земля + Emergency':'Только Земля','Земля + новый поставщик':'Земля + новый поставщик C','Земля + лунный источник':'Земля + лунное производство D','Новый поставщик + лунный источник':'Земля + C + лунное производство D'};
 const sectionLabels={overview:'настройки автопостроения',conditions:'условия проверки',demand:'спрос',sources:'поставщики',contracts:'контракты',orders:'поставки',investments:'инвестиции',annual_supply:'годовой план поставок',json:'JSON-пакет'};
@@ -13,6 +13,22 @@ const inputNumber=x=>{const n=Number(x);return Number.isFinite(n)?String(Math.ro
 const pct=x=>x===null||x===undefined?'Нет данных':fmt(Number(x)*100,3)+'%';
 const fmtTime=value=>{if(!value)return 'Нет данных';const date=new Date(value);return Number.isNaN(date.getTime())?String(value):date.toLocaleString('ru-RU',{dateStyle:'short',timeStyle:'medium'});};
 function el(tag,text,cls){const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e;}
+function selectedBuilderSources(){return [...document.querySelectorAll('#builder-sources input[type="checkbox"]:checked')].map(input=>input.value);}
+function markBuilderDirty(){
+  builderDirty=true;dirtySections.add('overview');calculationAcknowledged=false;
+  $('build-hint').textContent='Новые настройки ещё не применены. Нажмите «Построить план».';
+  refreshResultFreshness();updateCalculationStatus();saveDraft();controls();
+}
+function renderBuilderSources(sync=false,override=null){
+  const root=$('builder-sources'),selected=new Set(override!==null?override:(!sync&&root.children.length?selectedBuilderSources():F.selectedSources(pkg.plan)));
+  root.replaceChildren();
+  for(const [id,source]of Object.entries(pkg.dataset.sources)){
+    const label=el('label',undefined,'builder-source-option'),input=el('input'),name=el('strong',`${id} / ${source.name}`),facts=el('small',`${fmt(source.capacity_t_per_year)} т/год · ${fmt(source.variable_cost_mln_per_t)} млн/т`);
+    input.type='checkbox';input.value=id;input.checked=selected.has(id);input.setAttribute('aria-label',`Допустить поставщика ${id}`);
+    input.addEventListener('input',()=>{if(id==='E'&&!input.checked)$('e-insurance').checked=false;markBuilderDirty();});
+    label.append(input,name,facts);root.append(label);
+  }
+}
 function dismissMessage(){clearTimeout(messageTimer);messageTimer=null;const node=$('message');node.hidden=true;node.textContent='';}
 function message(text,kind='',timeout){
   dismissMessage();const node=$('message');node.textContent=text;node.className=`notice toast ${kind}`;node.hidden=false;
@@ -42,7 +58,7 @@ function refreshResultFreshness(){
 }
 function saveDraft(){
   clearTimeout(saveStatusTimer);
-  try{localStorage.setItem(STORAGE,JSON.stringify({version:3,package:pkg,runs,scenario:$('scenario').value,dirty_sections:[...dirtySections],calculation_acknowledged:calculationAcknowledged,last_calculated_sections:lastCalculatedSections,annual_supply_draft:annualSupplyDraft,matrix_dirty:matrixDirty,builder_dirty:builderDirty,builder_state:{strategy:$('strategy').value,reserve:$('reserve').value,profile:$('profile').value,zbo:$('zbo').checked,e_insurance:$('e-insurance').checked}}));$('save-status').textContent='Черновик сохранён';saveStatusTimer=setTimeout(()=>$('save-status').textContent='',2500);}
+  try{localStorage.setItem(STORAGE,JSON.stringify({version:3,package:pkg,runs,scenario:$('scenario').value,dirty_sections:[...dirtySections],calculation_acknowledged:calculationAcknowledged,last_calculated_sections:lastCalculatedSections,annual_supply_draft:annualSupplyDraft,matrix_dirty:matrixDirty,builder_dirty:builderDirty,builder_state:{sources:selectedBuilderSources(),reserve:$('reserve').value,profile:$('profile').value,zbo:$('zbo').checked,e_insurance:$('e-insurance').checked}}));$('save-status').textContent='Черновик сохранён';saveStatusTimer=setTimeout(()=>$('save-status').textContent='',2500);}
   catch(e){$('save-status').textContent='Не удалось сохранить черновик. Скачайте файл.';}
 }
 function updateCalculationStatus(){
@@ -61,7 +77,7 @@ function updateIdentity(){
   $('scope').textContent=pkg.dataset.scope==='RESEARCH_INPUT'?'Исследовательская копия':'Исходные данные кейса';
   $('scope').className=pkg.dataset.scope==='RESEARCH_INPUT'?'badge research-badge':'badge';
   $('horizon').textContent=pkg.plan.first_year+'-'+pkg.plan.last_year;
-  $('back-base').hidden=!pkg.reference_plan;
+  $('adapted-notice').hidden=!pkg.reference_plan;
   $('reset').hidden=!!pkg.reference_plan;
 }
 function switchPanel(name){
@@ -74,9 +90,11 @@ function controls(){
   document.querySelectorAll('main button, main input, main select, main textarea').forEach(e=>e.disabled=busy||e.dataset.readonly==='true');
   if(!busy&&pkg?.reference_plan){
     for(const id of ['demand-form','sources-form','contracts-form','orders-form','investments-form','policy-form'])$(id).querySelectorAll('input,select,button').forEach(e=>e.disabled=true);
-    for(const id of ['build','strategy','reserve','profile','zbo','e-insurance','add-source','add-contract','add-order','research','apply','json','apply-supply-matrix'])$(id).disabled=true;
+    $('builder-sources').querySelectorAll('input').forEach(e=>e.disabled=true);
+    for(const id of ['build','reserve','profile','zbo','e-insurance','add-source','add-contract','add-order','research','apply','json','apply-supply-matrix'])$(id).disabled=true;
     $('supply-matrix').querySelectorAll('input,select,button').forEach(e=>e.disabled=true);
   }
+  if(!busy&&!pkg?.reference_plan)$('e-insurance').disabled=!selectedBuilderSources().includes('E');
   const stale=resultState()!=='CURRENT';
   $('adapt').disabled=busy||stale||!!pkg?.reference_plan||!['MANDATORY_STRESS','HIGH','SAVED'].includes($('scenario').value);
   document.querySelectorAll('#result-actions button').forEach(e=>e.disabled=busy||stale);
@@ -144,7 +162,16 @@ function ensureCounters(){
 }
 function nextSourceId(){ensureCounters();const id='S'+pkg.ui_state.next_source_id++;return id;}
 function nextContractId(){ensureCounters();const id='K'+pkg.ui_state.next_contract_id++;return id;}
-function labeledField(obj,key,title,options={}){const label=el('label',undefined,`field-label field-${key}`);label.append(el('span',title,'field-title'),field(obj,key,title,options));if(options.tag)label.append(el('span',options.tag,'assumption-mark'));if(options.help)label.append(el('small',options.help));return label;}
+function assumptionInfo(title,text){
+  const wrap=el('span',undefined,'help-wrap'),button=el('button','i','help-trigger assumption-info-trigger'),popover=el('span',text,'help-popover'),id='assumption-help-'+assumptionInfo.seq++;
+  button.type='button';button.setAttribute('aria-label',`О допущении «${title}»`);button.setAttribute('aria-expanded','false');button.setAttribute('aria-controls',id);
+  popover.id=id;popover.setAttribute('role','note');popover.hidden=true;wrap.append(button,popover);return wrap;
+}
+assumptionInfo.seq=0;
+function labeledField(obj,key,title,options={}){
+  const label=el('div',undefined,`field-label field-${key}`),heading=el('div',undefined,'field-title-row'),control=field(obj,key,title,options),caption=el('label',title,'field-title');
+  caption.htmlFor=control.querySelector('[data-field]').id;heading.append(caption);if(options.assumption)heading.append(assumptionInfo(title,options.assumption));label.append(heading,control);if(options.help)label.append(el('small',options.help));return label;
+}
 function table(target,headings,rows,render){target.replaceChildren();if(!rows.length){const text=target.id==='comparison'?'Здесь пока нет расчётов. Запустите проверку на вкладке «Обзор и расчёт».':'Пока нет записей. Измените фильтр или добавьте новую запись.';target.append(el('p',text,'hint empty-table'));return;}
   const t=el('table'),h=t.createTHead().insertRow();headings.forEach(x=>{const th=el('th',x);th.scope='col';h.append(th);});const b=t.createTBody();rows.forEach((row,i)=>render(b.insertRow(),row,i));target.append(t);
 }
@@ -153,32 +180,38 @@ function removeButton(label,fn){const b=el('button','Удалить','danger-but
 function renderDemand(){table($('demand-form'),['Год','Общий спрос, т','Критический, т','Низкий, т','Высокий, т'],Object.values(pkg.dataset.demand),(tr,d)=>{
   cell(tr,d.year);for(const [key,title]of [['base_total_t','Общий'],['base_critical_t','Критический'],['low_total_t','Низкий'],['high_total_t','Высокий']])cell(tr,field(d,key,`${title} спрос ${d.year}`,{research:true,check:v=>key==='base_critical_t'&&Number(v)>Number(d.base_total_t)?'Не больше общего спроса':key==='base_total_t'&&Number(v)<Number(d.base_critical_t)?'Не меньше критического спроса':''}));
 });}
+const policyAssumptions={
+  earth_new_preparation_months:'Кейс задаёт 18-24 месяца подготовки C, но не связывает начало срока с событием однозначно. Команда считает его от решения исполнить опцион до ввода канала; покупка опциона остаётся отдельным событием.',
+  earth_new_regular_delivery_months:'После ввода C команда отдельно моделирует 2-6 месяцев от заказа партии до поступления на склад. В рекомендуемом пакете принято 4 месяца; при 6 месяцах требуется пересчёт.',
+  zbo_installation_months:'Команда принимает 6 модельных месяцев монтажа ZBO без остановки действующего склада. До ввода ZBO продолжают действовать прежние ёмкость и потери.',
+  isru_delivery_months:'После ввода D команда применяет 1-2 месяца от заказа партии до поступления на склад. Это срок каждой доставки, а не срок договора или создания ISRU.'
+};
 function renderSources(){const root=$('sources-form');root.replaceChildren();for(const [id,s]of Object.entries(pkg.dataset.sources)){
   const linked=!!s.investment_id,research=pkg.dataset.scope==='RESEARCH_INPUT',card=el('article',undefined,`card source-card${linked?' source-card-linked':''}`),head=el('div',undefined,'source-header');head.append(el('h3',`Поставщик ${id}`));
   if(s.include_in_research_planner)head.append(removeButton(`Удалить поставщика ${id}`,async()=>{if(pkg.plan.contracts.some(c=>c.source===id))throw Error('У поставщика есть контракты. Сначала удалите их.');if(!await confirmAction(`Удалить поставщика ${id}?`))return;delete pkg.dataset.sources[id];changed(true);renderAll();}));
   const grid=el('div',undefined,'form-grid');
   grid.append(labeledField(s,'name','Название',{type:'text',research:true}),labeledField(s,'capacity_t_per_year','Мощность, т/год',{research:true}),labeledField(s,'variable_cost_mln_per_t','Цена топлива, млн/т',{research:true}),labeledField(s,'reservation_rate_mln_per_t_year_capacity','Резерв мощности, млн/(т/год)',{research:true}),labeledField(s,'take_or_pay_share','Обязательная оплата, %',{research:true,percent:true,max:100}));
   if(id==='C'){
-    grid.append(labeledField(pkg.plan.policy,'earth_new_preparation_months','До появления мощности C, месяцев',{min:research?0.01:18,max:research?120:24,tag:'Допущение команды',after:()=>{pkg.plan.policy.policy_id='TEAM_USER_POLICY';}}));
+    grid.append(labeledField(pkg.plan.policy,'earth_new_preparation_months','Подготовка C от исполнения опциона, месяцев',{min:research?0.01:18,max:research?120:24,assumption:policyAssumptions.earth_new_preparation_months,after:()=>{pkg.plan.policy.policy_id='TEAM_USER_POLICY';}}));
   }else if(id==='D'){
-    grid.append(labeledField(pkg.plan.policy,'isru_delivery_months','После ввода D, месяцев',{min:research?0.01:1,max:research?120:2,tag:'Допущение команды',after:()=>{pkg.plan.policy.policy_id='TEAM_USER_POLICY';}}));
+    grid.append(labeledField(pkg.plan.policy,'isru_delivery_months','Доставка после ввода D, месяцев',{min:research?0.01:1,max:research?120:2,assumption:policyAssumptions.isru_delivery_months,after:()=>{pkg.plan.policy.policy_id='TEAM_USER_POLICY';}}));
   }else{
     const locked=!research&&['A','B','E'].includes(id);
     grid.append(labeledField(s,'lead_time_max_value','Срок доставки',{research:!locked,readonly:locked,after:v=>s.lead_time_min_value=v,help:locked?'Контрольное значение кейса. Для изменения создайте исследовательскую копию.':''}),labeledField(s,'lead_time_unit','Единица срока',{research:!locked,readonly:locked,options:[['month','Месяцы'],['week','Недели'],['day','Дни']]}),labeledField(s,'available_from_year','Доступен с года',{research:true,min:2034,max:2100,integer:true}));
   }
   grid.append(labeledField(s,'reliability_profile','Надёжность: допущение',{type:'text',research:true}),labeledField(s,'notes','Комментарий к данным',{type:'text',research:true,optional:!s.include_in_research_planner,check:v=>s.include_in_research_planner&&!String(v).trim()?'Для пользовательского источника нужен комментарий':''}));
-  card.append(head,grid,el('p','Надёжность хранится как явное допущение и не уменьшает поставки в BASE автоматически.','source-note'));root.append(card);
+  card.append(head,grid,el('p','Надёжность хранится как явное допущение и не уменьшает поставки в BASE автоматически.','source-note'));if(id==='E')card.append(el('p','E страхует задержку отдельного канала, но не остановку всех земных запусков. Независимость от A/B не предполагается.','source-note'));root.append(card);
 }}
 const roleLabels={opening_inventory:'Начальный запас',planned:'Плановый',planned_with_backup:'Плановый + резерв',contingent_backup:'Страховой резерв',emergency:'Экстренный'};
 function contractBounds(c){return {start:F.number(c.start??(c.year-2035)*365),end:F.number(c.end??(c.year-2034)*365)};}
 function contractLead(c){const s=pkg.dataset.sources[c.source],p=pkg.plan.policy;if(!s)return {days:0,label:'Нет данных'};if(c.source==='C')return {days:Number(p.earth_new_regular_delivery_months)*365/12,label:`${p.earth_new_regular_delivery_months} мес.`};if(c.source==='D')return {days:Number(p.isru_delivery_months)*365/12,label:`${p.isru_delivery_months} мес.`};const factor=s.lead_time_unit==='month'?365/12:s.lead_time_unit==='week'?7:s.lead_time_unit==='year'?365:1;const units={month:'мес.',week:'нед.',day:'дн.',year:'г.'};return {days:Number(s.lead_time_max_value)*factor,label:`${fmt(s.lead_time_max_value,2)} ${units[s.lead_time_unit]||s.lead_time_unit}`};}
 function contractGovernance(c){
   if(c.role==='opening_inventory')return ['Руководитель закупок','До первого необратимого обязательства','Без подтверждения поставки текущий план не разрешается'];
-  if(c.role==='contingent_backup')return ['Руководитель логистики','При уведомлении о задержке A','Активировать оплаченный резерв; неиспользованная мощность всё равно оплачена'];
-  if(c.source==='C')return ['Менеджер поставщика C','До опциона и при каждом пересмотре графика','Срок свыше 4 месяцев останавливает разрешение и требует пересчёта'];
+  if(c.role==='contingent_backup')return ['Руководитель логистики','При уведомлении о задержке A','Активировать оплаченный резерв с учётом срока доставки; общий сбой земных запусков остаётся риском'];
+  if(c.source==='C')return ['Менеджер поставщика C','При решении исполнить опцион и при пересмотре графика','Подготовка C: 18-24 месяца. Доставка после ввода учитывается отдельно; срок свыше 4 месяцев требует пересчёта'];
   return ['Руководитель закупок','Перед годовым обязательством и при изменении спроса','TOP и резерв сохраняются; дефицит публикуется как нарушение сервиса'];
 }
-function contractFacts(c){const s=pkg.dataset.sources[c.source]||{},bounds=contractBounds(c),fraction=Math.max(0,bounds.end-bounds.start)/365,reserved=Number(c.reserved_annual||0)*fraction,used=pkg.plan.orders.filter(o=>o.contract_id===c.id).reduce((sum,o)=>sum+Number(o.planned_t||0),0),top=Number(s.take_or_pay_share||0),price=Number(s.variable_cost_mln_per_t||0),reserveRate=Number(s.reservation_rate_mln_per_t_year_capacity||0),payable=Math.max(used,top*reserved),[owner,review,consequence]=contractGovernance(c);return [['Цена',`${fmt(price)} млн/т`],['TOP',`${pct(top)}; минимум ${fmt(top*reserved)} т`],['Минимальная оплата',`${fmt(payable*price)} млн`],['Стоимость резерва',`${fmt(reserveRate*Number(c.reserved_annual||0)*fraction)} млн`],['Lead time',contractLead(c).label],['Доступно / использовано',`${fmt(reserved)} / ${fmt(used)} т`],['Мощность источника',`${fmt(Number(s.capacity_t_per_year||0)*fraction)} т за период`],['Ответственный',owner],['Пересмотр',review],['Недопоставка',consequence]];}
+function contractFacts(c){const s=pkg.dataset.sources[c.source]||{},bounds=contractBounds(c),fraction=Math.max(0,bounds.end-bounds.start)/365,reserved=Number(c.reserved_annual||0)*fraction,used=pkg.plan.orders.filter(o=>o.contract_id===c.id).reduce((sum,o)=>sum+Number(o.planned_t||0),0),top=Number(s.take_or_pay_share||0),price=Number(s.variable_cost_mln_per_t||0),reserveRate=Number(s.reservation_rate_mln_per_t_year_capacity||0),payable=Math.max(used,top*reserved),[owner,review,consequence]=contractGovernance(c);return [['Цена',`${fmt(price)} млн/т`],['TOP',`${pct(top)}; минимум ${fmt(top*reserved)} т`],['Минимальная оплата',`${fmt(payable*price)} млн`],['Стоимость резерва',`${fmt(reserveRate*Number(c.reserved_annual||0)*fraction)} млн`],['Срок доставки',contractLead(c).label],['Доступно / использовано',`${fmt(reserved)} / ${fmt(used)} т`],['Мощность источника',`${fmt(Number(s.capacity_t_per_year||0)*fraction)} т за период`],['Ответственный',owner],['Пересмотр',review],['Недопоставка',consequence]];}
 function contractFact(label,value){const item=el('div',undefined,'contract-fact');item.append(el('small',label),el('span',value));return item;}
 function matrixWindow(sourceId,year){
   const source=pkg.dataset.sources[sourceId],yearStart=(year-2035)*365,yearEnd=yearStart+365;let available=(Number(source.available_from_year||2035)-2035)*365,orderFloor=null;
@@ -242,10 +275,12 @@ const investmentNames={ZBO:'Хранение ZBO',EARTH_NEW:'Новый пост
 function renderInvestments(){const root=$('investments-form');root.replaceChildren();for(const [id,defaults]of Object.entries(investmentDefaults)){
   const inv=pkg.plan.investments.find(i=>i.id===id),card=el('article',undefined,'card investment-card'),check=el('label',undefined,'check'),input=el('input');input.type='checkbox';input.checked=!!inv;input.setAttribute('aria-label',investmentNames[id]);
   check.append(input,el('strong',investmentNames[id]));card.append(check,el('p',`Инвестиции: ${fmt(pkg.dataset.investments[id]?.total_capex_mln)} млн у.е.`,'source-note'));
-  input.onchange=()=>{try{valid();}catch(e){input.checked=!!inv;message(e.message,'error');return;}if(inv)pkg.plan.investments=pkg.plan.investments.filter(x=>x!==inv);else pkg.plan.investments.push(clone(defaults));changed();renderInvestments();$('strategy').value=F.strategy(pkg.plan);$('zbo').checked=pkg.plan.investments.some(i=>i.id==='ZBO');controls();};
-  if(inv){const grid=el('div',undefined,'form-grid');if(id==='EARTH_NEW')grid.append(labeledField(inv,'option_at','Оплата опциона',{type:'date'}));grid.append(labeledField(inv,'exercise_at','Финансирование',{type:'date'}),labeledField(inv,'commissioned_at','Ввод в эксплуатацию',{type:'date'}));card.append(grid);}root.append(card);
+  input.onchange=()=>{try{valid();}catch(e){input.checked=!!inv;message(e.message,'error');return;}if(inv)pkg.plan.investments=pkg.plan.investments.filter(x=>x!==inv);else pkg.plan.investments.push(clone(defaults));changed();renderInvestments();$('zbo').checked=pkg.plan.investments.some(i=>i.id==='ZBO');controls();};
+  if(id==='ZBO')card.append(el('p','6 месяцев монтажа без простоя склада - допущение команды. Старый бак работает до ввода ZBO.','source-note'));
+  if(id==='EARTH_NEW')card.append(el('p','18-24 месяца подготовки отсчитываются от решения исполнить опцион, а доставка после ввода учитывается отдельно.','source-note'));
+  if(inv){const grid=el('div',undefined,'form-grid');if(id==='EARTH_NEW')grid.append(labeledField(inv,'option_at','Оплата опциона',{type:'date'}));grid.append(labeledField(inv,'exercise_at',id==='EARTH_NEW'?'Решение исполнить опцион':'Финансирование',{type:'date'}),labeledField(inv,'commissioned_at','Ввод в эксплуатацию',{type:'date'}));card.append(grid);}root.append(card);
   }
-  const rootPolicy=$('policy-form'),research=pkg.dataset.scope==='RESEARCH_INPUT';rootPolicy.replaceChildren();for(const [key,title,caseMin,caseMax,percent,assumption]of [['real_discount_rate','Ставка дисконтирования, %',0,100,true,false],['earth_new_preparation_months','C: подготовка до мощности, месяцев',18,24,false,true],['earth_new_regular_delivery_months','C: доставка после ввода, месяцев',2,6,false,true],['zbo_installation_months','Монтаж ZBO, месяцев',0,60,false,true],['isru_delivery_months','D: доставка после ввода, месяцев',1,2,false,true]])rootPolicy.append(labeledField(pkg.plan.policy,key,title,{min:research&&assumption?0.01:caseMin,max:research&&assumption?120:caseMax,percent,tag:assumption?'Допущение команды':'',after:()=>{pkg.plan.policy.policy_id='TEAM_USER_POLICY';}}));
+  const rootPolicy=$('policy-form'),research=pkg.dataset.scope==='RESEARCH_INPUT';rootPolicy.replaceChildren();for(const [key,title,caseMin,caseMax,percent,assumption]of [['real_discount_rate','Ставка дисконтирования, %',0,100,true,false],['earth_new_preparation_months','C: подготовка от исполнения опциона, месяцев',18,24,false,true],['earth_new_regular_delivery_months','C: доставка после ввода, месяцев',2,6,false,true],['zbo_installation_months','Монтаж ZBO, месяцев',0,60,false,true],['isru_delivery_months','D: доставка после ввода, месяцев',1,2,false,true]])rootPolicy.append(labeledField(pkg.plan.policy,key,title,{min:research&&assumption?0.01:caseMin,max:research&&assumption?120:caseMax,percent,assumption:assumption?policyAssumptions[key]:'',after:()=>{pkg.plan.policy.policy_id='TEAM_USER_POLICY';}}));
 }
 function keyViolationLabel(code){return code?(violations[code]?.[0]||code):'Нет';}
 function runStatus(run){
@@ -324,8 +359,8 @@ function renderAll(syncBuilder=false,preserveMatrix=false){
   if(syncBuilder&&!preserveMatrix)matrixDirty=false;ensureCounters();selectedOrderIds=new Set([...selectedOrderIds].filter(id=>pkg.plan.orders.some(order=>order.id===id)));updateIdentity();const years=[['','Все годы']];for(let y=2034;y<=pkg.plan.last_year;y++)years.push([String(y),String(y)]);
   filterOptions('contract-year',years);filterOptions('order-year',years);filterOptions('order-source',[['','Все поставщики'],...Object.keys(pkg.dataset.sources).map(k=>[k,k])]);
   if(syncBuilder&&!$('order-year').value)$('order-year').value=String(pkg.plan.first_year);
-  syncAnnualSupplyDraft(syncBuilder&&!preserveMatrix);renderDemand();renderSources();renderContracts();renderOrders();renderInvestments();renderSupplyMatrix();renderHistory();renderDataActions();
-  if(syncBuilder){builderDirty=false;$('build-hint').textContent='';$('strategy').value=F.strategy(pkg.plan);$('reserve').value=pkg.plan.construction?.reserve_days||45;$('reserve').setAttribute('aria-valuetext',`${$('reserve').value} дней`);$('profile').value=pkg.plan.construction?.planning_profile||'BASE';$('zbo').checked=pkg.plan.investments.some(i=>i.id==='ZBO');$('e-insurance').checked=pkg.plan.contracts.some(c=>c.source==='E'&&c.role==='contingent_backup');}
+  renderBuilderSources(syncBuilder);syncAnnualSupplyDraft(syncBuilder&&!preserveMatrix);renderDemand();renderSources();renderContracts();renderOrders();renderInvestments();renderSupplyMatrix();renderHistory();renderDataActions();
+  if(syncBuilder){builderDirty=false;$('build-hint').textContent='';$('reserve').value=pkg.plan.construction?.reserve_days||45;$('reserve').setAttribute('aria-valuetext',`${$('reserve').value} дней`);$('profile').value=pkg.plan.construction?.planning_profile||'BASE';$('zbo').checked=pkg.plan.investments.some(i=>i.id==='ZBO');$('e-insurance').checked=pkg.plan.contracts.some(c=>c.source==='E'&&c.role==='contingent_backup');}
   $('json').value=JSON.stringify(pkg,null,2);rawDirty=false;updateCalculationStatus();controls();
 }
 const violations={
@@ -362,7 +397,7 @@ function humanDate(value){const [year,month,day]=F.modelDate(value).split('-');r
 function ceilFmt(value,digits=2){const power=10**digits;return fmt(Math.ceil((Number(value)+Number.EPSILON)*power)/power,digits);}
 function overflowDiagnostic(r){return r.diagnostics?.storage_overflow;}
 function planningMismatch(r){const scenario=r.summary.scenario_id,planned=pkg.plan.construction?.planning_profile;return profileLabels[scenario]&&profileLabels[planned]&&scenario!==planned?{scenario,planned}:null;}
-function earthOnlyHighPlan(){return F.strategy(pkg.plan)==='EARTH_ONLY'&&pkg.plan.construction?.planning_profile==='HIGH';}
+function earthOnlyHighPlan(){const sources=F.selectedSources(pkg.plan);return !sources.includes('C')&&!sources.includes('D')&&pkg.plan.construction?.planning_profile==='HIGH';}
 function earthOnlyHighAdvice(){return 'Для высокого спроса подходит стратегия с поставщиком C или лунным производством D и новым графиком. Ручное увеличение E не устраняет ограничение мощности.';}
 function overflowDeliveries(diagnostic){return (diagnostic?.deliveries||[]).map(d=>`${d.id} (${fmt(d.planned_t)} т)`).join(', ');}
 function violationFact(v,r){
@@ -450,7 +485,7 @@ function configureResultActions(rows,r){
     else{primary.textContent='Построить новый график';primary.onclick=()=>$('build').click();}
     secondary.textContent='Открыть поставки E';secondary.onclick=()=>openResultPanel('orders','E');secondary.hidden=false;
   }else if(earthOnlyHighPlan()){
-    primary.textContent='Выбрать другую стратегию';primary.onclick=()=>{switchPanel('overview');$('strategy').focus();};
+    primary.textContent='Выбрать других поставщиков';primary.onclick=()=>{switchPanel('overview');$('builder-sources').querySelector('input')?.focus();};
   }else if(first.code==='STORAGE_OVERFLOW'){
     const diagnostic=overflowDiagnostic(r),ids=(diagnostic?.deliveries||[]).map(d=>d.id);
     primary.textContent=ids.length?problemPartiesLabel(ids.length):'Открыть поставки';primary.onclick=()=>openResultPanel('orders',null,diagnostic?.year,ids);
@@ -556,7 +591,7 @@ function showResult(r){
   for(const group of groupViolations(rows,r)){const [title]=violations[group.code]||['Ограничение модели'],item=el('article',undefined,'violation'),copy=el('div',undefined,'violation-copy'),fix=el('p',undefined,'violation-fix'),details=el('details',undefined,'violation-technical');copy.append(el('span',severity,'violation-level'),el('strong',title));appendViolationFacts(copy,group,r);fix.append(el('strong','Возможное решение: '),document.createTextNode(group.help));appendViolationTechnical(details,group);item.append(copy,fix,details);$('violations').append(item);}
   $('downloads').replaceChildren();for(const [file,title]of [['run-package.zip','Единый пакет ZIP'],['manifest.json','Метаданные и единицы JSON'],['report.html','Отчёт HTML'],['input-package.json','Входные данные JSON'],['annual.csv','Годовой баланс CSV'],['payments.csv','Платежи CSV'],['deliveries.csv','Поставки CSV'],['contracts.csv','Контракты CSV'],['violations.csv','Нарушения CSV'],['inventory.csv','Запасы CSV (компактно)']]){const a=el('a',title),downloadUrl=r.download_urls?.[file];if(downloadUrl)a.href=downloadUrl;else if(r.run_url)a.href=r.run_url+file;else{a.setAttribute('aria-disabled','true');a.title='Для автоматической сравнительной проверки отдельный файл не создавался';}a.target='_blank';a.rel='noopener';if(downloadUrl)a.download=file;$('downloads').append(a);}refreshResultFreshness();controls();
 }
-function scenarioHelp(){const texts={BASE:'Проверяет текущий график при базовом спросе и исходных ценах. Поставки автоматически не перестраиваются.',MANDATORY_STRESS:'С 2038 спрос +15%; цены A/B +25% в 2038-2039; выпуск D составляет 55% и 75%. Ограничение потерь: 2%.',LOW:'Проверяет текущий график при низком спросе. Топливо расходуется медленнее, поэтому склад может переполниться.',HIGH:'Проверяет текущий график при высоком спросе. Поставки автоматически не перестраиваются.',SAVED:'Использует точные условия из загруженного пакета, включая исследовательские сценарии.'};$('scenario-help').textContent=texts[$('scenario').value];refreshResultFreshness();controls();}
+function scenarioHelp(){const texts={BASE:'Проверяет текущий график при базовом спросе и исходных ценах. Поставки автоматически не перестраиваются.',MANDATORY_STRESS:'С 2038 года спрос растёт на 15%; цены A/B растут на 25% в 2038-2039; выпуск D составляет 55% и 75%. Ограничение потерь: 2%.',LOW:'Дополнительное исследование текущего графика при низком спросе. Из-за медленного расхода может возникнуть переполнение.',HIGH:'Дополнительное исследование текущего графика при высоком спросе. Поставки автоматически не перестраиваются.',SAVED:'Использует точные условия из загруженного пакета, включая исследовательские сценарии.'},text=texts[$('scenario').value];$('scenario-help').textContent=text;$('scenario-summary').textContent=text;refreshResultFreshness();controls();}
 function orderFloor(c){const source=pkg.dataset.sources[c.source],investment=source?.investment_id&&pkg.plan.investments.find(i=>i.id===source.investment_id);return investment?.commissioned_at===undefined?null:F.number(investment.commissioned_at);}
 function validOrderDates(order,c){const bounds=contractBounds(c),ordered=F.number(order.ordered_at),arrival=F.number(order.arrival_at),decision=F.number(c.decision_at??order.ordered_at),floor=orderFloor(c),earliest=Math.max(ordered+contractLead(c).days,floor??-Infinity);if(ordered<decision)return 'Заказ раньше решения по контракту';if(floor!==null&&ordered<floor)return 'Заказ раньше ввода источника';if(arrival<earliest-1e-9)return 'Поступление раньше допустимого lead time';if(arrival<bounds.start||arrival>=bounds.end)return 'Поступление вне периода контракта';return '';}
 function newOrderForContract(c){const bounds=contractBounds(c),lead=contractLead(c).days,decision=F.number(c.decision_at??bounds.start-lead),floor=orderFloor(c),ordered=Math.ceil(Math.max(decision,floor??-Infinity,bounds.start-lead)),arrival=Math.ceil(Math.max(bounds.start,ordered+lead));if(arrival>=bounds.end)throw Error(`Для ${c.id} нет допустимой даты поступления после решения и lead time. Измените период контракта.`);return {id:'ORDER-'+Date.now(),contract_id:c.id,ordered_at:String(ordered),arrival_at:String(arrival),planned_t:'0',role:['contingent_backup','emergency'].includes(c.role)?'emergency':'planned'};}
@@ -564,7 +599,7 @@ async function loadDefault(){pkg=(await request('/api/default')).package;lastRes
 document.querySelectorAll('[data-panel]').forEach(b=>b.onclick=()=>switchPanel(b.dataset.panel));
 $('mobile-section-nav').onchange=()=>switchPanel($('mobile-section-nav').value);
 $('scenario').onchange=()=>{dirtySections.add('conditions');calculationAcknowledged=false;scenarioHelp();updateCalculationStatus();saveDraft();};
-for(const id of ['strategy','reserve','profile','zbo','e-insurance'])$(id).addEventListener('input',()=>{builderDirty=true;dirtySections.add('overview');calculationAcknowledged=false;$('build-hint').textContent='Новые настройки ещё не применены. Нажмите «Построить план».';refreshResultFreshness();updateCalculationStatus();saveDraft();controls();});
+for(const id of ['reserve','profile','zbo','e-insurance'])$(id).addEventListener('input',markBuilderDirty);
 function validateReserve(show=false){const input=$('reserve'),value=Number(input.value.trim().replace(',','.')),valid=Number.isInteger(value)&&value>=45&&value<=120;input.setCustomValidity(valid?'':'Введите целое число от 45 до 120');input.toggleAttribute('aria-invalid',!valid);if(valid)input.setAttribute('aria-valuetext',`${value} дней`);else input.removeAttribute('aria-valuetext');if(show&&!valid)input.reportValidity();return valid;}
 $('reserve').addEventListener('input',()=>validateReserve(false));
 for(const [id,delta]of [['reserve-minus',-1],['reserve-plus',1]])$(id).onclick=()=>{const input=$('reserve'),min=Number(input.min),max=Number(input.max),current=Number(input.value),next=Math.min(max,Math.max(min,(Number.isFinite(current)?current:min)+delta));input.value=next;input.dispatchEvent(new Event('input',{bubbles:true}));};
@@ -582,8 +617,8 @@ $('cleanup-runs').onclick=async()=>{if(!await confirmAction('Удалить со
 $('reset').onclick=async()=>{if(await confirmAction('Вернуть базовый план? Текущие правки будут заменены. История расчётов останется.'))task(loadDefault);};
 $('back-base').onclick=()=>task(async()=>{pkg.plan=clone(pkg.reference_plan);pkg.reference_plan=null;changed();renderAll(true);message('Исходный план восстановлен. Можно менять данные или повторить реакцию.');});
 $('build').onclick=async()=>{
-  try{valid();if(!validateReserve(true))return;}catch(e){message(e.message,'error');return;}
-  task(async()=>{const r=await request('/api/run',{action:'build',package:pkg,strategy:$('strategy').value,reserve_days:$('reserve').value,profile:$('profile').value,zbo:$('zbo').checked,e_insurance:$('e-insurance').checked});pkg=r.package;$('scenario').value=$('profile').value;builderDirty=false;changed(false,'overview');renderAll(true);scenarioHelp();$('build-hint').textContent='Начальный график построен. Его можно сочетать и править вручную, затем рассчитать.';message('Шаблон создал начальный график. Нажмите «Рассчитать план» или уточните годовую таблицу.','success');});
+  const sources=selectedBuilderSources();try{valid();if(!sources.length)throw Error('Выберите хотя бы одного поставщика');if(!validateReserve(true))return;}catch(e){message(e.message,'error');return;}
+  task(async()=>{const r=await request('/api/run',{action:'build',package:pkg,strategy:F.strategy(pkg.plan),sources,reserve_days:$('reserve').value,profile:$('profile').value,zbo:$('zbo').checked,e_insurance:$('e-insurance').checked});pkg=r.package;$('scenario').value=$('profile').value;builderDirty=false;changed(false,'overview');renderAll(true);scenarioHelp();$('build-hint').textContent='Начальный график построен. Его можно уточнить вручную или через годовую таблицу.';message('Начальный график построен для выбранных поставщиков. Теперь рассчитайте план или уточните годовую таблицу.','success');});
 };
 function startCalculation(action='evaluate'){try{valid();if(builderDirty)throw Error('Настройки шаблона изменены. Сначала нажмите «Построить план».');if(matrixDirty)throw Error('Годовая таблица изменена. Сначала нажмите «Применить таблицу».');}catch(e){message(e.message,'error');return;}const pendingSections=[...new Set([...dirtySections].map(key=>sectionLabels[key]||key))];task(async()=>{message(action==='adapt'?'Добавляем реакцию и проверяем ограничения…':'Считаем поставки, запасы и затраты…');const r=await request('/api/run',{action,package:pkg,scenario:$('scenario').value});pkg=r.package;markCalculated(pendingSections);renderAll();showResult(r);const name=planLabel(),comparisonKey=rememberComparison(r.comparison||[],pkg,name);if(!['BASE','MANDATORY_STRESS'].includes(r.summary.scenario_id)){const primary={summary:r.summary,annual:r.annual,violations:r.violations,diagnostics:r.diagnostics,components_mln:r.components_mln,run_url:r.run_url,scenario_mode:r.scenario_mode};runs.unshift(runRecord(primary,pkg,name,'user',comparisonKey));}for(const alternative of r.alternatives||[])rememberComparison(alternative.comparison,alternative.package,`Альтернатива: ${alternative.label}`,'assistant');renderHistory();saveDraft();const stopped=['INVALID_PLAN','STOPPED_OVERFLOW'].includes(r.summary.status),needsWork=['INFEASIBLE','TARGETS_MISSED'].includes(r.summary.status),changedText=pendingSections.length?`Пересчитаны изменения: ${joinRussian(pendingSections)}. `:'';message(stopped?`${changedText}Прогноз ограничен текущим графиком поставок.`:needsWork?`${changedText}Расчёт показывает ограничения текущего плана.`:action==='adapt'?`${changedText}Реакция рассчитана. Исходный план доступен по кнопке сверху.`:`${changedText}Расчёт выполнен для текущего плана.`,stopped||needsWork?'warning':'success');$('result').scrollIntoView({block:'start',behavior:'auto'});});}
 $('evaluate').onclick=()=>startCalculation('evaluate');$('adapt').onclick=()=>startCalculation('adapt');
@@ -593,11 +628,11 @@ $('add-order').onclick=()=>task(async()=>{valid();const year=$('order-year').val
 $('research').onclick=()=>task(async()=>{valid();F.research(pkg);changed(false,'investments');renderAll();message('Исследовательская копия создана. Сроки можно изменять свободно; режим отмечен бейджем.','success');});
 $('extension').onclick=async()=>{if(!await confirmAction('Открыть отдельный пример 2041 + источник X? Текущий черновик будет заменён.'))return;task(async()=>{pkg=(await request('/api/run',{action:'build',extension:true,strategy:'EARTH_NEW',reserve_days:45})).package;changed();renderAll(true);$('scenario').value='BASE';scenarioHelp();switchPanel('overview');message('Открыт исследовательский пример с синтетическими данными 2041 года.');});};
 $('json').oninput=()=>{rawDirty=true;dirtySections.add('json');calculationAcknowledged=false;$('save-status').textContent='JSON не применён';refreshResultFreshness();updateCalculationStatus();controls();};
-$('apply').onclick=()=>task(async()=>{const next=F.validatePackage(JSON.parse($('json').value));pkg=next;rawDirty=false;changed(false,'json');renderAll(true);message('Пакет применён. Полная проверка ограничений выполняется при расчёте.');});
+$('apply').onclick=()=>task(async()=>{const next=F.parsePackageText($('json').value);pkg=next;rawDirty=false;changed(false,'json');renderAll(true);message('Пакет применён. Полная проверка ограничений выполняется при расчёте.');});
 $('save').onclick=()=>task(async()=>{valid();const blob=new Blob([JSON.stringify(pkg,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=el('a');a.href=url;a.download='cosmo-input-package.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);message('Файл передан браузеру для сохранения. Его можно открыть здесь позже.');});
 $('open-button').onclick=()=>$('open').click();
 $('open').onchange=async()=>{const file=$('open').files[0];if(!file)return;if(!await confirmAction('Открыть сохранённый план вместо текущего черновика?')){$('open').value='';return;}task(async()=>{try{if(file.size>4000000)throw Error('Файл больше 4 МБ');const next=F.validatePackage(JSON.parse(await file.text()));pkg=next;rawDirty=false;dirtySections=new Set(['json']);calculationAcknowledged=false;lastCalculatedSections=[];builderDirty=false;matrixDirty=false;renderAll(true);$('scenario').value='SAVED';scenarioHelp();saveDraft();message('План открыт. Нажмите «Рассчитать план» для воспроизведения результата.');}finally{$('open').value='';}});};
 window.addEventListener('beforeunload',e=>{if(rawDirty||matrixDirty||dirtySections.size||document.querySelector('[aria-invalid=true]')){e.preventDefault();e.returnValue='';}});
 task(async()=>{let saved;try{saved=JSON.parse(localStorage.getItem(STORAGE));if([2,3].includes(saved?.version))F.validatePackage(saved.package);else saved=null;}catch{saved=null;}
-  if(saved){pkg=saved.package;runs=Array.isArray(saved.runs)?saved.runs.slice(0,36):[];dirtySections=new Set(saved.version===3&&Array.isArray(saved.dirty_sections)?saved.dirty_sections:[]);calculationAcknowledged=!!saved.calculation_acknowledged;lastCalculatedSections=Array.isArray(saved.last_calculated_sections)?saved.last_calculated_sections:[];annualSupplyDraft=saved.annual_supply_draft||{};matrixDirty=!!saved.matrix_dirty;$('scenario').value=['BASE','MANDATORY_STRESS','LOW','HIGH','SAVED'].includes(saved.scenario)?saved.scenario:'BASE';renderAll(true,matrixDirty);if(saved.version===3&&saved.builder_dirty&&saved.builder_state){builderDirty=true;$('strategy').value=saved.builder_state.strategy;$('reserve').value=saved.builder_state.reserve;$('profile').value=saved.builder_state.profile;$('zbo').checked=!!saved.builder_state.zbo;$('e-insurance').checked=!!saved.builder_state.e_insurance;$('build-hint').textContent='Новые настройки ещё не применены. Нажмите «Построить план».';}scenarioHelp();updateCalculationStatus();message('Восстановлен ваш черновик. Чтобы начать заново, нажмите «Сбросить к базовому плану».');$('save-status').textContent='';}else await loadDefault();
+  if(saved){pkg=saved.package;runs=Array.isArray(saved.runs)?saved.runs.slice(0,36):[];dirtySections=new Set(saved.version===3&&Array.isArray(saved.dirty_sections)?saved.dirty_sections:[]);calculationAcknowledged=!!saved.calculation_acknowledged;lastCalculatedSections=Array.isArray(saved.last_calculated_sections)?saved.last_calculated_sections:[];annualSupplyDraft=saved.annual_supply_draft||{};matrixDirty=!!saved.matrix_dirty;$('scenario').value=['BASE','MANDATORY_STRESS','LOW','HIGH','SAVED'].includes(saved.scenario)?saved.scenario:'BASE';renderAll(true,matrixDirty);if(saved.version===3&&saved.builder_dirty&&saved.builder_state){builderDirty=true;renderBuilderSources(false,saved.builder_state.sources??F.strategySources(saved.builder_state.strategy));$('reserve').value=saved.builder_state.reserve;$('profile').value=saved.builder_state.profile;$('zbo').checked=!!saved.builder_state.zbo;$('e-insurance').checked=!!saved.builder_state.e_insurance&&selectedBuilderSources().includes('E');$('build-hint').textContent='Новые настройки ещё не применены. Нажмите «Построить план».';}scenarioHelp();updateCalculationStatus();message('Восстановлен ваш черновик. Чтобы начать заново, нажмите «Сбросить к базовому плану».');$('save-status').textContent='';}else await loadDefault();
 });

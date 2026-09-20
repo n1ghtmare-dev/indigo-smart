@@ -3,33 +3,36 @@ test_html_document_links_and_offline_assets (test_artifacts.DocumentationTests.t
 test_supported_markdown_subset (test_artifacts.DocumentationTests.test_supported_markdown_subset) ... ok
 test_export_roundtrip_and_repeatability (test_artifacts.ExportTests.test_export_roundtrip_and_repeatability) ... ok
 test_stopped_run_cannot_reuse_old_csv (test_artifacts.ExportTests.test_stopped_run_cannot_reuse_old_csv) ... ok
-127.0.0.1 - - [19/Sep/2026 22:22:50] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [19/Sep/2026 22:22:50] "GET /app/style.css HTTP/1.1" 200 -
-127.0.0.1 - - [19/Sep/2026 22:22:50] "GET /app/forms.js HTTP/1.1" 200 -
-127.0.0.1 - - [19/Sep/2026 22:22:50] "GET /app/app.js HTTP/1.1" 200 -
-127.0.0.1 - - [19/Sep/2026 22:22:50] "GET /api/default HTTP/1.1" 200 -
-127.0.0.1 - - [19/Sep/2026 22:22:51] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [19/Sep/2026 22:55:35] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 22:55:35] "GET /app/forms.js HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 22:55:35] "GET /app/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 22:55:35] "GET /app/app.js HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 22:55:35] "GET /api/default HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 22:55:35] "GET /favicon.ico HTTP/1.1" 404 -
 test_alternative_omits_unavailable_comparisons_and_fields (test_browser.BrowserRegressionTests.test_alternative_omits_unavailable_comparisons_and_fields) ... ok
-test_exact_comparison_cells_open_their_own_scenario (test_browser.BrowserRegressionTests.test_exact_comparison_cells_open_their_own_scenario) ... 127.0.0.1 - - [19/Sep/2026 22:22:51] "GET /api/default HTTP/1.1" 200 -
+test_exact_comparison_cells_open_their_own_scenario (test_browser.BrowserRegressionTests.test_exact_comparison_cells_open_their_own_scenario) ... 127.0.0.1 - - [19/Sep/2026 22:55:35] "GET /api/default HTTP/1.1" 200 -
 ok
-test_history_dashboard_compares_selected_plans_with_graphs (test_browser.BrowserRegressionTests.test_history_dashboard_compares_selected_plans_with_graphs) ... 127.0.0.1 - - [19/Sep/2026 22:22:51] "GET /api/default HTTP/1.1" 200 -
+test_history_dashboard_compares_selected_plans_with_graphs (test_browser.BrowserRegressionTests.test_history_dashboard_compares_selected_plans_with_graphs) ... 127.0.0.1 - - [19/Sep/2026 22:55:35] "GET /api/default HTTP/1.1" 200 -
 ok
-test_history_picker_keeps_an_intentional_empty_selection (test_browser.BrowserRegressionTests.test_history_picker_keeps_an_intentional_empty_selection) ... 127.0.0.1 - - [19/Sep/2026 22:22:51] "GET /api/default HTTP/1.1" 200 -
+test_history_picker_keeps_an_intentional_empty_selection (test_browser.BrowserRegressionTests.test_history_picker_keeps_an_intentional_empty_selection) ... 127.0.0.1 - - [19/Sep/2026 22:55:35] "GET /api/default HTTP/1.1" 200 -
 ok
-test_ids_survive_rebuild_and_case_controls_remain_locked (test_browser.BrowserRegressionTests.test_ids_survive_rebuild_and_case_controls_remain_locked) ... 127.0.0.1 - - [19/Sep/2026 22:22:51] "GET /api/default HTTP/1.1" 200 -
-127.0.0.1 - - [19/Sep/2026 22:22:51] "POST /api/run HTTP/1.1" 200 -
+test_ids_survive_rebuild_and_case_controls_remain_locked (test_browser.BrowserRegressionTests.test_ids_survive_rebuild_and_case_controls_remain_locked) ... 127.0.0.1 - - [19/Sep/2026 22:55:35] "GET /api/default HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 22:55:35] "POST /api/run HTTP/1.1" 200 -
 ok
-test_key_metrics_show_ideal_and_warning_states (test_browser.BrowserRegressionTests.test_key_metrics_show_ideal_and_warning_states) ... 127.0.0.1 - - [19/Sep/2026 22:22:51] "GET /api/default HTTP/1.1" 200 -
-127.0.0.1 - - [19/Sep/2026 22:22:53] "POST /api/run HTTP/1.1" 200 -
+test_key_metrics_show_ideal_and_warning_states (test_browser.BrowserRegressionTests.test_key_metrics_show_ideal_and_warning_states) ... 127.0.0.1 - - [19/Sep/2026 22:55:35] "GET /api/default HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 22:55:37] "POST /api/run HTTP/1.1" 200 -
 ok
-test_overflow_result_is_complete_and_still_shows_compact_alternatives (test_browser.BrowserRegressionTests.test_overflow_result_is_complete_and_still_shows_compact_alternatives) ... 127.0.0.1 - - [19/Sep/2026 22:22:53] "GET /api/default HTTP/1.1" 200 -
-127.0.0.1 - - [19/Sep/2026 22:22:53] "POST /api/run HTTP/1.1" 200 -
-127.0.0.1 - - [19/Sep/2026 22:22:55] "POST /api/run HTTP/1.1" 200 -
+test_overflow_result_is_complete_and_still_shows_compact_alternatives (test_browser.BrowserRegressionTests.test_overflow_result_is_complete_and_still_shows_compact_alternatives) ... 127.0.0.1 - - [19/Sep/2026 22:55:37] "GET /api/default HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 22:55:37] "POST /api/run HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 22:55:38] "POST /api/run HTTP/1.1" 200 -
 ok
-test_result_renders_inventory_and_pv_charts (test_browser.BrowserRegressionTests.test_result_renders_inventory_and_pv_charts) ... 127.0.0.1 - - [19/Sep/2026 22:22:55] "GET /api/default HTTP/1.1" 200 -
-127.0.0.1 - - [19/Sep/2026 22:22:55] "POST /api/run HTTP/1.1" 200 -
+test_result_renders_inventory_and_pv_charts (test_browser.BrowserRegressionTests.test_result_renders_inventory_and_pv_charts) ... 127.0.0.1 - - [19/Sep/2026 22:55:38] "GET /api/default HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 22:55:39] "POST /api/run HTTP/1.1" 200 -
 ok
-test_transient_messages_do_not_occupy_the_workspace (test_browser.BrowserRegressionTests.test_transient_messages_do_not_occupy_the_workspace) ... 127.0.0.1 - - [19/Sep/2026 22:22:55] "GET /api/default HTTP/1.1" 200 -
+test_supplier_checkboxes_drive_the_builder_and_e_reserve_dependency (test_browser.BrowserRegressionTests.test_supplier_checkboxes_drive_the_builder_and_e_reserve_dependency) ... 127.0.0.1 - - [19/Sep/2026 22:55:39] "GET /api/default HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 22:55:39] "POST /api/run HTTP/1.1" 200 -
+ok
+test_transient_messages_do_not_occupy_the_workspace (test_browser.BrowserRegressionTests.test_transient_messages_do_not_occupy_the_workspace) ... 127.0.0.1 - - [19/Sep/2026 22:55:39] "GET /api/default HTTP/1.1" 200 -
 ok
 test_adaptation_cannot_change_discount_rate (test_case_engine.CaseEngineTests.test_adaptation_cannot_change_discount_rate) ... ok
 test_adaptation_cannot_rewrite_order (test_case_engine.CaseEngineTests.test_adaptation_cannot_rewrite_order) ... ok
@@ -113,27 +116,30 @@ test_stress_service_target_not_hard_but_loss_is_hard (test_core.PhysicsTests.tes
 test_upgrade_exact_boundary (test_core.PhysicsTests.test_upgrade_exact_boundary) ... ok
 test_years_cannot_be_skipped (test_core.PhysicsTests.test_years_cannot_be_skipped) ... ok
 test_zero_demand_and_zero_throughput (test_core.PhysicsTests.test_zero_demand_and_zero_throughput) ... ok
-test_bad_input_and_build (test_operator.HTTPTests.test_bad_input_and_build) ... 127.0.0.1 - - [19/Sep/2026 22:22:57] "POST /api/run HTTP/1.1" 400 -
-127.0.0.1 - - [19/Sep/2026 22:22:57] "POST /api/run HTTP/1.1" 200 -
-127.0.0.1 - - [19/Sep/2026 22:22:57] "POST /api/run HTTP/1.1" 400 -
+test_bad_input_and_build (test_operator.HTTPTests.test_bad_input_and_build) ... 127.0.0.1 - - [19/Sep/2026 22:55:41] "POST /api/run HTTP/1.1" 400 -
+127.0.0.1 - - [19/Sep/2026 22:55:41] "POST /api/run HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 22:55:41] "POST /api/run HTTP/1.1" 400 -
 ok
-test_cross_origin_and_host_rejected (test_operator.HTTPTests.test_cross_origin_and_host_rejected) ... 127.0.0.1 - - [19/Sep/2026 22:22:57] "POST /api/run HTTP/1.1" 403 -
-127.0.0.1 - - [19/Sep/2026 22:22:57] "POST /api/run HTTP/1.1" 403 -
+test_cross_origin_and_host_rejected (test_operator.HTTPTests.test_cross_origin_and_host_rejected) ... 127.0.0.1 - - [19/Sep/2026 22:55:41] "POST /api/run HTTP/1.1" 403 -
+127.0.0.1 - - [19/Sep/2026 22:55:41] "POST /api/run HTTP/1.1" 403 -
 ok
-test_home_default_and_static (test_operator.HTTPTests.test_home_default_and_static) ... 127.0.0.1 - - [19/Sep/2026 22:22:57] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [19/Sep/2026 22:22:57] "GET /app/app.js HTTP/1.1" 200 -
-127.0.0.1 - - [19/Sep/2026 22:22:57] "GET /app/style.css HTTP/1.1" 200 -
-127.0.0.1 - - [19/Sep/2026 22:22:57] "GET /api/default HTTP/1.1" 200 -
-127.0.0.1 - - [19/Sep/2026 22:22:57] "GET /data/original/pdf/ HTTP/1.1" 200 -
-127.0.0.1 - - [19/Sep/2026 22:22:57] "GET /README.md HTTP/1.1" 200 -
+test_home_default_and_static (test_operator.HTTPTests.test_home_default_and_static) ... 127.0.0.1 - - [19/Sep/2026 22:55:41] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 22:55:41] "GET /app/app.js HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 22:55:41] "GET /app/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 22:55:41] "GET /api/default HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 22:55:41] "GET /data/original/pdf/ HTTP/1.1" 200 -
+127.0.0.1 - - [19/Sep/2026 22:55:41] "GET /README.md HTTP/1.1" 200 -
 ok
-test_path_traversal_and_private_files (test_operator.HTTPTests.test_path_traversal_and_private_files) ... 127.0.0.1 - - [19/Sep/2026 22:22:57] "GET /app/../../test-secret.txt HTTP/1.1" 404 -
-127.0.0.1 - - [19/Sep/2026 22:22:57] "GET /scripts/serve.py HTTP/1.1" 404 -
-127.0.0.1 - - [19/Sep/2026 22:22:57] "GET /.git/config HTTP/1.1" 404 -
+test_path_traversal_and_private_files (test_operator.HTTPTests.test_path_traversal_and_private_files) ... 127.0.0.1 - - [19/Sep/2026 22:55:41] "GET /app/../../test-secret.txt HTTP/1.1" 404 -
+127.0.0.1 - - [19/Sep/2026 22:55:41] "GET /scripts/serve.py HTTP/1.1" 404 -
+127.0.0.1 - - [19/Sep/2026 22:55:41] "GET /.git/config HTTP/1.1" 404 -
 ok
 test_alternative_screen_cache_is_reused_and_returns_isolated_results (test_operator.OperatorTests.test_alternative_screen_cache_is_reused_and_returns_isolated_results) ... ok
 test_best_screened_plan_has_no_misleading_alternatives (test_operator.OperatorTests.test_best_screened_plan_has_no_misleading_alternatives) ... ok
+test_builder_accepts_explicit_supplier_checkboxes_without_changing_legacy_defaults (test_operator.OperatorTests.test_builder_accepts_explicit_supplier_checkboxes_without_changing_legacy_defaults) ... ok
 test_builder_can_include_prepaid_e_insurance (test_operator.OperatorTests.test_builder_can_include_prepaid_e_insurance) ... ok
+test_builder_custom_supplier_set_is_traceable_and_missing_start_channel_is_diagnostic (test_operator.OperatorTests.test_builder_custom_supplier_set_is_traceable_and_missing_start_channel_is_diagnostic) ... ok
+test_builder_rejects_invalid_supplier_checkbox_payloads (test_operator.OperatorTests.test_builder_rejects_invalid_supplier_checkbox_payloads) ... ok
 test_e_insurance_upgrades_existing_e_contracts_and_is_idempotent (test_operator.OperatorTests.test_e_insurance_upgrades_existing_e_contracts_and_is_idempotent) ... ok
 test_emergency_bridge_is_preventive_not_free_recourse (test_operator.OperatorTests.test_emergency_bridge_is_preventive_not_free_recourse) ... ok
 test_evaluation_returns_base_stress_pair_and_model_checked_alternatives (test_operator.OperatorTests.test_evaluation_returns_base_stress_pair_and_model_checked_alternatives) ... ok
@@ -169,6 +175,6 @@ test_tampered_original (test_preparation.PreparationTests.test_tampered_original
 test_wrong_shock_year (test_preparation.PreparationTests.test_wrong_shock_year) ... ok
 
 ----------------------------------------------------------------------
-Ran 136 tests in 16.461s
+Ran 140 tests in 16.308s
 
 OK

@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="style.css">
   <script src="runtime-client.js" defer></script>
   <script src="forms.js" defer></script>
-  <script src="app.8c1ac2da.js" defer></script>
+  <script src="app.f085167.js" defer></script>
 </head>
 <body>
   <a class="skip" href="#workspace">К рабочей области</a>
@@ -49,13 +49,16 @@
           <button id="open-button" class="secondary compact">Открыть</button>
           <input id="open" hidden type="file" accept="application/json,.json">
         </div>
-        <button id="back-base" class="quiet compact" hidden>К исходному плану</button>
         <button id="reset" class="quiet compact">Сбросить к базовому плану</button>
       </div>
     </section>
 
     <p id="message" class="notice toast" role="status" aria-live="polite" hidden></p>
     <div id="calculation-status" class="calculation-status" role="status" aria-live="polite" hidden></div>
+    <div id="adapted-notice" class="notice adapted-notice" role="status" hidden>
+      <div><strong>Открыт адаптированный план</strong><span>Он содержит реакцию на сценарий. Для изменения исходных обязательств сначала вернитесь к основе.</span></div>
+      <button id="back-base" class="secondary compact">Вернуться к исходному</button>
+    </div>
 
     <div class="workspace" id="workspace">
       <aside class="sidebar">
@@ -88,23 +91,27 @@
             </div>
           </div>
 
+          <aside class="card recommendation-card" aria-labelledby="recommendation-title">
+            <div class="recommendation-mark" aria-hidden="true">i</div>
+            <div>
+              <h3 id="recommendation-title">Условная рекомендация команды</h3>
+              <p><strong>Земля + C, ZBO, запас 60 дней и оплаченный резерв E.</strong> Рекомендация действует, если B подтверждён в 2034 году, а доставка C занимает не более 4 месяцев. При 6 месяцах нужен полный пересчёт; без B нужен отдельный стартовый план. Минимальная стоимость в экране альтернатив не заменяет эту инженерную рекомендацию.</p>
+            </div>
+          </aside>
+
           <section class="card planner-card" aria-label="Настройки построения плана">
             <div class="planner-main">
-              <div class="control control-wide">
-                <div class="control-label-row">
-                  <label class="control-label" for="strategy">Шаблон автопостроения</label>
+              <fieldset class="control control-wide builder-source-control">
+                <legend class="control-label-row">
+                  <span class="control-label">Допустимые поставщики</span>
                   <span class="help-wrap">
-                    <button class="help-trigger" type="button" aria-label="О шаблоне автопостроения" aria-expanded="false" aria-controls="help-strategy">?</button>
-                    <span class="help-popover" id="help-strategy" role="note" hidden>Шаблон создаёт только начальный график. После построения можно сочетать A, B, C, D, E и пользовательские источники в одном плане.</span>
+                    <button class="help-trigger" type="button" aria-label="О выборе поставщиков" aria-expanded="false" aria-controls="help-builder-sources">?</button>
+                    <span class="help-popover" id="help-builder-sources" role="note" hidden>Отмеченные источники разрешены конструктору, но он может не использовать их, если более дешёвых мощностей достаточно. Отсутствие подходящего источника для стартового запаса будет видно как ограничение, а не как скрытая ошибка.</span>
                   </span>
-                </div>
-                <select id="strategy">
-                  <option value="EARTH_NEW">Начальный график A + B + C + E</option>
-                  <option value="EARTH_ONLY">Начальный график A + B + E</option>
-                  <option value="LUNAR">Начальный график A + B + D + E</option>
-                  <option value="HYBRID">Начальный график A + B + C + D + E</option>
-                </select>
-              </div>
+                </legend>
+                <div id="builder-sources" class="builder-source-list"></div>
+                <small>Выбор задаёт допустимые каналы для нового графика.</small>
+              </fieldset>
               <div class="control">
                 <div class="control-label-row">
                   <label class="control-label" for="profile">Профиль спроса</label>
@@ -142,7 +149,7 @@
                 </label>
                 <span class="help-wrap">
                   <button class="help-trigger" type="button" aria-label="О системе хранения ZBO" aria-expanded="false" aria-controls="help-zbo">?</button>
-                  <span class="help-popover help-popover-right" id="help-zbo" role="note" hidden>Снижает потери топлива, но требует инвестиций.</span>
+                  <span class="help-popover help-popover-right" id="help-zbo" role="note" hidden>Снижает потери топлива и требует инвестиций. Монтаж занимает 6 месяцев; до ввода новой системы работает старый бак. Это допущение команды: отдельная остановка хранилища не моделируется.</span>
                 </span>
               </div>
               <div class="toggle-field">
@@ -153,7 +160,7 @@
                 </label>
                 <span class="help-wrap">
                   <button class="help-trigger" type="button" aria-label="О страховом резерве E" aria-expanded="false" aria-controls="help-e-insurance">?</button>
-                  <span class="help-popover help-popover-right" id="help-e-insurance" role="note" hidden>Резервирует 80 т/год в 2038-2040; в базовом тесте стоит 84 млн и позволяет активировать 42-дневный мост при задержке A.</span>
+                  <span class="help-popover help-popover-right" id="help-e-insurance" role="note" hidden>Резервирует 80 т/год в 2038-2040. В базовом тесте премия составляет 84 млн у.е.; резерв позволяет активировать 42-дневный мост при задержке A, но не страхует от всех видов сбоя запусков с Земли.</span>
                 </span>
               </div>
             </div>
@@ -194,12 +201,13 @@
                   </span>
                 </div>
                 <select id="scenario">
-                  <option value="BASE">Базовый тест / обычные условия</option>
-                  <option value="MANDATORY_STRESS">Стресс / рост спроса и цен</option>
-                  <option value="LOW">Низкий спрос / текущий план</option>
-                  <option value="HIGH">Высокий спрос / текущий план</option>
+                  <option value="BASE">Стандарт (BASE)</option>
+                  <option value="MANDATORY_STRESS">Обязательный стресс</option>
+                  <option value="LOW">Доп. исследование LOW</option>
+                  <option value="HIGH">Доп. исследование HIGH</option>
                   <option value="SAVED">Условия из открытого файла</option>
                 </select>
+                <p id="scenario-summary" class="scenario-summary"></p>
               </div>
             </div>
             <div class="scenario-actions">
@@ -208,9 +216,13 @@
                 <button id="adapt" class="secondary">Добавить реакцию B/E</button>
                 <span class="help-wrap">
                   <button class="help-trigger" type="button" aria-label="О реакции B/E" aria-expanded="false" aria-controls="adapt-help">?</button>
-                  <span class="help-popover help-popover-right" id="adapt-help" role="note" hidden>Реакция доступна для стресса, высокого спроса и сохранённого сценария.</span>
+                  <span class="help-popover help-popover-right" id="adapt-help" role="note" hidden>Реакция доступна для стресса, высокого спроса и сохранённого сценария. Она использует только заранее оплаченный резерв, соблюдает сроки реакции и не отменяет уже принятые обязательства.</span>
                 </span>
               </div>
+            </div>
+            <div class="criteria-note">
+              <strong>Как читать критерии</strong>
+              <span>Спрос задан в тоннах в год. Критический спрос входит в общий: например, в 2035 году 100 т всего, из них 80 т критические. Цели сервиса: не менее 99% критического и 97% общего спроса. Те же пороги проверяются в стрессе.</span>
             </div>
           </section>
 
@@ -288,6 +300,7 @@
               </span>
             </div>
           </div>
+          <p class="section-hint">Значения показывают годовую потребность. Критический объём уже входит в общий и не добавляется к нему повторно.</p>
           <div class="card table-card"><div id="demand-form" class="scroll"></div></div>
           <div class="data-calc-actions" data-rebuild="true"></div>
         </section>
@@ -443,7 +456,8 @@
 
   <footer>
     <span>Cosmo / расчётное ядро 1.0</span>
-    <span>млн у.е. / тонны / модельные даты</span>
+    <span>День 0 = 01.01.2035; год = 365 дней</span>
+    <a href="docs/scientific-basis.html" target="_blank" rel="noopener">Научное обоснование <span aria-hidden="true">↗</span></a>
     <a href="docs/index.html" target="_blank" rel="noopener">Вся документация <span aria-hidden="true">↗</span></a>
   </footer>
 
